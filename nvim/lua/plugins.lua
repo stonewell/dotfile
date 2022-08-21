@@ -121,6 +121,9 @@ return require('packer').startup(function(use)
   -- Move the range instead of copy paste
   use 'matze/vim-move'
 
+  -- incremental search enhance
+  use 'haya14busa/is.vim'
+
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
   if packer_bootstrap then
