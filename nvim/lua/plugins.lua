@@ -66,7 +66,7 @@ return require('packer').startup(function(use)
 
   -- themes
   use 'norcalli/nvim-colorizer.lua'
-  
+
   use {
     'ayu-theme/ayu-vim',
     config = function()
@@ -76,13 +76,13 @@ return require('packer').startup(function(use)
   }
 
   use 'kvrohit/rasmus.nvim'
-  
+
   -- LSP
   use 'neovim/nvim-lspconfig' -- LSP
   use 'jose-elias-alvarez/null-ls.nvim' -- Use Neovim as a language server to inject LSP diagnostics, code actions, and more via Lua
   use 'MunifTanjim/prettier.nvim' -- Prettier plugin for Neovim's built-in LSP client
 
-  use 'glepnir/lspsaga.nvim' -- LSP UIs 
+  use 'glepnir/lspsaga.nvim' -- LSP UIs
 
   -- yank ring UI
   use {
@@ -111,18 +111,38 @@ return require('packer').startup(function(use)
             }
           }
         }
-      }) 
+      })
     end,
   }
 
   -- Guess indent
   use 'tpope/vim-sleuth'
-  
+
   -- Move the range instead of copy paste
   use 'matze/vim-move'
 
   -- incremental search enhance
   use 'haya14busa/is.vim'
+
+  -- show current indent
+  use {
+    'lukas-reineke/indent-blankline.nvim',
+    config = function()
+      require('indent_blankline').setup({
+        show_current_context = true,
+        show_current_context_start = true,
+      })
+    end
+  }
+
+  -- deal with trail white space
+  use {
+    'ntpeters/vim-better-whitespace',
+    config = function()
+      vim.g.strip_only_modified_lines = 1
+      vim.g.strip_whitespace_on_save = 1
+    end
+  }
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
