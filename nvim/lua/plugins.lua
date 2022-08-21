@@ -144,6 +144,14 @@ return require('packer').startup(function(use)
     end
   }
 
+  -- improve startup time
+  --use {
+  --  'lewis6991/impatient.nvim',
+  --  config = function()
+  --    require('impatient')
+  --  end
+  -- }
+
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
   if packer_bootstrap then

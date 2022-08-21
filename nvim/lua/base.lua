@@ -41,13 +41,13 @@ vim.api.nvim_create_autocmd("UIEnter", {
 
     if vim.v.event.chan > 0 then
       if vim.fn.has('GuiClipboard') then
-	vim.defer_fn(function()
-	  local chan_info = vim.api.nvim_get_chan_info(chan_id)
+        vim.defer_fn(function()
+          local chan_info = vim.api.nvim_get_chan_info(chan_id)
 
-	  if chan_info.client.name == 'nvim-qt' then
-	    vim.cmd 'call GuiClipboard()'
-	  end
-	end, 2200)
+          if chan_info.client.name == 'nvim-qt' then
+            vim.cmd 'call GuiClipboard()'
+          end
+        end, 2200)
       end
     end
   end
