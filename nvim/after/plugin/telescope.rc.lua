@@ -112,4 +112,8 @@ vim.keymap.set("n", ";y", function()
   telescope.extensions.yank_history.yank_history({
   })
 end)
+vim.keymap.set("n", "sp", function()
+  telescope.extensions.projects.projects({
+  })
+end)
 
