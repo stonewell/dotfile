@@ -9,7 +9,32 @@ vim.cmd ':TSUpdate'
 
 ts.setup {
   -- One of "all", "maintained" (parsers with maintainers), or a list of languages
-  ensure_installed = "all",
+  ensure_installed = {
+    "bash",
+    "c",
+    "cpp",
+    "cmake",
+    "dockerfile",
+    "go",
+    "html",
+    "http",
+    "javascript",
+    "java",
+    "json5",
+    "jsonc",
+    "json",
+    "kotlin",
+    "lua",
+    "make",
+    "markdown",
+    "python",
+    "regex",
+    "rust",
+    "toml",
+    "typescript",
+    "vim",
+    "yaml",
+  },
 
   -- Install languages synchronously (only applied to `ensure_installed`)
   sync_install = false,
