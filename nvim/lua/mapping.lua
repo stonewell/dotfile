@@ -19,10 +19,7 @@ vim.keymap.set('i', '<C-a>',
   function()
     vim.cmd('normal! ^')
   end)
-vim.keymap.set('i', '<C-e>',
-  function()
-    vim.cmd('normal! A ')
-  end)
+vim.keymap.set('i', '<C-e>', '<C-o>$')
 vim.keymap.set('i', '<C-d>',
   function()
     vim.cmd('normal! x')
