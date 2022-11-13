@@ -123,6 +123,8 @@
 (use-package go-mode
   :ensure t
   :defer t
+  :config
+    (define-key go-mode-map (kbd "C-M-\\") 'gofmt t)
   )
 
 (use-package powerline

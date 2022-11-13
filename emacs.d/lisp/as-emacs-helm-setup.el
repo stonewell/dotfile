@@ -20,6 +20,7 @@
   ;;        ("M-y" . helm-show-kill-ring)
   ;;        ("C-x b" . helm-mini)
   ;;        ("M-/" . helm-dabbrev))
+  :ensure t
   :config
   (setq
    helm-scroll-amount 4 ; scroll 4 lines other window using M-<next>/M-<prior>
@@ -32,6 +33,18 @@
    helm-move-to-line-cycle-in-source nil ; move to end or beginning of source when reaching top or bottom of source.
    ;; helm-command
    helm-M-x-requires-pattern 0     ; show all candidates when set to 0
+
+   ;;helm-files
+   helm-ff-search-library-in-sexp t ; search for library in `require' and `declare-function' sexp.
+   helm-boring-file-regexp-list
+   '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$" "\\._darcs$" "\\.la$" "\\.o$" "\\.i$") ; do not show these files in helm buffer
+   helm-ff-file-name-history-use-recentf t
+   ;; helm-buffers
+   helm-buffers-fuzzy-matching t          ; fuzzy matching buffer names when non--nil
+					; useful in helm-mini that lists buffers
+   ;; ido
+   ido-use-virtual-buffers t      ; Needed in helm-buffers-list
+
    )
   (bind-keys ("M-x" . helm-M-x)
              ("M-y" . helm-show-kill-ring)
@@ -45,35 +58,32 @@
   (require 'as-emacs-helm-pyeverything)
   (bind-keys ("C-t" . helm-ff-run-pyeverything))
   (bind-keys ("C-M-t" . helm-ag-run-pyeverything))
-  )
 
-(use-package helm-files
-  :bind ("C-x C-f" . helm-find-files)
-  :config
-  (setq
-   helm-ff-search-library-in-sexp t ; search for library in `require' and `declare-function' sexp.
-   helm-boring-file-regexp-list
-   '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$" "\\._darcs$" "\\.la$" "\\.o$" "\\.i$") ; do not show these files in helm buffer
-   helm-ff-file-name-history-use-recentf t
-   ;; helm-buffers
-   helm-buffers-fuzzy-matching t          ; fuzzy matching buffer names when non--nil
-					; useful in helm-mini that lists buffers
-   ;; ido
-   ido-use-virtual-buffers t      ; Needed in helm-buffers-list
-   )
+  ;;helm-files
+  (require 'helm-files)
   (setq helm-buffers-favorite-modes (append helm-buffers-favorite-modes
                                             '(picture-mode artist-mode)))
   (bind-keys :map helm-find-files-map
              ("C-h" . delete-backward-char)
              ("C-i" . helm-execute-persistent-action))
-  )
-
-(use-package helm-grep
-  :config
+  ;; helm-grep
   (bind-keys :map helm-grep-mode-map
              ("RET" . helm-grep-mode-jump-other-window)
              ("n" . helm-grep-mode-jump-other-window-forward)
-             ("p" . helm-grep-mode-jump-other-window-backward)))
+             ("p" . helm-grep-mode-jump-other-window-backward))
+
+  (with-eval-after-load 'tramp-cache (setq tramp-cache-read-persistent-data t))
+  (with-eval-after-load 'auth-source (setq auth-source-save-behavior nil))
+  (define-key global-map [remap find-file] 'helm-find-files)
+  (define-key global-map [remap occur] 'helm-occur)
+  (define-key global-map [remap list-buffers] 'helm-buffers-list)
+  (define-key global-map [remap dabbrev-expand] 'helm-dabbrev)
+  (define-key global-map [remap execute-extended-command] 'helm-M-x)
+  (define-key global-map [remap apropos-command] 'helm-apropos)
+  (unless (boundp 'completion-in-region-function)
+    (define-key lisp-interaction-mode-map [remap completion-at-point] 'helm-lisp-completion-at-point)
+    (define-key emacs-lisp-mode-map       [remap completion-at-point] 'helm-lisp-completion-at-point))
+  )
 
 (use-package projectile
   :ensure t
