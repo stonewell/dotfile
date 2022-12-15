@@ -12,8 +12,8 @@
 
 ;;;(add-to-list 'load-path "~/.emacs.d/themes")
 ;;;(load-theme 'solarized t t)
-(load-theme 'zenburn t)
-
+;;; (load-theme 'zenburn t)
+(load-theme 'dracula t)
 ;; (defun setup-window-system-frame-colours (&rest frame)
 ;;   (message "Running setup window system frame colours")
 ;;   (let ((f (if (car frame)

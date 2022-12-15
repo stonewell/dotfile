@@ -115,6 +115,10 @@
   :ensure t
   :defer t
   )
+(use-package dracula-theme
+  :ensure t
+  :defer t
+  )
 (use-package elpy
   :ensure t
   :defer t
