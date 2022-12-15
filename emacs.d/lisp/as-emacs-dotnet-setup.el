@@ -3,15 +3,7 @@
 ;;; Code:
 
 ;;;Set CSharp Auto Load Mode
-(use-package tree-sitter
-  :ensure t)
-
-(use-package tree-sitter-langs :ensure t)
-
-(use-package csharp-mode
-  :ensure t
-  :config
-  (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-tree-sitter-mode)))
+(add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-tree-sitter-mode))
 
 (eval-after-load
   'company

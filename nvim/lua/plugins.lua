@@ -22,7 +22,11 @@ return require('packer').startup(function(use)
   use {
     'nvim-lualine/lualine.nvim',
     config = function()
-      require('lualine').setup()
+      require('lualine').setup {
+        options = {
+          theme = 'dracula-nvim'
+        }
+      }
     end
   }
 
@@ -68,11 +72,11 @@ return require('packer').startup(function(use)
   use 'norcalli/nvim-colorizer.lua'
 
   use {
-    'ayu-theme/ayu-vim',
+    'Mofiqul/dracula.nvim',
     config = function()
-      vim.g.ayucolor = 'mirage'
-      vim.cmd 'colorscheme ayu'
-    end,
+      require('dracula').setup()
+      vim.cmd[[colorscheme dracula]]
+    end
   }
 
   use 'kvrohit/rasmus.nvim'

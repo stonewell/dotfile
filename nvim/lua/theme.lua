@@ -7,4 +7,4 @@ vim.opt.pumblend = 5
 vim.wo.number = true
 vim.opt.background = 'dark'
 
-vim.opt.guifont = 'Source Code Pro:h14'
+vim.opt.guifont = 'SauceCodePro Nerd Font Mono:h12'
