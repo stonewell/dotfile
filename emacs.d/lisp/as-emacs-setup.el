@@ -64,6 +64,9 @@
 ;; cquery mode
 (require 'as-emacs-cquery-setup)
 
+;; typescript mode
+(require 'as-emacs-typescript-setup)
+
 ;; set no backup
 (setq auto-save-default nil)
 (setq auto-save-default -1)
@@ -166,11 +169,6 @@
 	      100)
 	 '(92 . 50) '(100 . 100)))))
 
-;; ------load customize setup
-(if (file-readable-p "~/.emacs.d/local-customize-setup.el")
-    (load "~/.emacs.d/local-customize-setup.el")
-  )
-
 ;; use ws-butler to handle trailing white space
 (require 'ws-butler)
 (add-hook 'prog-mode-hook #'ws-butler-mode)
@@ -188,6 +186,11 @@
 (if (eq system-type 'gnu/linux)
     ;;linux only setup
     (load "as-emacs-setup-linux")
+  )
+
+;; ------load customize setup
+(if (file-readable-p "~/.emacs.d/local-customize-setup.el")
+    (load "~/.emacs.d/local-customize-setup.el")
   )
 
 (provide 'as-emacs-setup)

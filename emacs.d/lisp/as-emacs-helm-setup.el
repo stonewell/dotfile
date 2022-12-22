@@ -8,12 +8,6 @@
   :defer t
   )
 
-(use-package helm-config
-  :init
-  (custom-set-variables '(helm-command-prefix-key "C-;"))
-  :config
-  )
-
 (use-package helm
   ;; :init
   ;; :bind (;("M-x" . helm-M-x)
