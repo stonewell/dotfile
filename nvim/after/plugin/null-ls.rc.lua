@@ -16,7 +16,7 @@ null_ls.setup({
     local opts = { noremap = true, silent = true }
 
     if client.server_capabilities.documentFormattingProvider then
-      vim.api.nvim_buf_set_keymap(bufnr, 'n', 'bf', '<cmd>lua vim.lsp.buf.format({ bufnr = bufnr })<CR>', opts)
+      vim.api.nvim_buf_set_keymap(bufnr, 'n', 'bf', '<cmd>lua vim.lsp.buf.format({ bufnr = bufnr, timeout_ms=50000 })<CR>', opts)
     end
   end,
 })
