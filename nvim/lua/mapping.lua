@@ -25,3 +25,4 @@ vim.keymap.set('i', '<C-d>',
     vim.cmd('normal! x')
   end)
 
+vim.keymap.set('n', '<C-a>', 'gg<S-v>G')
