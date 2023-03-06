@@ -5,7 +5,12 @@ null_ls.setup({
     null_ls.builtins.formatting.prettierd,
     null_ls.builtins.formatting.yapf,
     null_ls.builtins.formatting.clang_format,
-    null_ls.builtins.diagnostics.eslint_d,
+    null_ls.builtins.diagnostics.eslint_d.with({ -- js/ts linter
+      -- only enable eslint if root has .eslintrc.cjs
+      condition = function(utils)
+        return utils.root_has_file(".eslintrc.cjs") or utils.root_has_file(".eslintrc.json")
+      end,
+    }),
     null_ls.builtins.diagnostics.pylint,
     null_ls.builtins.diagnostics.write_good,
     null_ls.builtins.completion.spell,

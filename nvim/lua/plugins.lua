@@ -148,6 +148,8 @@ return require('packer').startup(function(use)
     end
   }
 
+  use 'romainl/vim-cool'
+
   -- improve startup time
   --use {
   --  'lewis6991/impatient.nvim',
