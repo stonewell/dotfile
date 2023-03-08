@@ -32,6 +32,10 @@ vim.api.nvim_create_autocmd("InsertLeave", {
   command = "set nopaste"
 })
 
+
+-- set termguicolors to enable highlight groups
+vim.opt.termguicolors = true
+
 -- Seems no need to call the function for nvim-qt
 -- but leave here for reference
 vim.api.nvim_create_autocmd("UIEnter", {

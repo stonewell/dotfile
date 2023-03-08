@@ -27,6 +27,7 @@ telescope.setup {
       theme = "dropdown",
       -- disables netrw and use telescope-file-browser in its place
       hijack_netrw = true,
+      previewer = false,
       mappings = {
         -- your custom insert mode mappings
         ["i"] = {
@@ -103,7 +104,6 @@ vim.keymap.set("n", "sf", function()
     respect_gitignore = false,
     hidden = true,
     grouped = true,
-    previewer = false,
     initial_mode = "normal",
     layout_config = { height = 40 }
   })

@@ -54,7 +54,13 @@ return require('packer').startup(function(use)
     end
   }
 
-  use 'kyazdani42/nvim-tree.lua'
+  use {
+    'nvim-tree/nvim-tree.lua',
+    requires = {
+      'nvim-tree/nvim-web-devicons', -- optional, for file icons
+    },
+    tag = 'nightly' -- optional, updated every week. (see issue #1193)
+  }
   use 'akinsho/nvim-bufferline.lua'
 
   use 'nvim-telescope/telescope.nvim'
@@ -148,16 +154,29 @@ return require('packer').startup(function(use)
     end
   }
 
+  -- remove search hl after cusor move or mode change
   use 'romainl/vim-cool'
 
   -- improve startup time
-  --use {
-  --  'lewis6991/impatient.nvim',
-  --  config = function()
-  --    require('impatient')
-  --  end
-  -- }
+  use {
+    'lewis6991/impatient.nvim',
+    config = function()
+      require('impatient')
+    end
+  }
 
+  use {
+    "folke/which-key.nvim",
+    config = function()
+      vim.o.timeout = true
+      vim.o.timeoutlen = 300
+      require("which-key").setup {
+        -- your configuration comes here
+        -- or leave it empty to use the default settings
+        -- refer to the configuration section below
+      }
+    end
+  }
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
   if packer_bootstrap then

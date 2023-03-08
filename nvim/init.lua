@@ -1,6 +1,7 @@
 is_win = vim.loop.os_uname().sysname == 'Windows_NT'
 is_mac = vim.loop.os_uname().sysname == 'Darwin'
 
+require('impatient')
 require('base')
 require('theme')
 require('plugins')
