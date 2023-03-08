@@ -70,33 +70,33 @@ vim.keymap.set('n', ';f',
       no_ignore = false,
       hidden = true
     })
-  end)
+  end, {desc="Find Fies in Current Buffer Directory"})
 vim.keymap.set('n', ';r', function()
   builtin.live_grep({
     cwd = telescope_buffer_dir(),
   })
-end)
+end, {desc="Live Grep Current Buffer Directory"})
 vim.keymap.set('n', ';p', function()
   builtin.grep_string({
     cwd = telescope_buffer_dir(),
   })
-end)
+end, {desc="Grep String in Current Buffer Directory"})
 vim.keymap.set('n', ';b', function()
   builtin.buffers()
-end)
+end, {desc="Buffer List"})
 
 if not is_win then
   vim.keymap.set('n', ';t', function()
     builtin.treesitter()
-  end)
+  end, {desc="Treesitter Symbols"})
 end
 
 vim.keymap.set('n', ';;', function()
   builtin.resume()
-end)
+end, {desc="Resume Last Picker"})
 vim.keymap.set('n', ';e', function()
   builtin.diagnostics()
-end)
+end, {desc="Diagnostics"})
 vim.keymap.set("n", "sf", function()
   telescope.extensions.file_browser.file_browser({
     path = "%:p:h",
@@ -107,13 +107,13 @@ vim.keymap.set("n", "sf", function()
     initial_mode = "normal",
     layout_config = { height = 40 }
   })
-end)
+end, {desc="Browse Files"})
 vim.keymap.set("n", ";y", function()
   telescope.extensions.yank_history.yank_history({
   })
-end)
+end, {desc="Yank History"})
 vim.keymap.set("n", "sp", function()
   telescope.extensions.projects.projects({
   })
-end)
+end, {desc="Projects"})
 

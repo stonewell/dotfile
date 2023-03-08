@@ -18,10 +18,23 @@ null_ls.setup({
   },
 
   on_attach = function(client, bufnr)
-    local opts = { noremap = true, silent = true }
-
     if client.server_capabilities.documentFormattingProvider then
-      vim.api.nvim_buf_set_keymap(bufnr, 'n', 'bf', '<cmd>lua vim.lsp.buf.format({ bufnr = bufnr, timeout_ms=50000 })<CR>', opts)
+      local opts = { noremap = true, silent = true, desc="Format Buffer", buffer=bufnr }
+
+      vim.keymap.set('n', '<leader>f', function()
+        vim.lsp.buf.format({ bufnr = bufnr, timeout_ms=50000 })
+        vim.notify('buffer format done.')
+      end, opts)
     end
+
+    if client.server_capabilities.documentRangeFormattingProvider then
+      local opts = { noremap = true, silent = true, desc="Format Selected Range", buffer=bufnr }
+
+      vim.keymap.set('v', '<leader>f', function()
+        vim.lsp.buf.format({ bufnr = bufnr, timeout_ms=50000 })
+        vim.notify('range format done')
+      end, opts)
+    end
+
   end,
 })

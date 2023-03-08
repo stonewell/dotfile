@@ -44,4 +44,4 @@ vim.keymap.set('n', ';n',
   function()
     hop.hint_patterns({
     }, vim.fn.getreg('/'))
-  end)
+  end, {desc="Show Hint for Last Search Pattern"})

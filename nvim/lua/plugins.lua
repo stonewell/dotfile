@@ -54,14 +54,7 @@ return require('packer').startup(function(use)
     end
   }
 
-  use {
-    'nvim-tree/nvim-tree.lua',
-    requires = {
-      'nvim-tree/nvim-web-devicons', -- optional, for file icons
-    },
-    tag = 'nightly' -- optional, updated every week. (see issue #1193)
-  }
-  use 'akinsho/nvim-bufferline.lua'
+ use 'akinsho/nvim-bufferline.lua'
 
   use 'nvim-telescope/telescope.nvim'
   use 'nvim-telescope/telescope-file-browser.nvim'
@@ -84,8 +77,6 @@ return require('packer').startup(function(use)
       vim.cmd[[colorscheme dracula]]
     end
   }
-
-  use 'kvrohit/rasmus.nvim'
 
   -- LSP
   use 'neovim/nvim-lspconfig' -- LSP
