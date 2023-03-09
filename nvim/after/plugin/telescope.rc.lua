@@ -27,7 +27,15 @@ telescope.setup {
       theme = "dropdown",
       -- disables netrw and use telescope-file-browser in its place
       hijack_netrw = true,
+
+      -- default options for browser file
       previewer = false,
+      respect_gitignore = false,
+      hidden = true,
+      grouped = true,
+      initial_mode = "normal",
+      layout_config = { height = 40 },
+
       mappings = {
         -- your custom insert mode mappings
         ["i"] = {
@@ -100,13 +108,8 @@ end, {desc="Diagnostics"})
 vim.keymap.set("n", "sf", function()
   telescope.extensions.file_browser.file_browser({
     path = "%:p:h",
-    cwd = telescope_buffer_dir(),
-    respect_gitignore = false,
-    hidden = true,
-    grouped = true,
-    initial_mode = "normal",
-    layout_config = { height = 40 }
-  })
+    cwd = telescope_buffer_dir()
+ })
 end, {desc="Browse Files"})
 vim.keymap.set("n", ";y", function()
   telescope.extensions.yank_history.yank_history({

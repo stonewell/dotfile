@@ -1,10 +1,6 @@
-vim.opt.cursorline = true
-vim.opt.cursorcolumn = true
-vim.opt.termguicolors = true
-vim.opt.winblend = 0
-vim.opt.wildoptions = 'pum'
-vim.opt.pumblend = 5
-vim.wo.number = true
-vim.opt.background = 'dark'
+vim.cmd[[colorscheme dracula]]
 
-vim.opt.guifont = 'SauceCodePro Nerd Font Mono:h12'
+vim.cmd [[
+  highlight CursorLine cterm=NONE ctermbg=darkred ctermfg=NONE guibg=NONE guifg=NONE gui=underline
+  highlight CursorColumn cterm=NONE ctermbg=darkred ctermfg=NONE guibg=#2d2d2d guifg=NONE
+]]

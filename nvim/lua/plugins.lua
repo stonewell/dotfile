@@ -12,6 +12,15 @@ return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
   use 'nvim-lua/plenary.nvim'
 
+  use {
+    'kyazdani42/nvim-web-devicons',
+    config = function()
+      require('nvim-web-devicons').setup({
+        default = true
+      })
+    end
+  }
+
   use 'equalsraf/neovim-gui-shim'
 
   use 'nvim-treesitter/nvim-treesitter'
@@ -30,7 +39,6 @@ return require('packer').startup(function(use)
     end
   }
 
-  use 'kyazdani42/nvim-web-devicons'
   use {
     'karb94/neoscroll.nvim',
     config = function()
@@ -54,67 +62,75 @@ return require('packer').startup(function(use)
     end
   }
 
- use 'akinsho/nvim-bufferline.lua'
+  use 'akinsho/nvim-bufferline.lua'
 
   use 'nvim-telescope/telescope.nvim'
   use 'nvim-telescope/telescope-file-browser.nvim'
-
   use {
     'nvim-telescope/telescope-fzf-native.nvim',
     run = 'make'
   }
 
-  use 'windwp/nvim-autopairs'
-  use 'windwp/nvim-ts-autotag'
+  use {
+    'windwp/nvim-autopairs',
+    config = function()
+      require('nvim-autopairs').setup({
+        disable_filetype = { "TelescopePrompt" , "vim" },
+      })
+    end
+  }
+  use {
+    'windwp/nvim-ts-autotag',
+    config = function()
+      require('nvim-ts-autotag').setup()
+    end
+  }
 
   -- themes
-  use 'norcalli/nvim-colorizer.lua'
+  use {
+    'norcalli/nvim-colorizer.lua',
+    config = function()
+      require('colorizer').setup({
+        '*';
+      })
+    end
+  }
 
   use {
     'Mofiqul/dracula.nvim',
     config = function()
       require('dracula').setup()
-      vim.cmd[[colorscheme dracula]]
     end
   }
 
   -- LSP
   use 'neovim/nvim-lspconfig' -- LSP
   use 'jose-elias-alvarez/null-ls.nvim' -- Use Neovim as a language server to inject LSP diagnostics, code actions, and more via Lua
-  use 'MunifTanjim/prettier.nvim' -- Prettier plugin for Neovim's built-in LSP client
+
+  -- Prettier plugin for Neovim's built-in LSP client
+  use {
+    'MunifTanjim/prettier.nvim',
+    config = function()
+      require('prettier') .setup({
+        bin = 'prettierd',
+        filetypes = {
+          "css",
+          "javascript",
+          "javascriptreact",
+          "typescript",
+          "typescriptreact",
+          "json",
+          "scss",
+          "less"
+        }
+      })
+    end
+  }
 
   use 'glepnir/lspsaga.nvim' -- LSP UIs
 
   -- yank ring UI
-  use {
-    'gbprod/yanky.nvim',
-    config = function()
-      local utils = require("yanky.utils")
-      local mapping = require("yanky.telescope.mapping")
-
-      require("yanky").setup({
-	picker = {
-    	  telescope = {
-            mappings = {
-              default = mapping.put("p"),
-              i = {
-                ["<c-j>"] = mapping.put("p"),
-                ["<c-k>"] = mapping.put("P"),
-                ["<c-x>"] = mapping.delete(),
-                ["<c-r>"] = mapping.set_register(utils.get_default_register()),
-              },
-              n = {
-                p = mapping.put("p"),
-                P = mapping.put("P"),
-                d = mapping.delete(),
-                r = mapping.set_register(utils.get_default_register())
-              },
-            }
-          }
-        }
-      })
-    end,
-  }
+  use 'gbprod/yanky.nvim'
 
   -- Guess indent
   use 'tpope/vim-sleuth'
@@ -157,17 +173,12 @@ return require('packer').startup(function(use)
   }
 
   use {
-    "folke/which-key.nvim",
+    'folke/which-key.nvim',
     config = function()
-      vim.o.timeout = true
-      vim.o.timeoutlen = 300
-      require("which-key").setup {
-        -- your configuration comes here
-        -- or leave it empty to use the default settings
-        -- refer to the configuration section below
-      }
+      require('which-key').setup()
     end
   }
+
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
   if packer_bootstrap then
