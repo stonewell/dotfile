@@ -23,6 +23,12 @@ return require('lazy').setup({
     end
   },
 
+  {
+    'ojroques/nvim-bufdel',
+    opts = {},
+    cmd = 'BufDel',
+  },
+
   'equalsraf/neovim-gui-shim',
 
   'nvim-treesitter/nvim-treesitter',
@@ -113,7 +119,7 @@ return require('lazy').setup({
   {
     'VonHeikemen/lsp-zero.nvim',
     branch = 'v2.x',
-    requires = {
+    dependencies = {
       -- LSP Support
       {'neovim/nvim-lspconfig'},             -- Required
       {'williamboman/mason.nvim'},           -- Optional
@@ -153,7 +159,14 @@ return require('lazy').setup({
     end
   },
 
-  'glepnir/lspsaga.nvim', -- LSP UIs
+  {
+    'glepnir/lspsaga.nvim', -- LSP UIs
+    event = "LspAttach",
+    dependencies = {
+      --Please make sure you install markdown and markdown_inline parser
+      {"nvim-treesitter/nvim-treesitter"}
+    }
+  },
 
   -- yank ring UI
   'gbprod/yanky.nvim',
@@ -170,6 +183,8 @@ return require('lazy').setup({
   -- show current indent
   {
     'lukas-reineke/indent-blankline.nvim',
+    event = 'VeryLazy',
+    dependencies = 'nvim-treesitter',
     config = function()
       require('indent_blankline').setup({
         show_current_context = true,
@@ -188,7 +203,7 @@ return require('lazy').setup({
   },
 
   -- remove search hl after cusor move or mode change
-  'romainl/vim-cool',
+  {'romainl/vim-cool', event='VeryLazy' },
 
   -- improve startup time
   {
@@ -199,7 +214,7 @@ return require('lazy').setup({
     'folke/which-key.nvim',
     config = function()
       require('which-key').setup()
-    end
+    end,
   },
 })
 
