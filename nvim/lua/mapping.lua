@@ -93,3 +93,4 @@ if (status) then
   vim.keymap.set("n", "<M-y>", "<Plug>(YankyCycleForward)")
 end
 
+vim.keymap.set('n', '<leader>bd', '<cmd>BufDel<cr>')
