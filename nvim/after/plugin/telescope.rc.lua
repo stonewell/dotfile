@@ -119,4 +119,6 @@ vim.keymap.set("n", "sp", function()
   telescope.extensions.projects.projects({
   })
 end, {desc="Projects"})
+vim.keymap.set("n", "sr", "<cmd>Telescope oldfiles<cr>", {desc="Projects"})
+
 
