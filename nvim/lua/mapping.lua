@@ -1,10 +1,3 @@
-local opts = { noremap = true, silent = true }
-
---Remap space as leader key
-vim.keymap.set("", "<Space>", "<Nop>", opts)
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
-
 -- Navigate in insert mode
 vim.keymap.set('i', '<C-f>',
   function()
@@ -93,4 +86,11 @@ if (status) then
   vim.keymap.set("n", "<M-y>", "<Plug>(YankyCycleForward)")
 end
 
-vim.keymap.set('n', '<leader>bd', '<cmd>BufDel<cr>')
+vim.keymap.set('n', '<leader>-', '<cmd>vsp<cr>')
+vim.keymap.set('n', '<leader>=', '<cmd>split<cr>')
+
+local status, minibufremove = pcall(require, "mini.bufremove")
+if (status) then
+  vim.keymap.set("n", "<leader>bd", function() minibufremove.delete(0, false) end, {desc = "Delete Buffer" })
+  vim.keymap.set("n", "<leader>bD", function() minibufremove.delete(0, true) end, {desc = "Delete Buffer (Force)" })
+end

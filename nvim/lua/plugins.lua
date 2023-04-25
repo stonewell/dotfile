@@ -24,9 +24,8 @@ return require('lazy').setup({
   },
 
   {
-    'ojroques/nvim-bufdel',
-    opts = {},
-    cmd = 'BufDel',
+    "echasnovski/mini.bufremove",
+    version = false,
   },
 
   'equalsraf/neovim-gui-shim',
@@ -261,10 +260,6 @@ return require('lazy').setup({
         }),
         formatting = {
           format = function(_, item)
-            local icons = require("lazyvim.config").icons.kinds
-            if icons[item.kind] then
-              item.kind = icons[item.kind] .. item.kind
-            end
             return item
           end,
         },
