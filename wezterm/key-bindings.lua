@@ -47,6 +47,16 @@ local key_mapping = {
     mods = 'LEADER',
     action = act.ActivateCopyMode
   },
+  {
+    key = 's',
+    mods = 'LEADER',
+    action = act.QuickSelect
+  },
+  {
+    key = 'f',
+    mods = 'LEADER',
+    action = act.Search("CurrentSelectionOrEmptyString")
+  },
 }
 
 local copy_mode = {
