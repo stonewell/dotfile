@@ -1,8 +1,9 @@
 ;;; as-emacs-typescript-setup.el -- typescript mode setup
-;;; Commentary:
-;;; Code:
+;;; commentary:
+;;; code:
 (use-package typescript-mode
   :after tree-sitter
+  :ensure t
   :config
   ;; we choose this instead of tsx-mode so that eglot can automatically figure out language for server
   ;; see https://github.com/joaotavora/eglot/issues/624 and https://github.com/joaotavora/eglot#handling-quirky-servers
@@ -27,6 +28,24 @@
   (add-hook 'json-mode-hook (lambda () (tsi-json-mode 1)))
   (add-hook 'css-mode-hook (lambda () (tsi-css-mode 1)))
   (add-hook 'scss-mode-hook (lambda () (tsi-scss-mode 1))))
+
+;;(add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescript-ts-mode))
+;;(add-to-list 'tree-sitter-major-mode-language-alist '(typescript-ts-mode . tsx))
+
+;; (use-package tide
+;;   :ensure t
+;;   :after (company flycheck)
+;;   :hook ((typescript-ts-mode . tide-setup)
+;;         (tsx-ts-mode . tide-setup)
+;;          (typescript-ts-mode . tide-hl-identifier-mode)
+;;           (before-save . tide-format-before-save)))
+
+(use-package tide
+  :ensure t
+  :after (typescript-mode company flycheck)
+  :hook ((typescript-mode . tide-setup)
+          (typescript-mode . tide-hl-identifier-mode)
+          (before-save . tide-format-before-save)))
 
 (provide 'as-emacs-typescript-setup)
 ;;; as-emacs-typescript-setup.el ends here
