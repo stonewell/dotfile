@@ -22,8 +22,8 @@
 
 (quelpa
  '(quelpa-use-package
-  :fetcher git
-  :url "https://framagit.org/steckerhalter/quelpa-use-package.git"))
+   :fetcher git
+   :url "https://framagit.org/steckerhalter/quelpa-use-package.git"))
 (require 'quelpa-use-package)
 
 (use-package auto-package-update
@@ -119,40 +119,46 @@
   :ensure t
   :defer t
   )
-(use-package elpy
-  :ensure t
-  :defer t
-  )
 
 (use-package go-mode
   :ensure t
   :defer t
   :config
-    (define-key go-mode-map (kbd "C-M-\\") 'gofmt t)
+  (define-key go-mode-map (kbd "C-M-\\") 'gofmt t)
   )
 
 (use-package powerline
   :ensure t
+  :defer t
   :config
   (powerline-default-theme)
   )
 
 (use-package editorconfig
   :ensure t
+  :defer t
   :config
   (editorconfig-mode 1)
   )
 
 (use-package htmlize
   :ensure t
-)
+  :defer t
+  )
 
 (use-package ws-butler
-  :ensure t)
+  :ensure t
+  :defer t
+  :config
+  ;; use ws-butler to handle trailing white space
+  (ws-butler-global-mode)
+  (add-hook 'prog-mode-hook #'ws-butler-mode)
+  )
 
 (use-package guess-style
   :quelpa (guess-style :fetcher git :url "https://github.com/nschum/guess-style.git")
   :ensure t
+  :defer t
   :config
   (global-guess-style-info-mode 1)
   )
@@ -164,6 +170,7 @@
 
 (use-package tree-sitter
   :ensure t
+  :defer t
   :config
   (require 'tree-sitter-langs)
   (global-tree-sitter-mode)

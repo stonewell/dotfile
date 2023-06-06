@@ -6,7 +6,12 @@
 				   interpreter-mode-alist))
 (autoload 'python-mode "python-mode" "Python editing mode." t)
 
-(elpy-enable)
+(use-package elpy
+  :ensure t
+  :defer t
+  :init
+  (elpy-enable)
+  )
 
 (defun my-python-mode-hook ()
   "My own python indent hook."

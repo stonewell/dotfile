@@ -157,22 +157,6 @@
 (set-frame-parameter (selected-frame) 'alpha '(92 . 50))
 (add-to-list 'default-frame-alist '(alpha . (92 . 50)))
 
-(defun toggle-transparency ()
-  (interactive)
-  (let ((alpha (frame-parameter nil 'alpha)))
-    (set-frame-parameter
-     nil 'alpha
-     (if (eql (cond ((numberp alpha) alpha)
-		    ((numberp (cdr alpha)) (cdr alpha))
-		    ;; Also handle undocumented (<active> <inactive>) form.
-		    ((numberp (cadr alpha)) (cadr alpha)))
-	      100)
-	 '(92 . 50) '(100 . 100)))))
-
-;; use ws-butler to handle trailing white space
-(require 'ws-butler)
-(add-hook 'prog-mode-hook #'ws-butler-mode)
-
 (if (eq system-type 'darwin)
     ;;darwin only setup
     (load "as-emacs-setup-darwin")

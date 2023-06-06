@@ -41,6 +41,7 @@
 ;;           (before-save . tide-format-before-save)))
 
 (use-package tide
+  :quelpa (tide :fetcher git :url "https://github.com/ananthakumaran/tide.git")
   :ensure t
   :after (typescript-mode company flycheck)
   :hook ((typescript-mode . tide-setup)
