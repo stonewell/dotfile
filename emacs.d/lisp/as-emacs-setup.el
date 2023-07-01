@@ -35,6 +35,8 @@
 ;;load personal functions
 (require 'as-emacs-funcs-setup)
 
+(load "as-emacs-treesit-setup")
+
 ;;do maximize frame
 ;;(require 'maxframe)
 ;;(add-hook 'window-setup-hook 'maximize-frame t)
