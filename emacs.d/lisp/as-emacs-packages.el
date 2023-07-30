@@ -60,10 +60,6 @@
   :ensure t
   :defer t
   )
-(use-package magit
-  :ensure t
-  :defer t
-  )
 (use-package maxframe
   :ensure t
   :defer t

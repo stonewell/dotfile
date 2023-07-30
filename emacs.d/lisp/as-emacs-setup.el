@@ -4,16 +4,7 @@
 (setq inhibit-startup-message t)
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
-(defun my-minibuffer-setup-hook ()
-  (setq gc-cons-threshold most-positive-fixnum))
-
-(defun my-minibuffer-exit-hook ()
-  (setq gc-cons-threshold 800000))
-
-(add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
-(add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)
-
-;;(require 'cl)
+(setq gc-cons-threshold 200000000)
 
 ;;package
 (load "as-emacs-packages")
@@ -36,10 +27,6 @@
 (require 'as-emacs-funcs-setup)
 
 (load "as-emacs-treesit-setup")
-
-;;do maximize frame
-;;(require 'maxframe)
-;;(add-hook 'window-setup-hook 'maximize-frame t)
 
 ;;make buffer name unique
 (require 'uniquify)
@@ -125,17 +112,6 @@
 
 ;; Turn on winner mode for buffer layout restore
 (winner-mode 1)
-
-;; Delete trail white space before saving
-;; only delete in not fundamental mode
-;;(defun my-delete-trailing-whitespace()
-;;  (interactive)
-;;  (if (string-equal major-mode "fundamental-mode")
-;;      (message "do not delete-trailing-withespace fundamental mode")
-;;    (delete-trailing-whitespace)
-;;    )
-;;  )
-;;(add-hook 'before-save-hook 'my-delete-trailing-whitespace)
 
 (defun split-horizontally-for-temp-buffers ()
   "Split the window horizontally for temp buffers."
