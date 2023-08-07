@@ -37,11 +37,9 @@
 (use-package auto-pair+
   :quelpa (auto-pair+ :fetcher git :url "https://github.com/emacsmirror/auto-pair-plus.git")
   :ensure t
-  :defer t
   )
 (use-package bind-key
   :ensure t
-  :defer t
   )
 (use-package flycheck
   :ensure t
@@ -95,7 +93,6 @@
 
 (use-package popwin
   :ensure t
-  :defer t
   :config
   (popwin-mode 1)
   )
@@ -125,14 +122,12 @@
 
 (use-package powerline
   :ensure t
-  :defer t
   :config
   (powerline-default-theme)
   )
 
 (use-package editorconfig
   :ensure t
-  :defer t
   :config
   (editorconfig-mode 1)
   )
@@ -144,19 +139,23 @@
 
 (use-package ws-butler
   :ensure t
-  :defer t
   :config
   ;; use ws-butler to handle trailing white space
   (ws-butler-global-mode)
   (add-hook 'prog-mode-hook #'ws-butler-mode)
   )
 
-(use-package guess-style
-  :quelpa (guess-style :fetcher git :url "https://github.com/nschum/guess-style.git")
+(use-package dtrt-indent
   :ensure t
-  :defer t
+  :after (editorconfig)
   :config
-  (global-guess-style-info-mode 1)
+  (setq dtrt-indent-run-after-smie t) ;; Run even if SMIE is active
+  (defun fix-indentation (&optional props)
+    (dtrt-indent-mode 0)
+    (dtrt-indent-mode 1)
+    )
+  (add-hook 'prog-mode-hook 'fix-indentation)
+  (add-hook 'editorconfig-after-apply-functions 'fix-indentation)
   )
 
 (use-package tree-sitter-langs
@@ -166,7 +165,6 @@
 
 (use-package tree-sitter
   :ensure t
-  :defer t
   :config
   (require 'tree-sitter-langs)
   (global-tree-sitter-mode)

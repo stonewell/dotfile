@@ -19,9 +19,6 @@
 	tab-width 4
 	indent-tabs-mode nil)
   (editorconfig-apply)
-  (guess-style-guess-all)
-  (when indent-tabs-mode
-    (guess-style-guess-tab-width))
   (define-key python-mode-map (kbd "C-M-\\") 'elpy-format-code)
 )
 

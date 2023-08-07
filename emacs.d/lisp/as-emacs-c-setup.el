@@ -19,7 +19,6 @@
   (setq tab-width 4)
   (setq indent-tabs-mode nil)  ; use spaces only if nil
   (editorconfig-apply)
-  (guess-style-guess-all)
   )
 
 (defun my-c++-mode-hook ()
@@ -31,11 +30,6 @@
 (add-hook 'c-mode-common-hook 'my-c-mode-hook)
 (add-hook 'c++-mode-common-hook 'my-c-mode-hook)
 (add-hook 'c++-mode-hook 'my-c++-mode-hook)
-
-;; guess style
-(autoload 'guess-style-set-variable "guess-style" nil t)
-(autoload 'guess-style-guess-variable "guess-style")
-(autoload 'guess-style-guess-all "guess-style" nil t)
 
 ;; For dealing with WebKit long lines and word wrapping.
 (defun c-mode-adaptive-indent (beg end)
