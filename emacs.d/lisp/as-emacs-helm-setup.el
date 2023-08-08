@@ -41,8 +41,9 @@
 
    )
   (bind-keys ("M-x" . helm-M-x)
-             ("M-y" . helm-show-kill-ring)
-             ("C-x b" . helm-mini))
+    ("M-y" . helm-show-kill-ring)
+    ("C-x b" . helm-mini)
+    )
   (bind-keys :map helm-map
              ("C-o" . nil)
              ("TAB" . helm-execute-persistent-action)
@@ -102,14 +103,18 @@
   :ensure t
   :bind ("M-p" . helm-projectile-ag)
   :commands (helm-ag helm-projectile-ag)
-  :init (setq helm-ag-insert-at-point 'symbol
-	      helm-ag-command-option "--path-to-ignore ~/.agignore"
-	      )
   :config
+  (when (executable-find "rg")
+    (setq helm-ag-base-command "rg --no-heading")
+    )
   (when (executable-find "pyeverything")
     (setq helm-ag-base-command "pyeverything helm-ag")
     )
-
+  (setq helm-ag-insert-at-point 'symbol
+	  helm-ag-command-option "--path-to-ignore ~/.agignore"
+    helm-ag-success-exit-status '(0 2)
+    helm-ag-show-status-function nil
+	  )
   )
 
 (use-package helm-swoop
@@ -141,6 +146,24 @@
   :ensure t
   :defer t
   )
+
+(use-package helm-ls-git
+  :ensure t
+  :defer t
+  )
+
+(use-package helm-fd
+  :after helm
+  :ensure nil
+  :bind (:map helm-command-map
+              ("/" . helm-fd-project))
+  :config
+  (setq helm-fd-mode-line-function nil)
+  (defun helm-fd-project ()
+    (interactive)
+    (let ((directory (or (cdr (project-current))
+                         (with-current-buffer "*scratch*" default-directory))))
+      (helm-fd-1 directory))))
 
 ;;; Save current position to mark ring
 (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
