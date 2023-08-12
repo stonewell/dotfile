@@ -3,6 +3,8 @@
 ;;; Commentary:
 (setq inhibit-startup-message t)
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+(setq native-comp-async-report-warnings-errors nil)
+(setq custom-file (locate-user-emacs-file "custom.el"))
 
 (setq gc-cons-threshold 200000000)
 
@@ -62,10 +64,6 @@
 (setq backup-inhibited t)
 
 ;;; Shell mode
-;;(setq ansi-color-names-vector ; better contrast colors
-;;      ["black" "red4" "green4" "yellow4"
-;;      "blue3" "magenta4" "cyan4" "white"])
-;;(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 (setq comint-prompt-read-only t)
 
 ;;(tool-bar-mode nil)
@@ -81,22 +79,8 @@
 
 ;; -----------------------------------------------------------------------
 ;; Set up coding system.
-;; -----------------------------------------------------------------------
+ ;; -----------------------------------------------------------------------
 (prefer-coding-system 'utf-8)
-
-;; ---------[match delemeters]
-(load "delemiter_match")
-(global-set-key "\C-c[" 'ben-bounce-sexp)
-(global-set-key "\C-c%" 'bc-bounce-cpp)
-
-;; ---------[find file using root]
-(load "find_file_root")
-(global-set-key [(control x) (control r)] 'find-file-root)
-(global-set-key [(control x) (meta r)] 'find-alternative-file-root)
-
-;;(require 'whitespace)
-;;(setq whitespace-style (quote (face trailing)))
-;;(global-whitespace-mode 1)
 
 ;; make yank replace high light region
 (delete-selection-mode 1)
@@ -120,7 +104,6 @@
     (split-window-horizontally)))
 
 (add-hook 'temp-buffer-setup-hook 'split-horizontally-for-temp-buffers)
-
 
 (defun split-window-prefer-horizonally (window)
   "If there's only one WINDOW (excluding any possibly active minibuffer), then split the current window horizontally."
@@ -149,6 +132,9 @@
     ;;linux only setup
     (load "as-emacs-setup-linux")
   )
+
+(when (file-exists-p custom-file)
+  (load custom-file))
 
 ;; ------load customize setup
 (if (file-readable-p "~/.emacs.d/local-customize-setup.el")

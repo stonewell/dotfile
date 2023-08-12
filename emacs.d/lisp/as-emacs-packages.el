@@ -170,5 +170,28 @@
   (global-tree-sitter-mode)
   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
 
+(use-package avy
+  :ensure t
+  :after (bind-key)
+  :config
+  (avy-setup-default)
+  (bind-keys :prefix-map avy-prefix-map
+    :prefix "C-c f"
+    ("f" . avy-goto-char-2)
+    ("t" . avy-goto-char)
+    ("j" . avy-resume)
+    )
+  )
+
+(use-package which-key
+  :ensure t
+  :diminish
+  :custom
+  (which-key-separator " ")
+  (which-key-prefix-prefix "+")
+  :config
+  (which-key-mode)
+  )
+
 (provide 'as-emacs-packages)
 ;;; as-emacs-packages.el ends here

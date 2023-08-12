@@ -25,10 +25,5 @@
 ;;; super + u to revert buffer
 (global-set-key (kbd "s-u") 'revert-buffer)
 
-(bind-keys :prefix-map my-customize-prefix-map
-  :prefix "C-c s"
-  ("f" . helm-browse-project)
-  )
-
 (provide 'as-emacs-keys)
 ;;; as-emacs-keys.el ends here
