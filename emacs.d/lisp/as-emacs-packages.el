@@ -193,5 +193,44 @@
   (which-key-mode)
   )
 
+(use-package key-chord
+  :quelpa (key-chord :fetcher git :url "https://github.com/emacsorphanage/key-chord.git")
+  :ensure t
+  :after (evil)
+  :config
+  (key-chord-mode 1)
+  (key-chord-define evil-emacs-state-map "kk" 'evil-normal-state)
+  (key-chord-define evil-emacs-state-map "jj" (lambda () (interactive) (god-local-mode-resume)))
+ )
+
+(use-package evil-god-state
+  :ensure t
+  :quelpa
+  )
+
+(use-package evil
+  :quelpa
+  :ensure t
+  :after (evil-god-state god-mode)
+  :config
+  (setcdr evil-insert-state-map nil)
+  (setq evil-cross-lines t
+      evil-move-beyond-eol t
+      evil-move-cursor-back nil)
+  (setq-default evil-symbol-word-search t)
+  (evil-mode 1)
+  (evil-set-leader nil (kbd "<space>"))
+  (evil-define-key 'normal 'global (kbd "i") 'evil-emacs-state)
+  (add-hook 'evil-emacs-state-exit-hook (lambda () (god-local-mode -1)))
+  (add-hook 'evil-emacs-state-entry-hook (lambda () (god-local-mode 1)))
+  )
+
+(use-package god-mode
+  :quelpa
+  :ensure t
+  :config
+  (define-key god-local-mode-map (kbd "i") #'(lambda () (interactive) (god-local-mode-pause)))
+  )
+
 (provide 'as-emacs-packages)
 ;;; as-emacs-packages.el ends here
