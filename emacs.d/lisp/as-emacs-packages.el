@@ -193,6 +193,27 @@
   (which-key-mode)
   )
 
+(use-package evil-god-state
+  :ensure t
+  :quelpa
+  )
+
+(use-package evil
+  :quelpa
+  :ensure t
+  :after (evil-god-state god-mode)
+  :config
+  ;;(setcdr evil-insert-state-map nil)
+  (setq evil-cross-lines t
+      evil-move-beyond-eol t
+      evil-move-cursor-back nil)
+  (setq-default evil-symbol-word-search t)
+  ;;(setq evil-default-state "emacs")
+  ;;(evil-set-leader nil (kbd "<space>"))
+  (evil-define-key 'normal 'global (kbd "i") 'evil-emacs-state)
+  (evil-define-key 'normal global-map (kbd "<space>") 'evil-execute-in-god-state)
+  )
+
 (use-package god-mode
   :quelpa
   :ensure t
