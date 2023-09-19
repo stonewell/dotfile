@@ -24,5 +24,17 @@
 	      100)
 	 '(92 . 50) '(100 . 100)))))
 
+(defun qjp-open-new-line (&optional prefix)
+  "Open a new line just below or above the current line."
+  (interactive "P")
+  (if prefix
+      (progn
+        (beginning-of-line)
+        (newline-and-indent)
+        (forward-line -1)
+        (indent-according-to-mode))
+    (end-of-line)
+    (newline-and-indent)))
+
 (provide 'as-emacs-funcs-setup)
 ;;; as-emacs-funcs-setup.el ends here

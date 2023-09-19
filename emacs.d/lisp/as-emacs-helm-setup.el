@@ -3,11 +3,6 @@
 ;; Helm
 ;;; Code:
 
-(use-package diminish
-  :ensure t
-  :defer t
-  )
-
 (use-package helm
   ;; :init
   ;; :bind (;("M-x" . helm-M-x)
@@ -183,3 +178,6 @@
   (diminish 'helm-mode "")
   (helm-mode 1)
   )
+
+(provide 'as-emacs-helm-setup)
+;;; as-emacs-helm-setup.el ends here

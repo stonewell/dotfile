@@ -16,6 +16,9 @@
 ;;load font and color theme settings
 (load "as-emacs-setup-font-color-theme")
 
+;;load hydra
+(require 'as-emacs-hydra-setup)
+
 ;;load dired setup
 (require 'as-emacs-dired-setup)
 

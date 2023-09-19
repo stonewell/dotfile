@@ -34,13 +34,20 @@
   (auto-package-update-maybe)
   )
 
+(use-package bind-key
+  :ensure t
+  )
+
+(use-package diminish
+  :ensure t
+  :defer t
+  )
+
 (use-package auto-pair+
   :quelpa (auto-pair+ :fetcher git :url "https://github.com/emacsmirror/auto-pair-plus.git")
   :ensure t
   )
-(use-package bind-key
-  :ensure t
-  )
+
 (use-package flycheck
   :ensure t
   :defer t
@@ -67,13 +74,6 @@
   :mode (("\\.org$" . org-mode))
   :ensure t
   :defer t
-  :bind
-  (
-   ("C-c a" . org-agenda)
-   ("C-c l" . org-store-link)
-   ("C-c c" . org-capture)
-   ("C-c b" . org-iswitchb)
-   )
   :config
   (progn
     (setq org-log-done 'time)
@@ -175,12 +175,6 @@
   :after (bind-key)
   :config
   (avy-setup-default)
-  (bind-keys :prefix-map avy-prefix-map
-    :prefix "C-c f"
-    ("f" . avy-goto-char-2)
-    ("t" . avy-goto-char)
-    ("j" . avy-resume)
-    )
   )
 
 (use-package which-key
@@ -195,12 +189,14 @@
 
 (use-package evil-god-state
   :ensure t
+  :defer t
   :quelpa
   )
 
 (use-package evil
   :quelpa
   :ensure t
+  :defer t
   :after (evil-god-state god-mode)
   :config
   ;;(setcdr evil-insert-state-map nil)
@@ -217,20 +213,23 @@
 (use-package god-mode
   :quelpa
   :ensure t
-  :bind
-    (
-      ("M-SPC" . god-local-mode)
-  )
+  :defer t
   :config
     (define-key god-local-mode-map (kbd "i") #'(lambda () (interactive) (god-local-mode -1)))
-    (defun my-update-cursor ()
-       (setq cursor-type (if (or god-local-mode buffer-read-only)
-                           'box
-                           'bar)))
-
-    (add-hook 'god-mode-enabled-hook 'my-update-cursor)
-    (add-hook 'god-mode-disabled-hook 'my-update-cursor)
 )
 
+(use-package key-chord
+  :quelpa (key-chord :fetcher git :url "https://github.com/emacsorphanage/key-chord.git")
+  :ensure t
+  :defer t
+  :config
+ )
+
+(use-package whole-line-or-region
+  :quelpa (whole-line-or-region :fetcher git :url "https://github.com/purcell/whole-line-or-region.git")
+  :ensure t
+  :config
+  (whole-line-or-region-global-mode +1)
+  )
 (provide 'as-emacs-packages)
 ;;; as-emacs-packages.el ends here
