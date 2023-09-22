@@ -55,9 +55,6 @@
 ;; org/hugo mode
 (require 'as-emacs-org-setup)
 
-;; cquery mode
-(require 'as-emacs-cquery-setup)
-
 ;; typescript mode
 (require 'as-emacs-typescript-setup)
 
