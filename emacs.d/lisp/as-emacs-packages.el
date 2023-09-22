@@ -231,5 +231,13 @@
   :config
   (whole-line-or-region-global-mode +1)
   )
+
+;; Fix path
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize)))
+
 (provide 'as-emacs-packages)
 ;;; as-emacs-packages.el ends here

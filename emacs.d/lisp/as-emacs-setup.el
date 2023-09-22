@@ -94,6 +94,20 @@
 	(global-linum-mode 1)
   )
 
+(add-hook 'prog-mode-hook #'hl-line-mode)
+(add-hook 'text-mode-hook #'hl-line-mode)
+(add-hook 'org-mode-hook #'hl-line-mode)
+
+(when (executable-find "rg")
+  (setq grep-program "rg"))
+
+(when (executable-find "fd")
+  (setq find-program "fd"))
+
+(pixel-scroll-mode)
+(pixel-scroll-precision-mode 1)
+(setq pixel-scroll-precision-large-scroll-height 35.0)
+
 ;; Turn on winner mode for buffer layout restore
 (winner-mode 1)
 
