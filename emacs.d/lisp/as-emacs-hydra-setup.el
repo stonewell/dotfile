@@ -68,7 +68,7 @@
       global-map "C-c"
       :timeout 2)
     "vi navigate"
-    ("x" delete-char)
+    ("d" delete-char)
     ("e" move-end-of-line)
     ("^" move-beginning-of-line)
     ("w" whole-line-or-region-kill-region)
