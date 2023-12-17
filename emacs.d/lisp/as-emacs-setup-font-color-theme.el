@@ -11,9 +11,12 @@
 ;;; (setq color-theme-is-global nil)
 
 ;;;(add-to-list 'load-path "~/.emacs.d/themes")
-;;;(load-theme 'solarized t t)
+
+;;; (load-theme 'solarized t t)
 ;;; (load-theme 'zenburn t)
 (load-theme 'dracula t)
+;;; (load-theme 'gruvbox-dark-hard t)
+
 ;; (defun setup-window-system-frame-colours (&rest frame)
 ;;   (message "Running setup window system frame colours")
 ;;   (let ((f (if (car frame)
@@ -54,6 +57,9 @@
 ;;   (setup-window-system-frame-colours))
 ;; (ad-activate 'server-create-window-system-frame)
 ;; (add-hook 'after-make-frame-functions 'setup-window-system-frame-colours t)
+
+;; (require 'ef-themes)
+;; (load-theme 'ef-summer :no-confirm)
 
 (global-font-lock-mode t)
 (setq font-lock-maximum-decoration t)

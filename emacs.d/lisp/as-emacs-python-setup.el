@@ -1,16 +1,13 @@
 ;;; as-emacs-python-setup.el -- python mode setup
 ;;; Commentary:
 ;;; Code:
-(setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
-(setq interpreter-mode-alist (cons '("python" . python-mode)
-				   interpreter-mode-alist))
-(autoload 'python-mode "python-mode" "Python editing mode." t)
+(add-to-list 'auto-mode-alist '("\\.py?\\'" . python-ts-mode))
 
 (use-package elpy
   :ensure t
   :defer t
   :init
-  (elpy-enable)
+  (advice-add 'python-ts-mode :before 'elpy-enable)
   )
 
 (defun my-python-mode-hook ()
@@ -19,15 +16,18 @@
 	tab-width 4
 	indent-tabs-mode nil)
   (editorconfig-apply)
-  (define-key python-mode-map (kbd "C-M-\\") 'elpy-format-code)
+  (define-key python-ts-mode-map (kbd "C-M-\\") 'elpy-format-code)
+  (elpy-mode)
 )
 
-(add-hook 'python-mode-hook 'my-python-mode-hook)
+(add-hook 'python-ts-mode-hook 'my-python-mode-hook)
 
+(with-eval-after-load 'elpy-mode
 (when (load "flycheck" t t)
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
   (add-hook 'elpy-mode-hook 'flycheck-mode)
   )
+)
 
 (setenv "PYTHONIOENCODING" "utf-8")
 (add-to-list 'process-coding-system-alist '("python" . (utf-8 . utf-8)))

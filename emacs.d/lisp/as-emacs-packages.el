@@ -96,10 +96,6 @@
   :config
   (popwin-mode 1)
   )
-(use-package python-mode
-  :ensure t
-  :defer t
-  )
 (use-package use-package
   :ensure t
   :defer t
@@ -109,6 +105,14 @@
   :defer t
   )
 (use-package dracula-theme
+  :ensure t
+  :defer t
+  )
+(use-package ef-themes
+  :ensure t
+  :defer t
+  )
+(use-package gruvbox-theme
   :ensure t
   :defer t
   )
@@ -158,18 +162,6 @@
   (add-hook 'editorconfig-after-apply-functions 'fix-indentation)
   )
 
-(use-package tree-sitter-langs
-  :ensure t
-  :defer t
-  )
-
-(use-package tree-sitter
-  :ensure t
-  :config
-  (require 'tree-sitter-langs)
-  (global-tree-sitter-mode)
-  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
-
 (use-package avy
   :ensure t
   :after (bind-key)
@@ -186,44 +178,6 @@
   :config
   (which-key-mode)
   )
-
-(use-package evil-god-state
-  :ensure t
-  :defer t
-  :quelpa
-  )
-
-(use-package evil
-  :quelpa
-  :ensure t
-  :defer t
-  :after (evil-god-state god-mode)
-  :config
-  ;;(setcdr evil-insert-state-map nil)
-  (setq evil-cross-lines t
-      evil-move-beyond-eol t
-      evil-move-cursor-back nil)
-  (setq-default evil-symbol-word-search t)
-  ;;(setq evil-default-state "emacs")
-  ;;(evil-set-leader nil (kbd "<space>"))
-  (evil-define-key 'normal 'global (kbd "i") 'evil-emacs-state)
-  (evil-define-key 'normal global-map (kbd "<space>") 'evil-execute-in-god-state)
-  )
-
-(use-package god-mode
-  :quelpa
-  :ensure t
-  :defer t
-  :config
-    (define-key god-local-mode-map (kbd "i") #'(lambda () (interactive) (god-local-mode -1)))
-)
-
-(use-package key-chord
-  :quelpa (key-chord :fetcher git :url "https://github.com/emacsorphanage/key-chord.git")
-  :ensure t
-  :defer t
-  :config
- )
 
 (use-package whole-line-or-region
   :quelpa (whole-line-or-region :fetcher git :url "https://github.com/purcell/whole-line-or-region.git")
