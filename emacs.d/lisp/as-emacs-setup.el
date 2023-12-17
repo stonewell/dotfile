@@ -31,8 +31,6 @@
 ;;load personal functions
 (require 'as-emacs-funcs-setup)
 
-(load "as-emacs-treesit-setup")
-
 ;;make buffer name unique
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)

@@ -117,13 +117,6 @@
   :defer t
   )
 
-(use-package go-mode
-  :ensure t
-  :defer t
-  :config
-  (define-key go-mode-map (kbd "C-M-\\") 'gofmt t)
-  )
-
 (use-package powerline
   :ensure t
   :config
@@ -192,6 +185,28 @@
   :config
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
+
+(use-package treesit-auto
+  :ensure t
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode)
+  (setq treesit-auto-install 'nil)
+)
+
+(use-package reformatter
+  :ensure t
+  :defer t
+  )
+
+(use-package go-ts-mode
+  :hook
+  (go-ts-mode . go-format-on-save-mode)
+  :config
+  (reformatter-define go-format
+    :program "~/go/bin/goimports"
+    :args '("/dev/stdin"))
+  )
 
 (provide 'as-emacs-packages)
 ;;; as-emacs-packages.el ends here
