@@ -47,10 +47,28 @@
     ("C-z" . helm-select-action)
     ("C-h" . delete-backward-char))
 
-  (require 'as-emacs-helm-pyeverything)
+  (when (executable-find "ag")
+    (bind-keys
+      ("M-p" . helm-projectile-ag)
+      )
+    )
 
-  (bind-keys ("C-t" . helm-ff-run-pyeverything))
-  (bind-keys ("C-M-t" . helm-ag-run-pyeverything))
+  (when (executable-find "pyeverything")
+    (progn
+      (require 'as-emacs-helm-pyeverything)
+
+      (bind-keys ("C-t" . helm-ff-run-pyeverything)
+        ("C-M-t" . helm-ag-run-pyeverything)
+        ("M-p" . helm-projectile-ag)
+        )
+      )
+    )
+
+  (when (executable-find "rg")
+    (bind-keys
+      ("M-p" . helm-projectile-rg)
+      )
+    )
 
   ;;helm-files
   (require 'helm-files)
@@ -104,13 +122,17 @@
   (helm-projectile-on)
   )
 
+(use-package helm-rg
+  :ensure t
+  :commands (helm-rg helm-projectile-rg)
+  )
+
 (use-package helm-ag
   :ensure t
-  :bind ("M-p" . helm-projectile-ag)
   :commands (helm-ag helm-projectile-ag)
   :config
   (when (executable-find "rg")
-    (setq helm-ag-base-command "rg --no-heading")
+    (setq helm-ag-base-command "rg --no-heading --line-number --color never")
     )
   (when (executable-find "pyeverything")
     (setq helm-ag-base-command "pyeverything helm-ag")
