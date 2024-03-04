@@ -26,9 +26,7 @@
 (set-frame-parameter (selected-frame) 'alpha '(100 . 100))
 (add-to-list 'default-frame-alist '(alpha . (100 . 100)))
 
-(setq projectile-indexing-method 'alien)
 (setq find-program (concat (getenv "SCOOP") "\\apps\\msys2\\current\\usr\\bin\\find.exe"))
-(setq projectile-generic-command (concat (getenv "SCOOP") "\\apps\\msys2\\current\\usr\\bin\\find.exe . -type f -print0"))
 (setq helm-rg-ripgrep-executable (concat (getenv "SCOOP") "\\shims\\rg.exe"))
 (setq elpy-rpc-python-command (concat (getenv "PYTHON") "\\python.exe"))
 (setq flycheck-python-pycompile-executable (concat (getenv "PYTHON") "\\python.exe"))

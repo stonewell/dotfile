@@ -49,7 +49,7 @@
 
   (when (executable-find "ag")
     (bind-keys
-      ("M-p" . helm-projectile-ag)
+      ("M-p" . helm-do-ag-project-root)
       )
     )
 
@@ -59,14 +59,14 @@
 
       (bind-keys ("C-t" . helm-ff-run-pyeverything)
         ("C-M-t" . helm-ag-run-pyeverything)
-        ("M-p" . helm-projectile-ag)
+        ("M-p" . helm-do-ag-project-root)
         )
       )
     )
 
   (when (executable-find "rg")
     (bind-keys
-      ("M-p" . helm-projectile-rg)
+      ("M-p" . helm-do-ag-project-root)
       )
     )
 
@@ -103,39 +103,15 @@
     (define-key emacs-lisp-mode-map       [remap completion-at-point] 'helm-lisp-completion-at-point))
   )
 
-(use-package projectile
-  :ensure t
-  :bind-keymap
-  ("C-c p" . projectile-command-map)
-  :config
-  (projectile-global-mode)
-  (setq projectile-enable-caching t)
-  (setq projectile-indexing-method 'alien)
-  (setq projectile-completion-system 'helm)
-  (setq projectile-switch-project-action 'helm-projectile)
-  )
-
-(use-package helm-projectile
-  :ensure t
-  :bind ("M-t" . helm-projectile-find-file)
-  :config
-  (helm-projectile-on)
-  )
-
-(use-package helm-rg
-  :ensure t
-  :commands (helm-rg helm-projectile-rg)
-  )
-
 (use-package helm-ag
   :ensure t
-  :commands (helm-ag helm-projectile-ag)
+  :commands (helm-ag)
   :config
-  (when (executable-find "rg")
-    (setq helm-ag-base-command "rg --no-heading --line-number --color never")
-    )
   (when (executable-find "pyeverything")
     (setq helm-ag-base-command "pyeverything helm-ag")
+    )
+  (when (executable-find "rg")
+    (setq helm-ag-base-command "rg --no-heading --line-number --color never --vimgrep --smart-case")
     )
   (setq helm-ag-insert-at-point 'symbol
     helm-ag-success-exit-status '(0 2)
@@ -185,6 +161,7 @@
           ("/" . helm-fd-project))
   :config
   (setq helm-fd-mode-line-function nil)
+  (setq helm-fd-switches '("--type" "f" "--type" "d" "--color" "always"))
   (defun helm-fd-project ()
     (interactive)
     (let ((directory (or (cdr (project-current))

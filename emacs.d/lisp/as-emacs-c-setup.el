@@ -94,11 +94,17 @@
   "Override the built-in BSD indentation style with some additional rules"
   `(;; Here are your custom rules
      ((node-is ")") parent-bol 0)
+     ((node-is "case_statement") parent-bol 0)
+
      ((match nil "argument_list" nil 1 1) parent-bol c-ts-mode-indent-offset)
      ((parent-is "argument_list") prev-sibling 0)
      ((match nil "parameter_list" nil 1 1) parent-bol c-ts-mode-indent-offset)
      ((parent-is "parameter_list") prev-sibling 0)
+
      ((parent-is "else_clause") parent-bol 0)
+     ((parent-is "try_statement") parent-bol 0)
+     ((parent-is "catch_clause") parent-bol 0)
+     ((parent-is "for_range_loop") parent-bol 0)
 
      ;; Append here the indent style you want as base
      ,@(alist-get 'bsd (c-ts-mode--indent-styles 'cpp))))
