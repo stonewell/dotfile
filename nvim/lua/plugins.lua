@@ -183,13 +183,11 @@ return require('lazy').setup({
   -- show current indent
   {
     'lukas-reineke/indent-blankline.nvim',
+    main = 'ibl',
     event = 'VeryLazy',
     dependencies = 'nvim-treesitter',
     config = function()
-      require('indent_blankline').setup({
-        show_current_context = true,
-        show_current_context_start = true,
-      })
+      require('ibl').setup()
     end
   },
 
@@ -289,4 +287,3 @@ return require('lazy').setup({
     end,
   },
 })
-
