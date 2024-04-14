@@ -178,5 +178,12 @@
   (helm-mode 1)
   )
 
+(use-package helm-tramp
+  :ensure t
+  :defer t
+  :config
+  (setq helm-tramp-control-master t)
+  )
+
 (provide 'as-emacs-helm-setup)
 ;;; as-emacs-helm-setup.el ends here
