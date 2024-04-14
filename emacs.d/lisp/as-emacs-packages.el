@@ -260,14 +260,11 @@
   :defer t
   :init (dirvish-override-dired-mode)
   :custom
-   (dirvish-mode-line-format
-   '(:left (sort file-time "" file-size symlink) :right (omit yank index)))
-  (dirvish-attributes '(all-the-icons file-size collapse subtree-state vc-state git-msg))
+    (dirvish-mode-line-format
+    '(:left (sort file-time "" file-size symlink) :right (omit yank index)))
+    (dirvish-attributes '(all-the-icons file-size collapse subtree-state vc-state git-msg))
   :config
-  (dirvish-peek-mode)
-  (setq dired-dwim-target         t
-        dired-recursive-copies    'always
-        dired-recursive-deletes   'top)
+    (dirvish-peek-mode)
   )
 
 (use-package winner
