@@ -125,6 +125,7 @@
 
 (use-package editorconfig
   :ensure t
+  :diminish editorconfig-mode
   :config
   (editorconfig-mode 1)
   )
@@ -229,6 +230,49 @@
       (unwind-protect
         (counsel-linux-app)
         (delete-frame))))
+  )
+
+(use-package tramp
+  :init
+  (setq tramp-verbose 2)
+  (setq remote-file-name-inhibit-locks t)
+  (setq tramp-chunksize 2000)
+  (if (eq window-system 'w32)
+    (setq tramp-default-method "plink")
+    (progn
+      (setq tramp-default-method "ssh")
+      (setq tramp-ssh-controlmaster-options
+        (concat "-o ControlPath=~/.ssh/control-%%r@%%h:%%p "
+                "-o ControlMaster=auto "
+                "-o ControlPersist=yes"))
+    )
+  )
+
+  )
+
+(use-package all-the-icons
+  :ensure t
+  :defer t
+  :if (display-graphic-p))
+
+(use-package dirvish
+  :ensure t
+  :defer t
+  :init (dirvish-override-dired-mode)
+  :custom
+   (dirvish-mode-line-format
+   '(:left (sort file-time "" file-size symlink) :right (omit yank index)))
+  (dirvish-attributes '(all-the-icons file-size collapse subtree-state vc-state git-msg))
+  :config
+  (dirvish-peek-mode)
+  (setq dired-dwim-target         t
+        dired-recursive-copies    'always
+        dired-recursive-deletes   'top)
+  )
+
+(use-package winner
+  :init
+  (winner-mode +1)
   )
 
 (provide 'as-emacs-packages)

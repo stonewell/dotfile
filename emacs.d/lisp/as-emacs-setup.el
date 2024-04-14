@@ -106,8 +106,14 @@
 (pixel-scroll-precision-mode 1)
 (setq pixel-scroll-precision-large-scroll-height 35.0)
 
-;; Turn on winner mode for buffer layout restore
-(winner-mode 1)
+;; Remember and restore the last cursor location of opened files
+(save-place-mode 1)
+
+;; Remeber recent files.
+(recentf-mode +1)
+
+;; Show column number in the mode line.
+(column-number-mode)
 
 (defun split-horizontally-for-temp-buffers ()
   "Split the window horizontally for temp buffers."
