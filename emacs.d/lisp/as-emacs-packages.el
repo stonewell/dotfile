@@ -272,5 +272,11 @@
   (winner-mode +1)
   )
 
+(use-package clipetty
+  :ensure t
+  :hook (after-init . global-clipetty-mode)
+  :if (not (display-graphic-p))
+  )
+
 (provide 'as-emacs-packages)
 ;;; as-emacs-packages.el ends here
