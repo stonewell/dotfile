@@ -106,8 +106,19 @@
      ((parent-is "catch_clause") parent-bol 0)
      ((parent-is "for_range_loop") parent-bol 0)
 
+       ;; namespace body do not indent
+     ((match "access_specifier" "base_class_clause") parent-bol c-ts-mode-indent-offset)
+     ((node-is "access_specifier") parent-bol 0)
+     ((match "}" "field_declaration_list") parent-bol 0)
+     ((match "{" "field_declaration_list") parent-bol 0)
+     ((parent-is "field_declaration_list") parent-bol c-ts-mode-indent-offset)
+     ((n-p-gp nil "declaration_list" "namespace_definition") parent-bol 0)
+
+     ((match "." "field_expression" nil 1 1) parent-bol c-ts-mode-indent-offset)
+
      ;; Append here the indent style you want as base
-     ,@(alist-get 'bsd (c-ts-mode--indent-styles 'cpp))))
+     ,@(alist-get 'bsd (c-ts-mode--indent-styles 'cpp)))
+  )
 
 (use-package c-ts-mode
   :if (treesit-language-available-p 'c)
