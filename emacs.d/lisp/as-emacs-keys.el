@@ -5,6 +5,7 @@
 (global-set-key (kbd "C-S-c") 'clipboard-kill-ring-save)
 (global-set-key (kbd "C-S-v") 'clipboard-yank)
 (global-set-key (kbd "C-.") 'push-mark-command)
+(global-set-key (kbd "C-;") 'backward-char)
 ;;for tty emacs
 (global-set-key (kbd "C-x ,") 'push-mark-command)
 ;; comment uncomment
