@@ -1,0 +1,12 @@
+services:
+  my-vpn:
+    image: my-vpn
+    container_name: my-vpn
+    restart: 'unless-stopped'
+    env_file: ${HOME}/.program/vpn/env
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "1080:1080"
+      - "21080:5000"
