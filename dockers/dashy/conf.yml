@@ -1,0 +1,134 @@
+pageInfo:
+  title: Stone Home
+sections: # An array of sections
+- name: About Me
+  icon: far fa-rocket
+  items:
+  - title: Resume
+    description:
+    icon: mdi-file-account
+    url: https://stone.angsto-tech.com
+  - title: GitHub
+    description:
+    icon: hl-github-light
+    url: https://github.com/stonewell
+  widgets:
+    - type: github-profile-stats
+      options:
+        username: stonewell
+        hideLanguagesCard: true
+- name: Local Services
+  displayData:
+    itemCountX: 1
+    sectionLayout: grid
+  items:
+  - title: Media Server Cockpit
+    description:
+    icon: hl-cockpit
+    url: https://s-2024-media-a:9090
+  - title: Jellyfin
+    description:
+    icon: hl-jellyfin
+    url: http://s-2024-media-a:8096
+  - title: Home Assistant
+    description:
+    icon: hl-home-assistant
+    url: http://s-2024-media-a:8123
+  - title: PI Hole
+    description:
+    icon: hl-pi-hole
+    url: http://pi.hole
+- name: Work
+  items:
+  - title: VPN
+    description:
+    icon: hl-vpn
+    url: http://pi-3b-2022-a:21080
+- name: World Clocks
+  widgets:
+    - type: clock
+      options:
+        timeZone: America/Los_Angeles
+        format: en-US
+        hideDate: false
+    - type: clock
+      options:
+        timeZone: Asia/Shanghai
+        format: zh-CN
+        hideDate: false
+        customCityName: 北京
+- name: World Weather
+  widgets:
+    - type: weather
+      label: Los Angeles
+      options:
+        apiKey: ba194ab006191470202afe05f3786198
+        city: Los Angeles
+        hideDetails: false
+    - type: weather
+      label: 北京
+      options:
+        apiKey: ba194ab006191470202afe05f3786198
+        city: Beijing
+        hideDetails: false
+- name: Cypto
+  widgets:
+    - type: crypto-watch-list
+      options:
+        currency: USD
+        sortBy: marketCap
+        assets:
+          - bitcoin
+          - ethereum
+          - monero
+          - cosmos
+          - polkadot
+          - dogecoin
+
+- name: Exchange Rate
+  widgets:
+    - type: exchange-rates
+      options:
+        apiKey: 34d2df02e353c3a4b2b927e6
+        inputCurrency: USD
+        outputCurrencies:
+          - EUR
+          - JPY
+          - HKD
+          - KPW
+          - CNY
+#- name: Stock Prices
+#  widgets:
+#    - type: stock-price
+#      options:
+#        stock: AVGO
+#        apiKey: H4955SOZJAZ3E9RC
+#    - type: stock-price-chart
+#      options:
+#        stock: MSFT
+#        apiKey: H4955SOZJAZ3E9RC
+#    - type: stock-price-chart
+#      options:
+#        stock: AAPL
+#        apiKey: H4955SOZJAZ3E9RC
+#    - type: stock-price-chart
+#      options:
+#        stock: NVDA
+#        apiKey: H4955SOZJAZ3E9RC
+#    - type: stock-price-chart
+#      options:
+#        stock: META
+#        apiKey: H4955SOZJAZ3E9RC
+#    - type: stock-price-chart
+#      options:
+#        stock: TSLA
+#        apiKey: H4955SOZJAZ3E9RC
+#    - type: stock-price-chart
+#      options:
+#        stock: GOOGL
+#        apiKey: H4955SOZJAZ3E9RC
+#    - type: stock-price-chart
+#      options:
+#        stock: AMZN
+#        apiKey: H4955SOZJAZ3E9RC
+#

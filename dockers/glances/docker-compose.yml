@@ -1,0 +1,20 @@
+name: glances
+services:
+  glances:
+    image: nicolargo/glances:latest
+    container_name: glances
+    volumes:
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+        read_only: true
+    restart: 'unless-stopped'
+    pid: 'host'
+    privileged: true
+    ports:
+      - "61208:61208"
+    environment:
+      - TZ=America/Los_Angeles
+      - PGID=1000
+      - PUID=1000
+      - GLANCES_OPT=-w
