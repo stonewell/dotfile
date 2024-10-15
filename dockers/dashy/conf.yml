@@ -62,13 +62,13 @@ sections: # An array of sections
     - type: weather
       label: Los Angeles
       options:
-        apiKey: ba194ab006191470202afe05f3786198
+        apiKey: VUE_APP_WEATHER_KEY
         city: Los Angeles
         hideDetails: false
     - type: weather
       label: 北京
       options:
-        apiKey: ba194ab006191470202afe05f3786198
+        apiKey: VUE_APP_WEATHER_KEY
         city: Beijing
         hideDetails: false
 - name: Cypto
@@ -89,7 +89,7 @@ sections: # An array of sections
   widgets:
     - type: exchange-rates
       options:
-        apiKey: 34d2df02e353c3a4b2b927e6
+        apiKey: VUE_APP_EXCHANGE_RATES_KEY
         inputCurrency: USD
         outputCurrencies:
           - EUR
@@ -102,33 +102,33 @@ sections: # An array of sections
 #    - type: stock-price
 #      options:
 #        stock: AVGO
-#        apiKey: H4955SOZJAZ3E9RC
+#        apiKey: VUE_APP_STOCK_PRICE_CHART_KEY
 #    - type: stock-price-chart
 #      options:
 #        stock: MSFT
-#        apiKey: H4955SOZJAZ3E9RC
+#        apiKey: VUE_APP_STOCK_PRICE_CHART_KEY
 #    - type: stock-price-chart
 #      options:
 #        stock: AAPL
-#        apiKey: H4955SOZJAZ3E9RC
+#        apiKey: VUE_APP_STOCK_PRICE_CHART_KEY
 #    - type: stock-price-chart
 #      options:
 #        stock: NVDA
-#        apiKey: H4955SOZJAZ3E9RC
+#        apiKey: VUE_APP_STOCK_PRICE_CHART_KEY
 #    - type: stock-price-chart
 #      options:
 #        stock: META
-#        apiKey: H4955SOZJAZ3E9RC
+#        apiKey: VUE_APP_STOCK_PRICE_CHART_KEY
 #    - type: stock-price-chart
 #      options:
 #        stock: TSLA
-#        apiKey: H4955SOZJAZ3E9RC
+#        apiKey: VUE_APP_STOCK_PRICE_CHART_KEY
 #    - type: stock-price-chart
 #      options:
 #        stock: GOOGL
-#        apiKey: H4955SOZJAZ3E9RC
+#        apiKey: VUE_APP_STOCK_PRICE_CHART_KEY
 #    - type: stock-price-chart
 #      options:
 #        stock: AMZN
-#        apiKey: H4955SOZJAZ3E9RC
+#        apiKey: VUE_APP_STOCK_PRICE_CHART_KEY
 #

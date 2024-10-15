@@ -8,6 +8,7 @@ services:
     restart: 'unless-stopped'
     ports:
       - "80:8080"
+    env_file: /media/files/dashy/config/dashy.env
     develop:
       watch:
         - action: sync+restart
