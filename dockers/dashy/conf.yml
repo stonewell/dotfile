@@ -97,10 +97,19 @@ sections: # An array of sections
           - HKD
           - KPW
           - CNY
-#- name: Stock Prices
-#  widgets:
-#    - type: stock-price
-#      options:
+- name: Monitor
+  widgets:
+    - type: iframe
+      options:
+        url: http://s-2024-media-a:61208/
+        frameHeight: 400
+
+- name: Stock Prices
+  widgets:
+    - type: iframe
+      options:
+        url: https://docs.google.com/spreadsheets/d/1QLMo5_R0CrzcNovjd6ah7dL7g_lWAMKJR4lDZmxEgbY/preview?usp=sharing&rm=minimal
+        frameHeight: 400
 #        stock: AVGO
 #        apiKey: VUE_APP_STOCK_PRICE_CHART_KEY
 #    - type: stock-price-chart

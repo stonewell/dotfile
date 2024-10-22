@@ -56,6 +56,9 @@
 ;; typescript mode
 (require 'as-emacs-typescript-setup)
 
+;; lsp mode
+(require 'as-emacs-lsp-setup)
+
 ;; set no backup
 (setq auto-save-default nil)
 (setq auto-save-default -1)
