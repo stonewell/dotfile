@@ -83,14 +83,6 @@
     )
   )
 
-(use-package p4
-  :ensure t
-  :config
-
-  ;; ------ remove file visit hook
-  (remove-hook 'find-file-hooks 'p4-update-status)
-  )
-
 (use-package popwin
   :ensure t
   :config

@@ -15,6 +15,12 @@ return require('lazy').setup({
   'nvim-lua/plenary.nvim',
 
   {
+    "vhyrro/luarocks.nvim",
+    priority = 1000, -- Very high priority is required, luarocks.nvim should run as the first plugin in your config.
+    config = true,
+  },
+
+  {
     'kyazdani42/nvim-web-devicons',
     config = function()
       require('nvim-web-devicons').setup({
@@ -114,7 +120,7 @@ return require('lazy').setup({
 
   -- LSP
   'neovim/nvim-lspconfig',
-  'jose-elias-alvarez/null-ls.nvim',
+  'nvimtools/none-ls.nvim',
 
   {
     'VonHeikemen/lsp-zero.nvim',
