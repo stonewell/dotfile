@@ -10,7 +10,7 @@ null_ls.setup({
     null_ls.builtins.completion.spell,
     null_ls.builtins.formatting.uncrustify,
     null_ls.builtins.diagnostics.luacheck,
-    null_ls.builtins.formatting.lua_format,
+    null_ls.builtins.formatting.stylua,
   },
 
   on_attach = function(client, bufnr)
