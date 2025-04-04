@@ -6,6 +6,6 @@ plugins = [
 [wallpapers]
 path=["/media/share/linux/wallpapers"]
 unique = true
-command = '/usr/local/bin/hyprctl hyprpaper preload "[file]" && /usr/local/bin/hyprctl hyprpaper wallpaper "[output],[file]"'
+command = '/usr/local/bin/hyprctl hyprpaper unload all && /usr/local/bin/hyprctl hyprpaper preload "[file]" && /usr/local/bin/hyprctl hyprpaper wallpaper "[output],[file]"'
 clear_command = '/usr/local/bin/hyprctl hyprpaper unload all'
 interval = 42
