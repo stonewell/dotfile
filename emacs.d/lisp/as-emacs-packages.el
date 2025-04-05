@@ -70,19 +70,6 @@
   :defer t
   )
 
-(use-package org
-  :mode (("\\.org$" . org-mode))
-  :ensure t
-  :defer t
-  :config
-  (progn
-    (setq org-log-done 'time)
-    (setq org-agenda-files
-	  (list "~/org/agenda"))
-    (setq org-startup-indented t)
-    )
-  )
-
 (use-package popwin
   :ensure t
   :config
@@ -199,64 +186,6 @@
   (reformatter-define go-format
     :program "~/go/bin/goimports"
     :args '("/dev/stdin"))
-  )
-
-(use-package counsel
-  :ensure t
-  :config
-
-  (defun emacs-counsel-launcher ()
-    "Create and select a frame called emacs-counsel-launcher which consists only of a minibuffer and has specific dimensions. Runs counsel-linux-app on that frame, which is an emacs command that prompts you to select an app and open it in a dmenu like behaviour. Delete the frame after that command has exited"
-    (interactive)
-    (with-selected-frame
-      (make-frame '((name . "emacs-run-launcher")
-                     (minibuffer . only)
-                     (fullscreen . 0) ; no fullscreen
-                     (undecorated . t) ; remove title bar
-                     ;;(auto-raise . t) ; focus on this frame
-                     ;;(tool-bar-lines . 0)
-                     ;;(menu-bar-lines . 0)
-                     (internal-border-width . 10)
-                     (width . 80)
-                     (height . 11)))
-      (unwind-protect
-        (counsel-linux-app)
-        (delete-frame))))
-  )
-
-(use-package tramp
-  :init
-  (setq tramp-verbose 2)
-  (setq remote-file-name-inhibit-locks t)
-  (setq tramp-chunksize 2000)
-  (if (eq window-system 'w32)
-    (setq tramp-default-method "plink")
-    (progn
-      (setq tramp-default-method "ssh")
-      (setq tramp-ssh-controlmaster-options
-        (concat "-o ControlPath=~/.ssh/control-%%r@%%h:%%p "
-                "-o ControlMaster=auto "
-                "-o ControlPersist=yes"))
-    )
-  )
-
-  )
-
-(use-package all-the-icons
-  :ensure t
-  :defer t
-  :if (display-graphic-p))
-
-(use-package dirvish
-  :ensure t
-  :defer t
-  :init (dirvish-override-dired-mode)
-  :custom
-    (dirvish-mode-line-format
-    '(:left (sort file-time "" file-size symlink) :right (omit yank index)))
-    (dirvish-attributes '(all-the-icons file-size collapse subtree-state vc-state git-msg))
-  :config
-    (dirvish-peek-mode)
   )
 
 (use-package winner

@@ -19,15 +19,6 @@
 ;;load hydra
 (require 'as-emacs-hydra-setup)
 
-;;load dired setup
-(require 'as-emacs-dired-setup)
-
-;;load ediff setup
-(require 'as-emacs-ediff-setup)
-
-;;load ibuffer setup
-(require 'as-emacs-ibuffer-setup)
-
 ;;load personal functions
 (require 'as-emacs-funcs-setup)
 
@@ -43,12 +34,6 @@
 
 ;; objc mode
 (require 'as-emacs-objc-setup)
-
-;; crosshair cursor mode
-;; (crosshairs-mode t)
-
-;; deft mode
-(require 'as-emacs-deft-setup)
 
 ;; org/hugo mode
 (require 'as-emacs-org-setup)

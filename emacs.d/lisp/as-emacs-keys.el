@@ -11,13 +11,6 @@
 ;; comment uncomment
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
 
-(eval-after-load "cc-mode"
-  '(progn
-     (define-key c++-mode-map (kbd "C-c C-c") nil)
-     (define-key c-mode-map (kbd "C-c C-c") nil)
-   )
-)
-
 ;;; Unbind the stupid minimize that I always hit.
 (global-unset-key "\C-z")
 ;;; disable ime in emacs
