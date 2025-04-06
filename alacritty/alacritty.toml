@@ -1,0 +1,15 @@
+import = ["~/.config/alacritty/themes/themes/dracula.toml"]
+
+[font]
+size = 13.75
+
+[font.normal]
+family = "Fantasque Sans Mono"
+
+[[keyboard.bindings]]
+action = "Paste"
+key = "Insert"
+mods = "Shift"
+
+[window]
+opacity = 1.0
