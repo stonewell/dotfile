@@ -1,4 +1,4 @@
-;;; as-emacs-objc-setup ------- config objc mode
+;;; as-emacs-objc-setup ------- config objc mode  -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
 (setq auto-mode-alist (cons '("\\.mm$" . objc-mode) auto-mode-alist))

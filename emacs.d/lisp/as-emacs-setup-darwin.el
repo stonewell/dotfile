@@ -1,4 +1,4 @@
-;;; Package --- Mac specific config
+;;; Package --- Mac specific config  -*- lexical-binding: t; -*-
 ;;; Code:
 ;;; Commentary:
 

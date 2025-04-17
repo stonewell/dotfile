@@ -1,4 +1,4 @@
-;;; as-emacs-helm-setup --- setup helm
+;;; as-emacs-helm-setup --- setup helm  -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;; Helm
 ;;; Code:

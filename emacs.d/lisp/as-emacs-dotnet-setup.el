@@ -1,4 +1,4 @@
-;;; as-emacs-dotnet-setup.el --- Summary
+;;; as-emacs-dotnet-setup.el --- Summary  -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
 

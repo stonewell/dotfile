@@ -1,4 +1,4 @@
-;;; as-emacs-typescript-setup.el -- typescript mode setup
+;;; as-emacs-typescript-setup.el -- typescript mode setup  -*- lexical-binding: t; -*-
 ;;; commentary:
 ;;; code:
 

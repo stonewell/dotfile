@@ -1,10 +1,11 @@
+;; -*- lexical-binding: t; -*-
 (use-package lsp-mode
   :ensure t
   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
   :init
   (setq lsp-keymap-prefix "C-c l")
   :hook (;;
-         (c-or-c++-ts-mode . lsp-deferred)
+         (c-or-c++-mode . lsp-deferred)
          (rust-ts-mode . lsp-deferred)
          ;; if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration))

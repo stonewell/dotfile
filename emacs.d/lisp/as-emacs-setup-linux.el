@@ -1,4 +1,4 @@
-;;; Package --- linux specific config
+;;; Package --- linux specific config  -*- lexical-binding: t; -*-
 ;;; Code:
 ;;; Commentary:
 ;;(if (file-exists-p

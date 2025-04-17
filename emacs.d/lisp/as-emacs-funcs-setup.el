@@ -1,4 +1,4 @@
-;;; as-emacs-funcssetup.el -- add personal useful functions
+;;; as-emacs-funcssetup.el -- add personal useful functions  -*- lexical-binding: t; -*-
 ;;; Code:
 ;;; Commentary:
 

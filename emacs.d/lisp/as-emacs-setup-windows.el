@@ -1,4 +1,4 @@
-;;; as-emacs-setup-windows -- windows setup code
+;;; as-emacs-setup-windows -- windows setup code  -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
 (load "server")

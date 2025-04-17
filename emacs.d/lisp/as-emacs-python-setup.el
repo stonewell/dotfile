@@ -1,4 +1,4 @@
-;;; as-emacs-python-setup.el -- python mode setup
+;;; as-emacs-python-setup.el -- python mode setup  -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
 (add-to-list 'auto-mode-alist '("\\.py?\\'" . python-ts-mode))

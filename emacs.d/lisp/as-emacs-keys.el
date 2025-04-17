@@ -1,4 +1,4 @@
-;;; as-emacs-key --- Setup key bindings
+;;; as-emacs-key --- Setup key bindings  -*- lexical-binding: t; -*-
 ;;; Commentary:
 
 ;;; Code:

@@ -1,4 +1,4 @@
-;;; as-emacs-setup-font-color-theme --- set up color related stuff
+;;; as-emacs-setup-font-color-theme --- set up color related stuff  -*- lexical-binding: t; -*-
 ;;; Code:
 ;;; Commentary:
 

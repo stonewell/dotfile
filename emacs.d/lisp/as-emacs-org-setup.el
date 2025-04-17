@@ -1,4 +1,4 @@
-;;; as-emacs-org-setup ------- config org mode
+;;; as-emacs-org-setup ------- config org mode  -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
 

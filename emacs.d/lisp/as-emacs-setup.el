@@ -1,4 +1,4 @@
-;;; as-emacs-setup.el -- main setup file
+;;; as-emacs-setup.el -- main setup file  -*- lexical-binding: t; -*-
 ;;; Code:
 ;;; Commentary:
 (setq inhibit-startup-message t)

@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (defun intelligent-make-frame ()
   "Create and raise a frame when their is no frame exists
    reference to  http://www.elliotglaysher.org/emacs/."
@@ -8,4 +9,3 @@
 	(raise-frame (selected-frame)))
   )
 )
-

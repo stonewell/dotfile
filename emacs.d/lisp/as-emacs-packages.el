@@ -1,4 +1,4 @@
-;;;; package --- All Packages
+;;;; package --- All Packages  -*- lexical-binding: t; -*-
 ;;; Code:
 ;;; Commentary:
 
