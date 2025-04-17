@@ -1,62 +1,100 @@
 ;;; as-emacs-c-setup ------- config c/c++ mode  -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
-(require 'google-c-style)
-(c-add-style "My-C-Style" '("Google"
-                            (c-basic-offset . 4)
-                            (c-indent-level . 4)
-                            (c-offsets-alist . ((innamespace . 4)
-                                                (access-label . -)
-                                                (case-label . 0)
-                                                (member-init-intro . +)
-                                                (topmost-intro . 0)))))
-
-(defun my-c-mode-hook ()
-  "My own c/c++ hook."
-  (google-set-c-style)
-  (c-set-style "My-C-Style")
-  (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60))
-  (setq tab-width 4)
-  (setq indent-tabs-mode nil)  ; use spaces only if nil
-  (editorconfig-apply)
-  )
-
-(defun my-c++-mode-hook ()
-  "my own c++ mode hook"
-  (setq flycheck-gcc-language-standard "c++14")
-  (setq flycheck-clang-language-standard "c++14")
-  )
-
 (setq auto-mode-alist (cons '("\\.h$" . c++-mode) auto-mode-alist))
 
 (add-to-list 'magic-mode-alist
-	     `(,(lambda ()
-		  (and (string= (file-name-extension buffer-file-name) "h")
-		       (re-search-forward "class\\s-+"
-					  magic-mode-regexp-match-limit t)))
-	       . c++-mode))
+  `(,(lambda ()
+       (and (string= (file-name-extension buffer-file-name) "h")
+	 (re-search-forward "class\\s-+"
+	   magic-mode-regexp-match-limit t)))
+     . c++-mode))
 
 (add-to-list 'magic-mode-alist
-	     `(,(lambda ()
-		  (and (string= (file-name-extension buffer-file-name) "h")
-		       (re-search-forward "namespace\\s-+"
-					  magic-mode-regexp-match-limit t)))
-	       . c++-mode))
+  `(,(lambda ()
+       (and (string= (file-name-extension buffer-file-name) "h")
+	 (re-search-forward "namespace\\s-+"
+	   magic-mode-regexp-match-limit t)))
+     . c++-mode))
 
 (add-to-list 'magic-mode-alist
-	     `(,(lambda ()
-		  (and (string= (file-name-extension buffer-file-name) "h")
-		       (re-search-forward "template\\s-*<\\s-*"
-					  magic-mode-regexp-match-limit t)))
-	       . c++-mode))
+  `(,(lambda ()
+       (and (string= (file-name-extension buffer-file-name) "h")
+	 (re-search-forward "template\\s-*<\\s-*"
+	   magic-mode-regexp-match-limit t)))
+     . c++-mode))
 
-(add-to-list 'major-mode-remap-alist '(c-ts-mode . c-mode))
-(add-to-list 'major-mode-remap-alist '(c++-ts-mode . c++-mode))
-(add-to-list 'major-mode-remap-alist '(c-or-c++-ts-mode . c-or-c++-mode))
+(defvar my-custom-ts-indent-style
+  `(
+     ((node-is ")") parent-bol 0)
+     ((node-is "case_statement") parent-bol 0)
 
-(add-hook 'c-mode-common-hook 'my-c-mode-hook)
-(add-hook 'c++-mode-common-hook 'my-c-mode-hook)
-(add-hook 'c++-mode-hook 'my-c++-mode-hook)
+     ((match nil "argument_list" nil 1 1) parent-bol c-ts-mode-indent-offset)
+     ((parent-is "argument_list") prev-sibling 0)
+     ((match nil "parameter_list" nil 1 1) parent-bol c-ts-mode-indent-offset)
+     ((parent-is "parameter_list") prev-sibling 0)
+
+     ((parent-is "else_clause") parent-bol 0)
+     ((parent-is "try_statement") parent-bol 0)
+     ((parent-is "catch_clause") parent-bol 0)
+     ((parent-is "for_range_loop") parent-bol 0)
+
+     ((match "access_specifier" "base_class_clause") parent-bol c-ts-mode-indent-offset)
+     ((node-is "access_specifier") parent-bol 0)
+     ((match "}" "field_declaration_list") parent-bol 0)
+     ((match "{" "field_declaration_list") parent-bol 0)
+     ((parent-is "field_declaration_list") parent-bol c-ts-mode-indent-offset)
+
+     ;; Do not indent preprocessor statements.
+     ((node-is "preproc") column-0 0)
+
+     ;; Do not indent namespace children.
+     ((parent-is "namespace_definition") parent-bol 0)
+     ((n-p-gp nil "declaration_list" "namespace_definition") parent-bol 0)
+
+     ((match "." "field_expression" nil 1 1) parent-bol c-ts-mode-indent-offset)
+     )
+  )
+
+(defun my-ts-indent-style()
+  "Override the default indentation style with some additional rules.
+Docs: https://www.gnu.org/software/emacs/manual/html_node/elisp/Parser_002dbased-Indentation.html
+Notes: `treesit-explore-mode' can be very useful to see where you're at in the tree-sitter tree, especially paired
+with `(setq treesit--indent-verbose t)' to debug what rules is being applied at a given point."
+  (let* (
+          (mode (if (derived-mode-p 'c-ts-mode) 'c 'cpp))
+          (default-style (copy-alist (cdr (assq mode treesit-simple-indent-rules))))
+          ;; Prepend custom rules by appending the default style to the custom style list.
+          (combined-style (append my-custom-ts-indent-style default-style))
+          )
+    (pcase mode
+      ('c `((c . ,combined-style)))
+      ('cpp `((cpp . ,combined-style)))
+      )
+    )
+  )
+
+(defun my-c-ts-mode-hook()
+  (interactive)
+  (c-ts-mode-set-style #'my-ts-indent-style)
+  )
+
+(use-package c-ts-mode
+  :if (treesit-language-available-p 'c)
+  :custom
+  (c-ts-mode-indent-offset 4)
+  (c-ts-mode-indent-style #'bsd)
+  :init
+  (setq treesit--indent-verbose t)
+  :config
+  (add-hook 'c-ts-mode-hook 'my-c-ts-mode-hook)
+  )
+
+(use-package c++-ts-mode
+  :if (treesit-language-available-p 'cpp)
+  :config
+  (add-hook 'c++-ts-mode-hook 'my-c-ts-mode-hook)
+  )
 
 (provide 'as-emacs-c-setup)
 ;;; as-emacs-c-setup ends here
