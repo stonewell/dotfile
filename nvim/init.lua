@@ -1,5 +1,7 @@
 is_win = vim.loop.os_uname().sysname == 'Windows_NT'
 is_mac = vim.loop.os_uname().sysname == 'Darwin'
+vim.tbl_islist = vim.islist
+vim.deprecate = function() end
 
 pcall(require, 'impatient')
 
