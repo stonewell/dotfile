@@ -6,6 +6,7 @@
   (setq lsp-keymap-prefix "C-c l")
   :hook (;;
          (c-or-c++-mode . lsp-deferred)
+         (c-or-c++-ts-mode . lsp-deferred)
          (rust-ts-mode . lsp-deferred)
          ;; if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration))

@@ -32,9 +32,6 @@
 ;;Python Mode
 (require 'as-emacs-python-setup)
 
-;; objc mode
-(require 'as-emacs-objc-setup)
-
 ;; org/hugo mode
 (require 'as-emacs-org-setup)
 

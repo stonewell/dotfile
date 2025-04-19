@@ -19,9 +19,6 @@
 ;;; set null-device to aviod create NUL file
 (setq null-device (concat (getenv "TMP") "\\null_device.txt"))
 
-;; dotnet mode
-(require 'as-emacs-dotnet-setup)
-
 ;; ---transparent settings
 (set-frame-parameter (selected-frame) 'alpha '(100 . 100))
 (add-to-list 'default-frame-alist '(alpha . (100 . 100)))
