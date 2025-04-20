@@ -63,76 +63,6 @@
     ("o" helm-occur)
     )
 
-  (defhydra vi-navi
-    (
-      global-map "C-c"
-      :timeout 2)
-    "vi navigate"
-    ("d" delete-char)
-    ("e" move-end-of-line)
-    ("^" move-beginning-of-line)
-    ("w" whole-line-or-region-kill-region)
-    ("l" forward-char)
-    ("h" backward-char)
-    ("j" next-line)
-    ("J" join-line)
-    ("k" previous-line)
-    ("n" (scroll-up-command))
-    ("p" (scroll-up-command '-))
-    ("SPC" set-mark-command)
-    ("u" undo)
-    ("y" yank)
-    ("i" nil "quit")
-    ("q" nil "quit")
-    )
-
-  ;; ------------------------ ;;
-  ;;  vi-style bindings ;;
-  ;; ------------------------ ;;
-  (defhydra vi
-    (
-      global-map "C-c v"
-      :body-pre (progn
-                  (message "Enter hydra-vi")
-                  )
-      :post (progn
-              (message "Leave hydra-vi")))
-    "vi"
-    ("l" forward-char)
-    ("h" backward-char)
-    ("j" next-line)
-    ("J" join-line)
-    ("k" previous-line)
-    ("K" kill-buffer)
-    ("n" (scroll-up-command))
-    ("p" (scroll-up-command '-))
-    ("f" forward-word)
-    ("b" backward-word)
-    ("x" delete-char)
-    ("e" move-end-of-line)
-    ("^" move-beginning-of-line)
-    ("d" whole-line-or-region-kill-region)
-    ("D" kill-rectangle)
-    ("w" whole-line-or-region-copy-region-as-kill)
-    ("W" copy-rectangle-as-kill)
-    ("s" (progn (exchange-point-and-mark) (activate-mark)))
-    ("o" qjp-open-new-line)
-    ("O" (qjp-open-new-line 1))
-    ("y" yank)
-    ("Y" helm-show-kill-ring)
-    ("u" undo)
-    ("v" set-mark-command)
-    ("V" rectangle-mark-mode)
-    ("g" avy-goto-word-1)
-    ("G" avy-goto-char-in-line)
-    ("M-g" avy-goto-line)
-    ("SPC f" helm-find-files)
-    ("SPC b" (progn (hydra-keyboard-quit)
-               (helm-mini)))
-    ("SPC s" save-buffer)
-    ("i" nil "quit")
-    ("q" nil "quit"))
-
   (defhydra x-5
     (
       :exit t
@@ -200,6 +130,7 @@ _J_ ^ ^ _j_ ^ ^     _U_nmark all     _d_elete
     ("f" helm-follow-mode))
 
   (define-key helm-map (kbd "<f12>") 'helm-like-unite/body)
+
   )
 
 (provide 'as-emacs-hydra-setup)
