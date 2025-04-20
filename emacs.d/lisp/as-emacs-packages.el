@@ -62,10 +62,11 @@
 (use-package highlight-indentation
   :ensure t
   :defer t
-  :hook
-  (prog-mode-hook . highlight-indentation-mode)
-  (org-mode-hook . highlight-indentation-mode)
-  (text-mode-hook . highlight-indentation-mode)
+  :hook (
+          (prog-mode . highlight-indentation-mode)
+          (org-mode . highlight-indentation-mode)
+          (text-mode . highlight-indentation-mode)
+          )
   )
 
 (use-package popwin
@@ -103,6 +104,8 @@
 (use-package editorconfig
   :ensure t
   :diminish editorconfig-mode
+  :custom
+  (editorconfig-trim-whitespaces-mode 'ws-butler-mode)
   :config
   (editorconfig-mode 1)
   )
@@ -114,22 +117,27 @@
 
 (use-package ws-butler
   :ensure t
+  :hook prog-mode
   :config
   ;; use ws-butler to handle trailing white space
   (ws-butler-global-mode)
-  (add-hook 'prog-mode-hook #'ws-butler-mode)
   )
 
 (use-package dtrt-indent
   :ensure t
-  :after (editorconfig)
-  :config
-  (setq dtrt-indent-run-after-smie t) ;; Run even if SMIE is active
-  (defun fix-indentation (&optional props)
+  :preface
+  (defun fix-indentation(&optional props )
     (dtrt-indent-mode 0)
     (dtrt-indent-mode 1)
+    (message "fix indentation by disable/enable dtrt-indent-mode")
     )
-  (add-hook 'prog-mode-hook 'fix-indentation)
+  :after editorconfig
+  :hook (
+          (prog-mode . dtrt-indent-mode)
+          (hack-local-variables-hook . fix-indentation)
+          )
+  :config
+  (setq dtrt-indent-run-after-smie t) ;; Run even if SMIE is active
   (add-hook 'editorconfig-after-apply-functions 'fix-indentation)
   )
 
@@ -178,8 +186,9 @@
   )
 
 (use-package go-ts-mode
-  :hook
-  (go-ts-mode . go-format-on-save-mode)
+  :hook(
+         (go-ts-mode . go-format-on-save-mode)
+         )
   :config
   (reformatter-define go-format
     :program "~/go/bin/goimports"
@@ -193,15 +202,17 @@
 
 (use-package clipetty
   :ensure t
-  :hook (after-init . global-clipetty-mode)
   :if (not (display-graphic-p))
+  :config
+  (add-hook 'after-init 'global-clipetty-mode)
   )
 
 (use-package rainbow-delimiters
   :ensure t
   :defer t
-  :hook
-  (prog-mode-hook . rainbow-delimiters-mode)
+  :hook (
+          (prog-mode . rainbow-delimiters-mode)
+          )
   )
 
 (use-package rainbow-mode
@@ -213,10 +224,11 @@
   )
 
 (use-package hl-line
-  :hook
-  (prog-mode . hl-line-mode)
-  (text-mode . hl-line-mode)
-  (org-mode . hl-line-mode)
+  :hook (
+          (prog-mode . hl-line-mode)
+          (text-mode . hl-line-mode)
+          (org-mode . hl-line-mode)
+          )
   )
 
 (use-package emacs

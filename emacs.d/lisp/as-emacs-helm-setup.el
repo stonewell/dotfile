@@ -165,14 +165,13 @@
                        (with-current-buffer "*scratch*" default-directory))))
       (helm-fd-1 directory))))
 
-;;; Save current position to mark ring
-(add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
-
 ;; start helm-mode
 (use-package helm-mode
   :config
   (diminish 'helm-mode "")
   (helm-mode 1)
+;;; Save current position to mark ring
+  (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
   )
 
 (use-package helm-tramp
