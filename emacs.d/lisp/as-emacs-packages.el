@@ -63,9 +63,7 @@
   :ensure t
   :defer t
   :hook (
-          (prog-mode . highlight-indentation-mode)
-          (org-mode . highlight-indentation-mode)
-          (text-mode . highlight-indentation-mode)
+          ((prog-mode org-mode text-mode) . highlight-indentation-mode)
           )
   )
 
@@ -216,19 +214,9 @@
           )
   )
 
-(use-package rainbow-mode
-  :ensure t
-  :defer t
-  :hook prog-mode
-  :config
-  (setq rainbow-x-colors nil)
-  )
-
 (use-package hl-line
   :hook (
-          (prog-mode . hl-line-mode)
-          (text-mode . hl-line-mode)
-          (org-mode . hl-line-mode)
+          ((prog-mode text-mode org-mode) . hl-line-mode)
           )
   )
 

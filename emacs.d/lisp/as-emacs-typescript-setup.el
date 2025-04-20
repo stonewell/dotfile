@@ -25,8 +25,7 @@
   :defer t
   :after (company flycheck)
   :hook (
-          (typescript-ts-mode . setup-tide-mode)
-          (tsx-ts-mode . setup-tide-mode)
+          ((typescript-ts-mode tsx-ts-mode) . setup-tide-mode)
           (before-save . tide-format-before-save)
           )
   :init
