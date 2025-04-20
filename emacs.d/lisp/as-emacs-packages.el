@@ -95,10 +95,11 @@
   :defer t
   )
 
-(use-package powerline
+(use-package spaceline
   :ensure t
   :config
-  (powerline-default-theme)
+  (spaceline-emacs-theme 1)
+  (spaceline-helm-mode 1)
   )
 
 (use-package editorconfig
