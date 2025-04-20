@@ -203,5 +203,32 @@
   :hook
   (prog-mode-hook . rainbow-delimiters-mode)
   )
+
+(use-package rainbow-mode
+  :ensure t
+  :defer t
+  :hook prog-mode
+  :config
+  (setq rainbow-x-colors nil)
+  )
+
+(use-package hl-line
+  :hook
+  (prog-mode . hl-line-mode)
+  (text-mode . hl-line-mode)
+  (org-mode . hl-line-mode)
+  )
+
+(use-package emacs
+  :demand
+  :config
+  (menu-bar-mode -1)
+  (when (featurep 'scroll-bar)
+    (scroll-bar-mode -1))
+  (when (featurep 'tool-bar)
+    (tool-bar-mode -1))
+  (column-number-mode)
+  )
+
 (provide 'as-emacs-packages)
 ;;; as-emacs-packages.el ends here

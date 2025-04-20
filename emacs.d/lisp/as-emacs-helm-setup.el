@@ -4,11 +4,6 @@
 ;;; Code:
 
 (use-package helm
-  ;; :init
-  ;; :bind (;("M-x" . helm-M-x)
-  ;;        ("M-y" . helm-show-kill-ring)
-  ;;        ("C-x b" . helm-mini)
-  ;;        ("M-/" . helm-dabbrev))
   :ensure t
   :after (bind-key)
   :config
@@ -105,6 +100,7 @@
 
 (use-package helm-ag
   :ensure t
+  :defer t
   :commands (helm-ag)
   :config
   (when (executable-find "pyeverything")
@@ -116,11 +112,12 @@
   (setq helm-ag-insert-at-point 'symbol
     helm-ag-success-exit-status '(0 2)
     helm-ag-show-status-function nil
-	  )
+    )
   )
 
 (use-package helm-swoop
   :ensure t
+  :defer t
   :bind
   (("M-o" . helm-swoop)
     ("M-O" . helm-swoop-back-to-last-point)

@@ -25,10 +25,10 @@
 
 (setq mf-offset-x 0)
 
-;; set global key to buffer begin and buffer-end
-
 (set-keyboard-coding-system nil)
 (set-face-attribute 'default nil :height 150)
+
+(when (display-graphic-p) (menu-bar-mode 1))
 
 (provide 'as-emacs-setup-darwin)
 ;;; as-emacs-setup-darwin.el ends here

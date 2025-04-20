@@ -22,10 +22,6 @@
 ;;load personal functions
 (require 'as-emacs-funcs-setup)
 
-;;make buffer name unique
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'forward)
-
 ;; c/c++ mode
 (require 'as-emacs-c-setup)
 
@@ -49,37 +45,25 @@
 ;;; Shell mode
 (setq comint-prompt-read-only t)
 
-;;(tool-bar-mode nil)
-;;(menu-bar-mode nil)
-;;(scroll-bar-mode nil)
-(if (not (eq system-type 'gnu/linux))
-    (progn
-     (if (functionp 'tool-bar-mode)	(tool-bar-mode -1))
-     (if (functionp 'menu-bar-mode)	(menu-bar-mode -1))
-     (if (functionp 'scroll-bar-mode) (scroll-bar-mode -1))
-     )
-  )
-
 ;; -----------------------------------------------------------------------
 ;; Set up coding system.
- ;; -----------------------------------------------------------------------
+;; -----------------------------------------------------------------------
 (prefer-coding-system 'utf-8)
 
 ;; make yank replace high light region
 (delete-selection-mode 1)
+
+;; Disable the alarm bell (https://www.emacswiki.org/emacs/AlarmBell).
+(setq ring-bell-function 'ignore)
 
 ;; show paren pair
 (show-paren-mode 1)
 
 ;; Turn on global line number mode
 (if (fboundp 'global-display-line-numbers-mode)
-	(global-display-line-numbers-mode 1)
-	(global-linum-mode 1)
+  (global-display-line-numbers-mode 1)
+  (global-linum-mode 1)
   )
-
-(add-hook 'prog-mode-hook #'hl-line-mode)
-(add-hook 'text-mode-hook #'hl-line-mode)
-(add-hook 'org-mode-hook #'hl-line-mode)
 
 (when (executable-find "rg")
   (setq grep-program "rg"))
@@ -97,13 +81,13 @@
 ;; Remeber recent files.
 (recentf-mode +1)
 
-;; Show column number in the mode line.
-(column-number-mode)
+;; Don't pop up UI dialogs when prompting
+(setq use-dialog-box nil)
 
 (defun split-horizontally-for-temp-buffers ()
   "Split the window horizontally for temp buffers."
   (when (and (one-window-p t)
-	     (not (active-minibuffer-window)))
+	  (not (active-minibuffer-window)))
     (split-window-horizontally)))
 
 (add-hook 'temp-buffer-setup-hook 'split-horizontally-for-temp-buffers)
@@ -111,9 +95,9 @@
 (defun split-window-prefer-horizonally (window)
   "If there's only one WINDOW (excluding any possibly active minibuffer), then split the current window horizontally."
   (if (and (one-window-p t)
-	   (not (active-minibuffer-window)))
-      (let ((split-height-threshold nil))
-	(split-window-sensibly window))
+	(not (active-minibuffer-window)))
+    (let ((split-height-threshold nil))
+      (split-window-sensibly window))
     (split-window-sensibly window)))
 (setq split-window-preferred-function 'split-window-prefer-horizonally)
 
@@ -122,18 +106,18 @@
 (add-to-list 'default-frame-alist '(alpha . (92 . 50)))
 
 (if (eq system-type 'darwin)
-    ;;darwin only setup
-    (load "as-emacs-setup-darwin")
+  ;;darwin only setup
+  (load "as-emacs-setup-darwin")
   )
 
 (if (eq system-type 'windows-nt)
-    ;;windows only setup
-    (load "as-emacs-setup-windows")
+  ;;windows only setup
+  (load "as-emacs-setup-windows")
   )
 
 (if (eq system-type 'gnu/linux)
-    ;;linux only setup
-    (load "as-emacs-setup-linux")
+  ;;linux only setup
+  (load "as-emacs-setup-linux")
   )
 
 (when (file-exists-p custom-file)
@@ -141,7 +125,7 @@
 
 ;; ------load customize setup
 (if (file-readable-p "~/.emacs.d/local-customize-setup.el")
-    (load "~/.emacs.d/local-customize-setup.el")
+  (load "~/.emacs.d/local-customize-setup.el")
   )
 
 (provide 'as-emacs-setup)
