@@ -218,6 +218,11 @@
   :hook (
           ((prog-mode text-mode org-mode) . hl-line-mode)
           )
+  :config
+  ;; Restrict `hl-line-mode' highlighting to the current window, reducing visual
+  ;; clutter and slightly improving `hl-line-mode' performance.
+  (setq hl-line-sticky-flag nil)
+  (setq global-hl-line-sticky-flag nil)
   )
 
 (use-package emacs

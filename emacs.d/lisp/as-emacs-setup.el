@@ -83,6 +83,49 @@
 
 ;; Don't pop up UI dialogs when prompting
 (setq use-dialog-box nil)
+(setq use-file-dialog nil)
+
+(setq-default left-fringe-width  8)
+(setq-default right-fringe-width 8)
+
+;; Do not show an arrow at the top/bottomin the fringe and empty lines
+(setq-default indicate-buffer-boundaries nil)
+(setq-default indicate-empty-lines nil)
+
+;; Don't stretch the cursor to fit wide characters, it is disorienting,
+;; especially for tabs.
+(setq x-stretch-cursor nil)
+
+;; Reduce rendering/line scan work by not rendering cursors or regions in
+;; non-focused windows.
+(setq-default cursor-in-non-selected-windows nil)
+(setq highlight-nonselected-windows nil)
+
+;; Perf: Reduce command completion overhead.
+(setq read-extended-command-predicate #'command-completion-default-include-p)
+
+;; Enable multi-line commenting which ensures that `comment-indent-new-line'
+;; properly continues comments onto new lines.
+(setq comment-multi-line t)
+
+;; Ensures that empty lines within the commented region are also commented out.
+;; This prevents unintended visual gaps and maintains a consistent appearance.
+(setq comment-empty-lines t)
+
+;; Disable the obsolete practice of end-of-line spacing from the typewriter era.
+(setq sentence-end-double-space nil)
+
+;; According to the POSIX, a line is defined as "a sequence of zero or more
+;; non-newline characters followed by a terminating newline".
+(setq require-final-newline t)
+
+;; Eliminate delay before highlighting search matches
+(setq lazy-highlight-initial-delay 0)
+
+;;; Modeline
+
+;; Makes Emacs omit the load average information from the mode line.
+(setq display-time-default-load-average nil)
 
 (defun split-horizontally-for-temp-buffers ()
   "Split the window horizontally for temp buffers."
