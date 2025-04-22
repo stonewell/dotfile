@@ -8,6 +8,8 @@
   :defer t
   :init
   (advice-add 'python-ts-mode :before 'elpy-enable)
+  :config
+  (add-hook 'elpy-mode-hook (lambda () (highlight-indentation-mode -1)))
   )
 
 (defun my-python-mode-hook ()

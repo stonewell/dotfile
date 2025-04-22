@@ -59,12 +59,14 @@
   :defer t
   )
 
-(use-package highlight-indentation
+(use-package highlight-indent-guides
   :ensure t
   :defer t
   :hook (
-          ((prog-mode org-mode text-mode) . highlight-indentation-mode)
+          ((prog-mode org-mode text-mode) . highlight-indent-guides-mode)
           )
+  :config
+  (setq highlight-indent-guides-method 'column)
   )
 
 (use-package popwin
