@@ -225,15 +225,39 @@
   (setq global-hl-line-sticky-flag nil)
   )
 
+(use-package gcmh
+  :ensure t
+  :demand
+  :hook
+  (focus-out-hook . gcmh-idle-garbage-collect)
+
+  :custom
+  (gcmh-idle-delay 10)
+  (gcmh-high-cons-threshold 104857600)
+
+  :config
+  (gcmh-mode +1)
+  )
+
 (use-package emacs
   :demand
   :config
-  (menu-bar-mode -1)
-  (when (featurep 'scroll-bar)
-    (scroll-bar-mode -1))
-  (when (featurep 'tool-bar)
-    (tool-bar-mode -1))
-  (column-number-mode)
+  (defun split-horizontally-for-temp-buffers ()
+    "Split the window horizontally for temp buffers."
+    (when (and (one-window-p t)
+	    (not (active-minibuffer-window)))
+      (split-window-horizontally)))
+
+  (add-hook 'temp-buffer-setup-hook 'split-horizontally-for-temp-buffers)
+
+  (defun split-window-prefer-horizonally (window)
+    "If there's only one WINDOW (excluding any possibly active minibuffer), then split the current window horizontally."
+    (if (and (one-window-p t)
+	  (not (active-minibuffer-window)))
+      (let ((split-height-threshold nil))
+        (split-window-sensibly window))
+      (split-window-sensibly window)))
+  (setq split-window-preferred-function 'split-window-prefer-horizonally)
   )
 
 (provide 'as-emacs-packages)
