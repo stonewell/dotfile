@@ -14,6 +14,7 @@
 ;;; reset selection/region background
 ;;; dracula set the region background to dark grey
 (set-face-attribute 'region nil :foreground "#282a36" :background "#f1fa8c")
+(set-face-attribute 'default nil :font "SauceCodePro NFM-14")
 
 (global-font-lock-mode t)
 (setq font-lock-maximum-decoration t)
