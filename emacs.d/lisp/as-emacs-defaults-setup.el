@@ -4,7 +4,10 @@
 
 (setq inhibit-startup-message t)
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+
+(setq native-comp-speed 3)
 (setq native-comp-async-report-warnings-errors nil)
+
 (setq custom-file (locate-user-emacs-file "custom.el"))
 
 (setq gc-cons-threshold 200000000)
@@ -111,6 +114,10 @@
 (when (featurep 'tool-bar)
   (tool-bar-mode -1))
 (column-number-mode)
+
+(setq jit-lock-stealth-time 1.25)
+(setq jit-lock-stealth-nice 0.5) ;; Seconds between font locking.
+(setq jit-lock-chunk-size 4096)
 
 (provide 'as-emacs-defaults-setup)
 ;;; as-emacs-defaults-setup.el ends here
