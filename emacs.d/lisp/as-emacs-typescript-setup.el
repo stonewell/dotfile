@@ -20,7 +20,6 @@
 (add-hook 'before-save-hook 'tide-format-before-save)
 
 (use-package tide
-  :quelpa (tide :fetcher git :url "https://github.com/ananthakumaran/tide.git")
   :ensure t
   :defer t
   :after (company flycheck)

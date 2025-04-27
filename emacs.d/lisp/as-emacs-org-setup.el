@@ -3,11 +3,6 @@
 ;;; Code:
 
 (use-package org
-  :quelpa (org
-	   :fetcher git
-	   :url "https://code.orgmode.org/bzg/org-mode.git"
-	   :files ("lisp/*.el" "contrib/lisp/*.el" "doc/dir" "doc/*.texi")
-	   )
   :ensure t
   :init
   (defun org-hugo-new-subtree-post-capture-template ()

@@ -7,24 +7,12 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
 
-(unless (package-installed-p 'quelpa)
-  (with-temp-buffer
-    (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
-    (eval-buffer)
-    (quelpa-self-upgrade)))
-
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
 
 (eval-when-compile
   (require 'use-package))
-
-(quelpa
-  '(quelpa-use-package
-     :fetcher git
-     :url "https://framagit.org/steckerhalter/quelpa-use-package.git"))
-(require 'quelpa-use-package)
 
 (use-package auto-package-update
   :ensure t
@@ -41,11 +29,6 @@
 (use-package diminish
   :ensure t
   :defer t
-  )
-
-(use-package auto-pair+
-  :quelpa (auto-pair+ :fetcher git :url "https://github.com/emacsmirror/auto-pair-plus.git")
-  :ensure t
   )
 
 (use-package flycheck
@@ -160,7 +143,6 @@
   )
 
 (use-package whole-line-or-region
-  :quelpa (whole-line-or-region :fetcher git :url "https://github.com/purcell/whole-line-or-region.git")
   :ensure t
   :config
   (whole-line-or-region-global-mode +1)
