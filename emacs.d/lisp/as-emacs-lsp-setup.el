@@ -61,10 +61,5 @@
   :defer t
   :commands helm-lsp-workspace-symbol)
 
-(use-package lsp-treemacs
-  :ensure t
-  :defer t
-  :commands lsp-treemacs-errors-list)
-
 (provide 'as-emacs-lsp-setup)
 ;;; as-emacs-lsp-setup.el ends here
