@@ -42,6 +42,7 @@
   (lsp-lens-enable nil)
   ;; semantic
   (lsp-semantic-tokens-enable nil)
+  (lsp-completion-provider 'none)
   :hook (
           ((c-or-c++-mode c-or-c++-ts-mode rust-ts-mode)  . lsp-deferred)
           ;; if you want which-key integration

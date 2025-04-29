@@ -15,10 +15,6 @@
   (editorconfig-apply)
   )
 
-(add-hook 'tsx-ts-mode-hook 'setup-tide-mode)
-(add-hook 'typescript-ts-mode-hook 'setup-tide-mode)
-(add-hook 'before-save-hook 'tide-format-before-save)
-
 (use-package tide
   :ensure t
   :defer t
