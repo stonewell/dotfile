@@ -161,6 +161,11 @@
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode)
   (setq treesit-auto-install 'nil)
+  (setq treesit-language-source-alist
+      '(
+         (cpp . ("https://github.com/stonewell/tree-sitter-cpp"))
+         )
+    )
   )
 
 (use-package reformatter
