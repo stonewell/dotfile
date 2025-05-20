@@ -42,7 +42,7 @@
      ((match "access_specifier" "base_class_clause") parent-bol c-ts-mode-indent-offset)
      ((node-is "access_specifier") parent-bol 0)
      ((match "}" "field_declaration_list") parent-bol 0)
-     ((match "{" "field_declaration_list") parent-bol 0)
+     ((match "field_declaration_list" "class_specifier" "body") parent-bol 0)
      ((parent-is "field_declaration_list") parent-bol c-ts-mode-indent-offset)
 
      ;; Do not indent preprocessor statements.
