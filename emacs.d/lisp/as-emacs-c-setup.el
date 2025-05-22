@@ -39,18 +39,18 @@
      ((parent-is "catch_clause") parent-bol 0)
      ((parent-is "for_range_loop") parent-bol 0)
 
-     ((match "access_specifier" "base_class_clause") parent-bol c-ts-mode-indent-offset)
-     ((node-is "access_specifier") parent-bol 0)
-     ((match "}" "field_declaration_list") parent-bol 0)
-     ((match "field_declaration_list" "class_specifier" "body") parent-bol 0)
-     ((parent-is "field_declaration_list") parent-bol c-ts-mode-indent-offset)
-
      ;; Do not indent preprocessor statements.
      ((node-is "preproc") column-0 0)
 
      ;; Do not indent namespace children.
      ((parent-is "namespace_definition") parent-bol 0)
      ((n-p-gp nil "declaration_list" "namespace_definition") parent-bol 0)
+
+     ((match "access_specifier" "base_class_clause") parent-bol c-ts-mode-indent-offset)
+     ((node-is "access_specifier") parent-bol 0)
+     ((match "}" "field_declaration_list") parent-bol 0)
+     ((match "field_declaration_list" "class_specifier" "body") parent-bol 0)
+     ((parent-is "field_declaration_list") parent-bol c-ts-mode-indent-offset)
 
      ((match "." "field_expression" nil 1 1) parent-bol c-ts-mode-indent-offset)
      )
