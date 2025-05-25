@@ -1,10 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
-(load "as-emacs-setup")
-(load "as-emacs-keys")
-
-(if (file-readable-p "~/.emacs.d/local_setup")
-    ;;load local configurations
-    (load "~/.emacs.d/local_setup")
-    )
+(require 'as-emacs-setup)
+(require 'as-emacs-keys)

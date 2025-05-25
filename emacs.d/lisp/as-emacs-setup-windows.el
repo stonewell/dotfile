@@ -1,7 +1,7 @@
 ;;; as-emacs-setup-windows -- windows setup code  -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
-(load "server")
+(require 'server)
 
 (if (and (fboundp 'server-running-p)
          (not (server-running-p)))

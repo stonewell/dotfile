@@ -132,7 +132,7 @@
   ;; Split direcion. 'split-window-vertically or 'split-window-horizontally
   (setq helm-swoop-split-direction 'split-window-horizontally)
   ;; If nil, you can slightly boost invoke speed in exchange for text color
-  (Setq helm-swoop-speed-or-color t)
+  (setq helm-swoop-speed-or-color t)
   (bind-keys :map isearch-mode-map
     ("M-o" . helm-swoop-from-isearch))
   (bind-keys :map helm-swoop-map

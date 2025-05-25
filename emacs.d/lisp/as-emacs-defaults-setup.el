@@ -9,6 +9,7 @@
 (setq native-comp-async-report-warnings-errors nil)
 
 (setq custom-file (locate-user-emacs-file "custom.el"))
+(setq local-custom-file (locate-user-emacs-file "local-customize-setup.el"))
 
 (setq gc-cons-threshold 200000000)
 

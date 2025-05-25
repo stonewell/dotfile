@@ -6,7 +6,7 @@
 ;;        (number-to-string
 ;;          (user-real-uid)) "/server"))
 ;;nil (server-start))
-(load "server")
+(require 'server)
 (unless (server-running-p) (server-start))
 
 ;;Add a hook to raise-frame
