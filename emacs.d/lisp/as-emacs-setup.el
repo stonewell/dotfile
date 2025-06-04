@@ -35,12 +35,12 @@
 
 (if (eq system-type 'darwin)
   ;;darwin only setup
-  (require as-emacs-setup-darwin)
+  (require 'as-emacs-setup-darwin)
   )
 
 (if (eq system-type 'windows-nt)
   ;;windows only setup
-  (require as-emacs-setup-windows)
+  (require 'as-emacs-setup-windows)
   )
 
 (if (eq system-type 'gnu/linux)
