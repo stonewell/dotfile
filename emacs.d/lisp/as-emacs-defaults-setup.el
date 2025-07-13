@@ -12,6 +12,7 @@
 (setq local-custom-file (locate-user-emacs-file "local-customize-setup.el"))
 
 (setq gc-cons-threshold 200000000)
+(setq max-specpdl-size 5000)
 
 ;; set no backup
 (setq auto-save-default nil)
@@ -108,6 +109,7 @@
 ;; ---transparent settings
 (set-frame-parameter (selected-frame) 'alpha '(92 . 50))
 (add-to-list 'default-frame-alist '(alpha . (92 . 50)))
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 (menu-bar-mode -1)
 (when (featurep 'scroll-bar)

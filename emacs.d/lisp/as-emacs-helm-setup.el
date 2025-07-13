@@ -99,7 +99,7 @@
   )
 
 (use-package helm-ag
-  :ensure t
+  :quelpa ((helm-ag :fetcher github :repo "emacsattic/helm-ag") :upgrade t)
   :defer t
   :commands (helm-ag)
   :config
@@ -116,7 +116,7 @@
   )
 
 (use-package helm-swoop
-  :ensure t
+  :quelpa ((helm-swoop :fetcher github :repo "emacsattic/helm-swoop") :upgrade t)
   :defer t
   :bind
   (("M-o" . helm-swoop)
