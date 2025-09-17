@@ -81,6 +81,7 @@
     ("c" save-buffers-kill-terminal)
     ("f" helm-find-files)
     ("h" mark-whole-buffer)
+    ("k" kill-buffer)
     ("o" other-window)
     ("r" helm-recentf)
     ("s" save-buffer)

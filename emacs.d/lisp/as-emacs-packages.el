@@ -226,6 +226,21 @@
   (setq global-hl-line-sticky-flag nil)
   )
 
+(use-package undo-fu
+  :ensure t
+  :defer t
+  :commands (undo-fu-only-undo)
+  :bind (
+          ("C-/" . undo-fu-only-undo)
+          ("C-_" . undo-fu-only-undo)
+          ("C-x u" . undo-fu-only-undo)
+          )
+  :config
+  (setq undo-limit 67108864) ; 64mb.
+  (setq undo-strong-limit 100663296) ; 96mb.a
+  (setq undo-outer-limit 1006632960) ; 960mb.
+  )
+
 (use-package gcmh
   :ensure t
   :demand

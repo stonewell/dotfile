@@ -7,28 +7,25 @@ local keymap = require "core.keymap"
 local config = require "core.config"
 local style = require "core.style"
 
-local modal = require "plugins.modal"
 ------------------------------ Themes ----------------------------------------
 
 -- light theme:
 -- core.reload_module("colors.summer")
-
---------------------------- Key bindings -------------------------------------
-
--- key binding:
-keymap.add { ["ctrl+escape"] = "core:quit" }
-keymap.add ({ ["ctrl+p"] = "dialog:previous-entry"}, true)
-keymap.add { ["ctrl+p"] = "command:select-previous"}
-keymap.add ({ ["ctrl+n"] = "dialog:next-entry" }, true)
-keymap.add { ["ctrl+n"] = "command:select-next"}
-keymap.add ({ ["ctrl+space"] = modal.go_to_mode("SEL")}, true)
+if PLATFORM == "Windows" then
+style.font = renderer.font.load(DATADIR .. "/fonts/FiraSans-Regular.ttf",
+                                22 * SCALE,
+                                {antialiasing ="subpixel", hinting="full", smoothing=true} )
+style.code_font = renderer.font.load(DATADIR .. "/fonts/JetBrainsMono-Regular.ttf",
+                                     22 * SCALE,
+                                     {antialiasing ="subpixel", hinting="full", smoothing=true} )
 
 config.plugins.miq.repos = {
     'https://github.com/lite-xl/lite-xl-plugins.git:master',
     'https://github.com/Evergreen-lxl/evergreen-languages.git:main',
 }
+end
 
-config.plugins.miq.debug = false
+config.plugins.miq.debug = true
 
 config.plugins.miq.plugins = {
   -- this allows Miq to manage itself
@@ -52,6 +49,17 @@ config.plugins.miq.plugins = {
   'evergreen_cmake',
   'evergreen_rust',
 }
+
+--------------------------- Key bindings -------------------------------------
+local modal = require "plugins.modal"
+
+-- key binding:
+keymap.add { ["ctrl+escape"] = "core:quit" }
+keymap.add ({ ["ctrl+p"] = "dialog:previous-entry"}, true)
+keymap.add { ["ctrl+p"] = "command:select-previous"}
+keymap.add ({ ["ctrl+n"] = "dialog:next-entry" }, true)
+keymap.add { ["ctrl+n"] = "command:select-next"}
+keymap.add ({ ["ctrl+space"] = modal.go_to_mode("SEL")}, true)
 
 config.plugins.modal.status_bar.strokes = true
 modal.set_status_bar()
