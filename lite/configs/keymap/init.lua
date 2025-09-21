@@ -18,6 +18,8 @@ keymap.add { ["ctrl+n"] = "command:select-next"}
 keymap.add ({ ["ctrl+space"] = modal.go_to_mode(mode.SEL)}, true)
 
 config.plugins.modal.status_bar.strokes = true
+config.plugins.modal.show_helpers = true
+
 modal.set_status_bar()
 
 local function dv()
@@ -99,13 +101,26 @@ local function copy()
   end
 end
 
+local function on_key_command_only_exit(k, ...)
+  local view = dv()
+  local last_command = view.modal.last_command
+  local is_modifers = (modal.key_modifiers[k] ~= nil)
+
+  modal.on_key_command_only(k, ...)
+
+  if last_command == view.modal.last_command and #view.modal.keystrokes == 0 and not is_modifers then
+    view.modal = nil
+    modal.set_mode(mode.Edit)
+  end
+end
+
 config.plugins.modal.modes = { mode.Edit, mode.CtrlC, mode.CtrlX, mode.SEL }
 config.plugins.modal.base_mode = mode.Edit
 
 config.plugins.modal.on_key_callbacks.Edit = modal.on_key_passthrough
-config.plugins.modal.on_key_callbacks.CtrlC = modal.on_key_command_only
-config.plugins.modal.on_key_callbacks.CtrlX = modal.on_key_command_only
-config.plugins.modal.on_key_callbacks.SEL = modal.on_key_command_only
+config.plugins.modal.on_key_callbacks.CtrlC = on_key_command_only_exit
+config.plugins.modal.on_key_callbacks.CtrlX = on_key_command_only_exit
+config.plugins.modal.on_key_callbacks.SEL = on_key_command_only_exit
 
 config.plugins.modal.keymaps.Edit = {
   ["C-a"] = "doc:move-to-start-of-indentation",
