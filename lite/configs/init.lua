@@ -1,3 +1,4 @@
+
 local utils = require "configs.utils"
 
 local plugins = require "configs.plugins"
