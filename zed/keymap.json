@@ -14,7 +14,8 @@
       "ctrl-/": "editor::Undo",
       "ctrl-c x s": "workspace::Save",
       "ctrl-c x w": "workspace::SaveAs",
-      "alt-x": "command_palette::Toggle"
+      "alt-x": "command_palette::Toggle",
+      "ctrl-c x b": "tab_switcher::Toggle"
     }
   },
   {
