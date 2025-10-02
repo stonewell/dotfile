@@ -1,0 +1,26 @@
+// Zed keymap
+//
+// For information on binding keys, see the Zed
+// documentation: https://zed.dev/docs/key-bindings
+//
+// To see the default key bindings run `zed: open default keymap`
+// from the command palette.
+[
+  {
+    "bindings": {
+      "ctrl-c x f": "file_finder::Toggle",
+      "ctrl-k": "editor::CutToEndOfLine",
+      "ctrl-y": "editor::KillRingYank",
+      "ctrl-/": "editor::Undo",
+      "ctrl-c x s": "workspace::Save",
+      "ctrl-c x w": "workspace::SaveAs",
+      "alt-x": "command_palette::Toggle"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == insert",
+    "bindings": {
+      // "j k": "vim::NormalBefore"
+    }
+  }
+]

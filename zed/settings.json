@@ -1,0 +1,54 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette
+{
+  "ui_font_size": 16,
+  "buffer_font_size": 18,
+  "base_keymap": "Emacs",
+  "theme": {
+    "mode": "system",
+    "light": "Dracula Solid",
+    "dark": "One Dark"
+  },
+
+  "use_system_path_prompts": false,
+  "use_system_prompts": false,
+
+  "indent_guides": {
+    "coloring": "indent_aware",
+    "background_coloring": "disabled"
+  },
+
+  "gutter": {
+    // Whether to show line numbers in the gutter.
+    "line_numbers": true,
+    // Whether to show runnables buttons in the gutter.
+    "runnables": false,
+    // Whether to show breakpoints in the gutter.
+    "breakpoints": false,
+    // Whether to show fold buttons in the gutter.
+    "folds": false
+  },
+
+  "project_panel": {
+    "starts_open": false
+  },
+
+  "agent": {
+    // Whether the agent is enabled.
+    "enabled": false
+  },
+
+  "tab_bar": {
+    // Whether or not to show the tab bar in the editor
+    "show": true
+  },
+
+  "format_on_save": "off",
+  "disable_ai": true
+}
