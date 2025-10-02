@@ -19,6 +19,12 @@
     }
   },
   {
+    "context": "Workspace",
+    "bindings": {
+      "ctrl-c x o": "workspace::ActivateNextPane"
+    }
+  },
+  {
     "context": "Editor && vim_mode == insert",
     "bindings": {
       // "j k": "vim::NormalBefore"
