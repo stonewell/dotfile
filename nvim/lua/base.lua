@@ -41,7 +41,7 @@ vim.opt.pumblend = 5
 vim.wo.number = true
 vim.opt.background = 'dark'
 
-vim.opt.guifont = 'SauceCodePro Nerd Font Mono:h12'
+vim.opt.guifont = 'SauceCodePro Nerd Font Mono:h14'
 
 -- Turn off paste mode when leaving insert
 vim.api.nvim_create_autocmd("InsertLeave", {
