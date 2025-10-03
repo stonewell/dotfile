@@ -71,7 +71,7 @@ telescope.load_extension("fzf")
 telescope.load_extension("yank_history")
 telescope.load_extension("projects")
 
-vim.keymap.set('n', ';f',
+vim.keymap.set('n', '<leader>fs',
   function()
     builtin.find_files({
       cwd = telescope_buffer_dir(),
@@ -79,46 +79,44 @@ vim.keymap.set('n', ';f',
       hidden = true
     })
   end, {desc="Find Fies in Current Buffer Directory"})
-vim.keymap.set('n', ';r', function()
+vim.keymap.set('n', '<leader>r', function()
   builtin.live_grep({
     cwd = telescope_buffer_dir(),
   })
 end, {desc="Live Grep Current Buffer Directory"})
-vim.keymap.set('n', ';p', function()
+vim.keymap.set('n', '<leader>tp', function()
   builtin.grep_string({
     cwd = telescope_buffer_dir(),
   })
 end, {desc="Grep String in Current Buffer Directory"})
-vim.keymap.set('n', ';b', function()
+vim.keymap.set('n', '<leader>bl', function()
   builtin.buffers()
 end, {desc="Buffer List"})
 
 if not is_win then
-  vim.keymap.set('n', ';t', function()
+  vim.keymap.set('n', '<leader>ts', function()
     builtin.treesitter()
   end, {desc="Treesitter Symbols"})
 end
 
-vim.keymap.set('n', ';;', function()
+vim.keymap.set('n', '<leader>t;', function()
   builtin.resume()
 end, {desc="Resume Last Picker"})
-vim.keymap.set('n', ';e', function()
+vim.keymap.set('n', '<leader>te', function()
   builtin.diagnostics()
 end, {desc="Diagnostics"})
-vim.keymap.set("n", "sf", function()
+vim.keymap.set("n", "<leader>fb", function()
   telescope.extensions.file_browser.file_browser({
     path = "%:p:h",
     cwd = telescope_buffer_dir()
  })
 end, {desc="Browse Files"})
-vim.keymap.set("n", ";y", function()
+vim.keymap.set("n", "<leader>yh", function()
   telescope.extensions.yank_history.yank_history({
   })
 end, {desc="Yank History"})
-vim.keymap.set("n", "sp", function()
+vim.keymap.set("n", "<leader>p", function()
   telescope.extensions.projects.projects({
   })
 end, {desc="Projects"})
-vim.keymap.set("n", "sr", "<cmd>Telescope oldfiles<cr>", {desc="Projects"})
-
-
+vim.keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", {desc="Open Recent Files"})
