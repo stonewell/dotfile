@@ -1,0 +1,12 @@
+[submodule "textadept/themes/base16-textadept"]
+	path = textadept/themes/base16-textadept
+	url = https://github.com/rgieseke/base16-textadept.git
+[submodule "textadept/modules/textredux"]
+	path = textadept/modules/textredux
+	url = https://github.com/rgieseke/textredux.git
+[submodule "textadept/modules/hydra"]
+	path = textadept/modules/hydra
+	url = https://github.com/mhwombat/textadept-hydra.git
+[submodule "textadept/modules/emacs"]
+	path = textadept/modules/emacs
+	url = https://github.com/stonewell/textadept-emacs.git

@@ -106,12 +106,14 @@ local function on_key_command_only_exit(k, ...)
   local last_command = view.modal.last_command
   local is_modifers = (modal.key_modifiers[k] ~= nil)
 
-  modal.on_key_command_only(k, ...)
+  local r = modal.on_key_command_only(k, ...)
 
   if last_command == view.modal.last_command and #view.modal.keystrokes == 0 and not is_modifers then
     view.modal = nil
     modal.set_mode(mode.Edit)
   end
+
+  return r
 end
 
 config.plugins.modal.modes = { mode.Edit, mode.CtrlC, mode.CtrlX, mode.SEL }
