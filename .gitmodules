@@ -10,3 +10,6 @@
 [submodule "textadept/modules/emacs"]
 	path = textadept/modules/emacs
 	url = https://github.com/stonewell/textadept-emacs.git
+[submodule "textadept/modules/isearch"]
+	path = textadept/modules/isearch
+	url = https://github.com/stonewell/textadept_isearch.git
