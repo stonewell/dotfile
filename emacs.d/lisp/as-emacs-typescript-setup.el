@@ -6,13 +6,15 @@
 (add-to-list 'auto-mode-alist '("\\.ts?\\'" . typescript-ts-mode))
 
 (defun setup-tide-mode ()
-  (tide-setup)
-  (flycheck-mode +1)
-  (make-local-variable 'flycheck-check-syntax-automatically)
-  (setq flycheck-check-syntax-automatically '(save mode-enabled))
-  (eldoc-mode +1)
-  (tide-hl-identifier-mode +1)
-  (editorconfig-apply)
+  (with-eval-after-load 'tide
+    (tide-setup)
+    (flycheck-mode +1)
+    (make-local-variable 'flycheck-check-syntax-automatically)
+    (setq flycheck-check-syntax-automatically '(save mode-enabled))
+    (eldoc-mode +1)
+    (tide-hl-identifier-mode +1)
+    (editorconfig-apply)
+    )
   )
 
 (use-package tide

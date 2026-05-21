@@ -9,7 +9,7 @@
 	)
     )
   )
-(add-hook 'server-visit-hook 'ns-raise-emacs())
+(add-hook 'server-visit-hook #'ns-raise-emacs)
 
 ;; When loading files reuse existing frames.
 (setq gnuserv-frame (car (frame-list)))

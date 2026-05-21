@@ -7,6 +7,17 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
 
+;; Git for Windows ships an MSYS2-based GPG that treats "C:/..." paths as
+;; relative. Convert the gnupg homedir to a POSIX path so GPG finds the keyring.
+(when (eq system-type 'windows-nt)
+  (let* ((win-path (expand-file-name "elpa/gnupg" user-emacs-directory))
+         (unix-path (replace-regexp-in-string "\\\\" "/" win-path)))
+    (setq package-gnupghome-dir
+          (if (string-match "^\\([a-zA-Z]\\):/" unix-path)
+              (concat "/" (downcase (match-string 1 unix-path))
+                      (substring unix-path 2))
+            unix-path))))
+
 (unless (package-installed-p 'quelpa)
   (with-temp-buffer
     (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
@@ -46,7 +57,7 @@
 (use-package flycheck
   :ensure t
   :defer t
-  :init (global-flycheck-mode)
+  :config (global-flycheck-mode)
   )
 
 (use-package flycheck-cask
@@ -113,9 +124,8 @@
 
 (use-package ws-butler
   :ensure t
-  :hook prog-mode
+  :demand t
   :config
-  ;; use ws-butler to handle trailing white space
   (ws-butler-global-mode)
   )
 
@@ -125,7 +135,6 @@
   (defun fix-indentation(&optional props )
     (dtrt-indent-mode 0)
     (dtrt-indent-mode 1)
-    (message "fix indentation by disable/enable dtrt-indent-mode")
     )
   :after editorconfig
   :hook (
@@ -156,6 +165,7 @@
 
 (use-package whole-line-or-region
   :ensure t
+  :demand t
   :config
   (whole-line-or-region-global-mode +1)
   )
@@ -172,10 +182,10 @@
   :config
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode)
-  (setq treesit-auto-install 'nil)
+  (setq treesit-auto-install nil)
   (setq treesit-language-source-alist
       '(
-         (cpp . ("https://github.com/stonewell/tree-sitter-cpp"))
+         (cpp "https://github.com/stonewell/tree-sitter-cpp")
          )
     )
   )
@@ -204,7 +214,7 @@
   :ensure t
   :if (not (display-graphic-p))
   :config
-  (add-hook 'after-init 'global-clipetty-mode)
+  (add-hook 'after-init-hook #'global-clipetty-mode)
   )
 
 (use-package rainbow-delimiters

@@ -1,7 +1,7 @@
 ;;; as-emacs-python-setup.el -- python mode setup  -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
-(add-to-list 'auto-mode-alist '("\\.py?\\'" . python-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.py\\'" . python-ts-mode))
 
 (use-package elpy
   :ensure t
@@ -36,7 +36,7 @@
         )
       )
     )
-  (when (load "flycheck" t t)
+  (when (featurep 'flycheck)
     (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
     (add-hook 'elpy-mode-hook 'flycheck-mode)
     )

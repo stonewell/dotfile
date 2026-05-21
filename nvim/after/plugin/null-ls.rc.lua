@@ -8,7 +8,6 @@ null_ls.setup({
     null_ls.builtins.diagnostics.pylint,
     null_ls.builtins.diagnostics.write_good,
     null_ls.builtins.completion.spell,
-    null_ls.builtins.formatting.uncrustify,
     null_ls.builtins.diagnostics.luacheck,
     null_ls.builtins.formatting.stylua,
   },
@@ -27,7 +26,13 @@ null_ls.setup({
       local opts = { noremap = true, silent = true, desc="Format Selected Range", buffer=bufnr }
 
       vim.keymap.set('v', '<leader>f', function()
-        vim.lsp.buf.format({ bufnr = bufnr, timeout_ms=50000 })
+        local start_pos = vim.api.nvim_buf_get_mark(bufnr, '<')
+        local end_pos   = vim.api.nvim_buf_get_mark(bufnr, '>')
+        vim.lsp.buf.format({
+          bufnr = bufnr,
+          timeout_ms = 50000,
+          range = { ['start'] = start_pos, ['end'] = end_pos },
+        })
         vim.notify('range format done')
       end, opts)
     end

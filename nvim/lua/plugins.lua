@@ -21,7 +21,7 @@ return require('lazy').setup({
   },
 
   {
-    'kyazdani42/nvim-web-devicons',
+    'nvim-tree/nvim-web-devicons',
     config = function()
       require('nvim-web-devicons').setup({
         default = true
@@ -36,10 +36,12 @@ return require('lazy').setup({
 
   'equalsraf/neovim-gui-shim',
 
-  'nvim-treesitter/nvim-treesitter',
+  {
+    'nvim-treesitter/nvim-treesitter',
+    build = ':TSUpdate',
+  },
 
   'bronson/vim-crosshairs',
-  'editorconfig/editorconfig-vim',
 
   {
     'nvim-lualine/lualine.nvim',
@@ -93,7 +95,7 @@ return require('lazy').setup({
     },
   },
 
-  'akinsho/nvim-bufferline.lua',
+  'akinsho/bufferline.nvim',
 
   'nvim-telescope/telescope.nvim',
   'nvim-telescope/telescope-file-browser.nvim',
@@ -136,7 +138,6 @@ return require('lazy').setup({
   },
 
   -- LSP
-  'neovim/nvim-lspconfig',
   'nvimtools/none-ls.nvim',
 
   {
@@ -225,11 +226,6 @@ return require('lazy').setup({
 
   -- remove search hl after cusor move or mode change
   {'romainl/vim-cool', event='VeryLazy' },
-
-  -- improve startup time
-  {
-    'lewis6991/impatient.nvim',
-  },
 
   {
     'folke/which-key.nvim',

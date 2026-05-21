@@ -5,18 +5,17 @@
 (setq inhibit-startup-message t)
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
-(setq native-comp-speed 3)
+(setq native-comp-speed 2)
 (setq native-comp-async-report-warnings-errors nil)
 
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (setq local-custom-file (locate-user-emacs-file "local-customize-setup.el"))
 
 (setq gc-cons-threshold 200000000)
-(setq max-specpdl-size 5000)
+;; max-specpdl-size was removed in Emacs 29; omitted.
 
 ;; set no backup
 (setq auto-save-default nil)
-(setq auto-save-default -1)
 (setq backup-inhibited t)
 
 ;;; Shell mode
@@ -48,7 +47,6 @@
 (when (executable-find "fd")
   (setq find-program "fd"))
 
-(pixel-scroll-mode)
 (pixel-scroll-precision-mode 1)
 (setq pixel-scroll-precision-large-scroll-height 35.0)
 

@@ -60,22 +60,21 @@
   "Override the default indentation style with some additional rules.
 Docs: https://www.gnu.org/software/emacs/manual/html_node/elisp/Parser_002dbased-Indentation.html
 Notes: `treesit-explore-mode' can be very useful to see where you're at in the tree-sitter tree, especially paired
-with `(setq treesit--indent-verbose t)' to debug what rules is being applied at a given point."
-  (let* (
-          (mode (if (derived-mode-p 'c-ts-mode) 'c 'cpp))
-          (default-style (copy-alist (cdr (assq mode treesit-simple-indent-rules))))
-          ;; Prepend custom rules by appending the default style to the custom style list.
-          (combined-style (append my-custom-ts-indent-style default-style))
-          )
-    (pcase mode
-      ('c `((c . ,combined-style)))
-      ('cpp `((cpp . ,combined-style)))
-      )
-    )
+with `(setq treesit--indent-verbose t)' to debug what rules is being applied at a given point.
+
+This function must return a plain rules list (not a lang-keyed alist) because
+`c-ts-mode-set-style' calls `c-ts-mode--simple-indent-rules' which already
+wraps the result in ((LANG . RULES)).  Returning ((cpp . RULES)) here would
+produce ((cpp . ((cpp . RULES)))), causing treesit to evaluate the symbol `cpp'
+as an indent predicate and signal \"Symbol's function definition is void: cpp\"."
+  (let* ((mode (if (derived-mode-p 'c-ts-mode) 'c 'cpp))
+         (default-style (cdr (assq mode treesit-simple-indent-rules)))
+         ;; Prepend custom rules; defaults act as fallback at the end.
+         (combined-style (append my-custom-ts-indent-style default-style)))
+    combined-style)
   )
 
 (defun my-c-ts-mode-hook()
-  (interactive)
   (c-ts-mode-set-style #'my-ts-indent-style)
   )
 
@@ -83,9 +82,7 @@ with `(setq treesit--indent-verbose t)' to debug what rules is being applied at 
   :if (treesit-language-available-p 'c)
   :custom
   (c-ts-mode-indent-offset 4)
-  (c-ts-mode-indent-style #'bsd)
-  :init
-  (setq treesit--indent-verbose t)
+  (c-ts-mode-indent-style 'bsd)
   :config
   (add-hook 'c-ts-mode-hook 'my-c-ts-mode-hook)
   )

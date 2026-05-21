@@ -9,8 +9,6 @@
   :config
   (setq
     helm-scroll-amount 4 ; scroll 4 lines other window using M-<next>/M-<prior>
-    helm-quick-update t ; do not display invisible candidates
-    helm-idle-delay 0.01 ; be idle for this many seconds, before updating in delayed sources.
     helm-input-idle-delay 0.01 ; be idle for this many seconds, before updating candidate buffer
     helm-split-window-default-side 'other ;; open helm buffer in another window
     helm-split-window-in-side-p t ;; open helm buffer inside current window, not occupy whole other window
@@ -161,8 +159,10 @@
   (setq helm-fd-switches '("--type" "f" "--type" "d" "--color" "always"))
   (defun helm-fd-project ()
     (interactive)
-    (let ((directory (or (cdr (project-current))
-                       (with-current-buffer "*scratch*" default-directory))))
+    (let* ((proj (project-current))
+           (directory (if proj
+                          (project-root proj)
+                        (with-current-buffer "*scratch*" default-directory))))
       (helm-fd-1 directory))))
 
 ;; start helm-mode

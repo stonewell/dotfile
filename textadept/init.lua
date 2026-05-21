@@ -4,6 +4,7 @@ local textredux = require 'textredux'
 local hydra = require 'hydra'
 local emacs = require 'emacs'
 local isearch = require 'isearch'
+local killring = require 'killring'
 
 textredux.hijack()
 
@@ -87,4 +88,6 @@ emacs.keys.enable()
 keys['alt+o'] = function()
     isearch.replace.start_replace()
 end
+
+keys['alt+y'] = killring.show
 

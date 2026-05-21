@@ -1,7 +1,5 @@
 vim.cmd("autocmd!")
 
-vim.scriptencoding = 'utf-8'
-
 -- vim.opt.termencoding = 'utf-8'
 vim.opt.encoding = 'utf-8'
 vim.opt.fileencoding = 'utf-8'
@@ -12,7 +10,6 @@ vim.opt.autochdir = true
 vim.opt.backup = false
 vim.opt.swapfile = false
 vim.opt.viminfo = ''
-vim.opt.filetype = 'on'
 vim.opt.title = true
 vim.opt.autoindent = true
 vim.opt.smartindent = false

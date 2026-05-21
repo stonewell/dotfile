@@ -18,6 +18,9 @@
 ;;load personal functions
 (require 'as-emacs-funcs-setup)
 
+;;load key bindings
+(require 'as-emacs-keys)
+
 ;; c/c++ mode
 (require 'as-emacs-c-setup)
 

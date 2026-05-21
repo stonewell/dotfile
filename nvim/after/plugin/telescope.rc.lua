@@ -7,8 +7,6 @@ local function telescope_buffer_dir()
   return vim.fn.expand('%:p:h')
 end
 
-local fb_actions = require "telescope".extensions.file_browser.actions
-
 telescope.setup {
   defaults = {
     mappings = {
@@ -67,6 +65,7 @@ telescope.setup {
 }
 
 telescope.load_extension("file_browser")
+local fb_actions = require("telescope").extensions.file_browser.actions
 telescope.load_extension("fzf")
 telescope.load_extension("yank_history")
 telescope.load_extension("projects")
@@ -78,7 +77,7 @@ vim.keymap.set('n', '<leader>fs',
       no_ignore = false,
       hidden = true
     })
-  end, {desc="Find Fies in Current Buffer Directory"})
+  end, {desc="Find Files in Current Buffer Directory"})
 vim.keymap.set('n', '<leader>r', function()
   builtin.live_grep({
     cwd = telescope_buffer_dir(),

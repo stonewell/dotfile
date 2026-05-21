@@ -1,7 +1,7 @@
 local status, yanky = pcall(require, "yanky")
 
 if (not status) then
-  print('yanky not loaded')
+  vim.notify('yanky not loaded', vim.log.levels.WARN)
   return
 end
 
