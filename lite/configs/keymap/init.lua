@@ -4,24 +4,6 @@ local config = require "core.config"
 local search = require "core.doc.search"
 local command = require "core.command"
 
---------------------------- Key bindings -------------------------------------
-local modal = require "plugins.modal"
-
-local mode = { Edit = "Edit", CtrlC = "CtrlC", CtrlX = "CtrlX", SEL = "SEL" }
-
--- key binding:
-keymap.add { ["ctrl+escape"] = "core:quit" }
-keymap.add ({ ["ctrl+p"] = "dialog:previous-entry"}, true)
-keymap.add { ["ctrl+p"] = "command:select-previous"}
-keymap.add ({ ["ctrl+n"] = "dialog:next-entry" }, true)
-keymap.add { ["ctrl+n"] = "command:select-next"}
-keymap.add ({ ["ctrl+space"] = modal.go_to_mode(mode.SEL)}, true)
-
-config.plugins.modal.status_bar.strokes = true
-config.plugins.modal.show_helpers = true
-
-modal.set_status_bar()
-
 local function dv()
   return core.active_view
 end
@@ -101,84 +83,48 @@ local function copy()
   end
 end
 
-local function on_key_command_only_exit(k, ...)
-  local view = dv()
-  local last_command = view.modal.last_command
-  local is_modifers = (modal.key_modifiers[k] ~= nil)
+--------------------------- Key bindings -------------------------------------
+-- key binding:
+keymap.add_direct { ["ctrl+p"] = { "command:select-previous", "dialog:previous-entry", "doc:move-to-previous-line" } }
+keymap.add_direct { ["ctrl+n"] = { "command:select-next",     "dialog:next-entry",     "doc:move-to-next-line"     } }
+keymap.add_direct { ["ctrl+g"] = { "command:escape", "doc:select-none", "context-menu:hide", "dialog:select-no" } }
 
-  local r = modal.on_key_command_only(k, ...)
-
-  if last_command == view.modal.last_command and #view.modal.keystrokes == 0 and not is_modifers then
-    view.modal = nil
-    modal.set_mode(mode.Edit)
-  end
-
-  return r
-end
-
-config.plugins.modal.modes = { mode.Edit, mode.CtrlC, mode.CtrlX, mode.SEL }
-config.plugins.modal.base_mode = mode.Edit
-
-config.plugins.modal.on_key_callbacks.Edit = modal.on_key_passthrough
-config.plugins.modal.on_key_callbacks.CtrlC = on_key_command_only_exit
-config.plugins.modal.on_key_callbacks.CtrlX = on_key_command_only_exit
-config.plugins.modal.on_key_callbacks.SEL = on_key_command_only_exit
-
-config.plugins.modal.keymaps.Edit = {
-  ["C-a"] = "doc:move-to-start-of-indentation",
-  ["C-b"] = "doc:move-to-previous-char",
-  ["C-c"] = modal.go_to_mode(mode.CtrlC),
-  ["C-d"] = {copy, delete},
-  ["C-e"] = "doc:move-to-end-of-line",
-  ["C-f"] = "doc:move-to-next-char",
-  ["C-n"] = "doc:move-to-next-line",
-  ["C-p"] = "doc:move-to-previous-line",
-  ["C-r"] = "find-replace:previous-find",
-  ["C-s"] = "find-replace:repeat-find",
-  ["C-v"] = "doc:move-to-next-page",
-  ["C-x"] = modal.go_to_mode(mode.CtrlX),
-  ["C-y"] = {"doc:paste", modal.go_to_mode(mode.Edit), unselect},
-  ["C-/"] = {"doc:undo", modal.go_to_mode(mode.Edit), unselect},
-  ["C-<space>"] = modal.go_to_mode(mode.SEL),
-  ["A-v"] = "doc:move-to-previous-page",
-  ["A-x"] = "core:find-command",
-  ["A-C-/"] = "modal:help",
-  ["C-A-/"] = "modal:help",
+-- findfile.lua loads after this config (plugins run at priority 100, user init at -2)
+-- and prepends "core:find-file" onto ctrl+p.  Strip it back off via the onload hook.
+config.plugins.findfile = {
+  onload = function() keymap.unbind("ctrl+p", "core:find-file") end
 }
 
-config.plugins.modal.keymaps.CtrlC = {
-  ["<ESC>"] = modal.go_to_mode(mode.Edit),
-  ["sf"] = "core:find-file",
-  ["sr"] = "modal:help",
-  ["sR"] = "modal:help",
-  ["ss"] = "find-replace:find",
-  ["xb"] = "buffer:picker",
-  ["xf"] = "core:open-file",
-  ["xh"] = {"doc:select-all", modal.go_to_mode(mode.SEL)},
-  ["xs"] = {"doc:save", modal.go_to_mode(mode.Edit)},
-  ["x0"] = {"buffer:close", modal.go_to_mode(mode.Edit)},
-  ["x1"] = {"root:close-all-others", modal.go_to_mode(mode.Edit)},
-  ["x2"] = { "root:split-down", "root:switch-to-down" },
-  ["x3"] = { "root:split-right", "root:switch-to-right" },
-}
+keymap.add {
+  ["ctrl+a"] = "doc:move-to-start-of-indentation",
+  ["ctrl+b"] = "doc:move-to-previous-char",
+  ["ctrl+d"] = {copy, delete},
+  ["ctrl+e"] = "doc:move-to-end-of-line",
+  ["ctrl+f"] = "doc:move-to-next-char",
+  ["ctrl+r"] = "find-replace:previous-find",
+  ["ctrl+s"] = "find-replace:repeat-find",
+  ["ctrl+v"] = "doc:move-to-next-page",
+  ["ctrl+w"] = "doc:cut",
+  ["ctrl+y"] = "doc:paste",
+  ["ctrl+/"] = "doc:undo",
 
-config.plugins.modal.keymaps.CtrlX = {
-  ["<ESC>"] = modal.go_to_mode(mode.Edit),
-  ["C-c"] = "core:quit",
-  ["C-w"] = "doc:save-as",
-  ["50"] = "root:close-node",
-}
+  ["alt+v"] = "doc:move-to-previous-page",
+  ["alt+w"] = copy,
+  ["alt+x"] = "core:find-command",
+  ["alt+g alt+g"] = "doc:go-to-line",
 
-config.plugins.modal.keymaps.SEL = {
-  ["<ESC>"] = modal.go_to_mode(mode.Edit),
-  ["C-w"] = {"doc:cut", modal.go_to_mode(mode.Edit)},
-  ["C-y"] = {"doc:paste", modal.go_to_mode(mode.Edit), unselect},
-  ["A-w"] = {"doc:copy", modal.go_to_mode(mode.Edit), unselect},
+  ["ctrl+c s f"] = "core:find-file",
+  ["ctrl+c s s"] = "find-replace:find",
+  ["ctrl+c x b"] = "buffer:picker",
+  ["ctrl+c x f"] = "core:open-file",
+  ["ctrl+c x h"] = "doc:select-all",
+  ["ctrl+c x s"] = "doc:save",
+  ["ctrl+c x 0"] = "buffer:close",
+  ["ctrl+c x 1"] = "root:close-all-others",
+  ["ctrl+c x 2"] = "root:split-down",
+  ["ctrl+c x 3"] = "root:split-right",
 
-  ["C-b"] = { "doc:select-to-previous-char", "dialog:previous-entry" },
-  ["C-f"] = { "doc:select-to-next-char", "dialog:next-entry" },
-  ["C-p"] = { "command:select-previous", "doc:select-to-previous-line" },
-  ["C-n"] = { "command:select-next", "doc:select-to-next-line" },
-  ["A-v"] = { "doc:select-to-previous-page" },
-  ["C-v"] = { "doc:select-to-next-page" },
+  ["ctrl+x ctrl+c"] = "core:quit",
+  ["ctrl+x ctrl+w"] = "doc:save-as",
+  ["ctrl+x 5 0"] = "root:close-node",
 }

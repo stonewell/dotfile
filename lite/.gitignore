@@ -2,6 +2,8 @@
 error.txt
 libraries/
 miq-repos/
-plugins/
+!plugins/
+plugins/*
+!plugins/emacs/
 session.lua
 storage/

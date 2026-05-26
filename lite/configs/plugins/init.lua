@@ -15,8 +15,6 @@ config.plugins.miq.plugins = {
   'cleanstart',
   'indentguide',
 
-  {'https://codeberg.org/Mandarancio/lite-modal.git', name='modal'},
-
   {'https://codeberg.org/Mandarancio/lite-buffers.git', name='buffers'},
 
   'Evergreen-lxl/Evergreen.lxl',
