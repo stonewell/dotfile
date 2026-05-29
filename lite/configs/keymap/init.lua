@@ -85,8 +85,8 @@ end
 
 --------------------------- Key bindings -------------------------------------
 -- key binding:
-keymap.add_direct { ["ctrl+p"] = { "command:select-previous", "dialog:previous-entry", "doc:move-to-previous-line" } }
-keymap.add_direct { ["ctrl+n"] = { "command:select-next",     "dialog:next-entry",     "doc:move-to-next-line"     } }
+keymap.add_direct { ["ctrl+p"] = { "rg-search:select-previous", "command:select-previous", "dialog:previous-entry", "doc:move-to-previous-line" } }
+keymap.add_direct { ["ctrl+n"] = { "rg-search:select-next",     "command:select-next",     "dialog:next-entry",     "doc:move-to-next-line"     } }
 keymap.add_direct { ["ctrl+g"] = { "command:escape", "doc:select-none", "context-menu:hide", "dialog:select-no" } }
 
 -- findfile.lua loads after this config (plugins run at priority 100, user init at -2)
@@ -115,6 +115,8 @@ keymap.add {
 
   ["ctrl+c s f"] = "core:find-file",
   ["ctrl+c s s"] = "find-replace:find",
+  ["ctrl+c s r"]       = "rg-search:find",
+  ["ctrl+c s shift+r"] = "rg-search:find-at-caret",
   ["ctrl+c x b"] = "buffer:picker",
   ["ctrl+c x f"] = "core:open-file",
   ["ctrl+c x h"] = "doc:select-all",
@@ -127,4 +129,10 @@ keymap.add {
   ["ctrl+x ctrl+c"] = "core:quit",
   ["ctrl+x ctrl+w"] = "doc:save-as",
   ["ctrl+x 5 0"] = "root:close-node",
+
+  -- rg-search (scoped to RgView)
+  ["up"]     = "rg-search:select-previous",
+  ["down"]   = "rg-search:select-next",
+  ["return"] = "rg-search:open-selected",
+  ["f5"]     = "rg-search:refresh",
 }
