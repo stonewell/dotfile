@@ -7,6 +7,9 @@ local function telescope_buffer_dir()
   return vim.fn.expand('%:p:h')
 end
 
+telescope.load_extension("file_browser")
+local fb_actions = require("telescope").extensions.file_browser.actions
+
 telescope.setup {
   defaults = {
     mappings = {
@@ -64,8 +67,6 @@ telescope.setup {
   },
 }
 
-telescope.load_extension("file_browser")
-local fb_actions = require("telescope").extensions.file_browser.actions
 telescope.load_extension("fzf")
 telescope.load_extension("yank_history")
 telescope.load_extension("projects")
