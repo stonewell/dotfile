@@ -10,5 +10,6 @@ plugins/*
 !plugins/bufferex/
 !plugins/killring/
 !plugins/shared/
+!plugins/avy/
 session.lua
 storage/
