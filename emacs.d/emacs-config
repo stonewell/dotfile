@@ -1,5 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
-(add-to-list 'load-path "~/.emacs.d/lisp")
+(add-to-list 'load-path (concat (getenv "HOME") "/.emacs.d/lisp"))
 
 (require 'as-emacs-setup)
 (require 'as-emacs-keys)
