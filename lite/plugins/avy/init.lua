@@ -267,8 +267,19 @@ function keymap.on_key_pressed(k, ...)
     return true
   end
 
-  -- Consume all other key events while active; printable chars come via textinput.
-  return true
+  -- Plain printable char: no binding, no modifier → return false so the engine
+  -- fires the subsequent textinput event, which core.on_event captures.
+  local has_binding  = keymap.map[stroke] ~= nil
+  local has_modifier = keymap.modkeys["ctrl"] or keymap.modkeys["alt"]
+    or keymap.modkeys["super"] or keymap.modkeys["altgr"]
+
+  if not has_binding and not has_modifier then
+    return false  -- textinput fires → core.on_event handles it
+  end
+
+  -- Key with a binding or modifier while avy is active: cancel and pass through.
+  avy_cancel()
+  return original_on_key_pressed(k, ...)
 end
 
 -- ---------------------------------------------------------------------------
