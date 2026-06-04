@@ -6,5 +6,10 @@ miq-repos/
 plugins/*
 !plugins/emacs/
 !plugins/rgsearch/
+!plugins/isearch/
+!plugins/bufferex/
+!plugins/killring/
+!plugins/shared/
+!plugins/avy/
 session.lua
 storage/

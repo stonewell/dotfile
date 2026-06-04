@@ -85,8 +85,8 @@ end
 
 --------------------------- Key bindings -------------------------------------
 -- key binding:
-keymap.add_direct { ["ctrl+p"] = { "rg-search:select-previous", "command:select-previous", "dialog:previous-entry", "doc:move-to-previous-line" } }
-keymap.add_direct { ["ctrl+n"] = { "rg-search:select-next",     "command:select-next",     "dialog:next-entry",     "doc:move-to-next-line"     } }
+keymap.add_direct { ["ctrl+p"] = { "killring:select-previous", "bufferex:select-previous", "rg-search:select-previous", "command:select-previous", "dialog:previous-entry", "doc:move-to-previous-line" } }
+keymap.add_direct { ["ctrl+n"] = { "killring:select-next",     "bufferex:select-next",     "rg-search:select-next",     "command:select-next",     "dialog:next-entry",     "doc:move-to-next-line"     } }
 keymap.add_direct { ["ctrl+g"] = { "command:escape", "doc:select-none", "context-menu:hide", "dialog:select-no" } }
 
 -- findfile.lua loads after this config (plugins run at priority 100, user init at -2)
@@ -117,7 +117,7 @@ keymap.add {
   ["ctrl+c s s"] = "find-replace:find",
   ["ctrl+c s r"]       = "rg-search:find",
   ["ctrl+c s shift+r"] = "rg-search:find-at-caret",
-  ["ctrl+c x b"] = "buffer:picker",
+  ["ctrl+c x b"] = "bufferex:open",
   ["ctrl+c x f"] = "core:open-file",
   ["ctrl+c x h"] = "doc:select-all",
   ["ctrl+c x s"] = "doc:save",
