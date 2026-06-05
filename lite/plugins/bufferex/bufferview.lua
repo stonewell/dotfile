@@ -6,8 +6,6 @@ local ListView = require "plugins.shared.listview"
 
 local BufferExView = ListView:extend()
 
-BufferExView.context = "application"
-
 function BufferExView:__tostring() return "BufferExView" end
 
 function BufferExView:get_name()

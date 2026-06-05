@@ -34,7 +34,7 @@ end
 
 local ListView = View:extend()
 
-ListView.context = "application"
+ListView.context = "session"
 
 function ListView:new()
   ListView.super.new(self)
@@ -47,7 +47,7 @@ function ListView:new()
   -- Embedded single-line editor for the filter input.
   self.filter_doc  = SingleLineDoc()
   self.filter_view = DocView(self.filter_doc)
-  self.filter_view.context                  = "application"
+  self.filter_view.context                  = "session"
   self.filter_view.scrollable               = false
   self.filter_view.get_gutter_width         = function() return 0 end
   self.filter_view.scroll_to_make_visible   = function() end
@@ -278,5 +278,19 @@ command.add(ListView, {
     core.active_view = prev
   end,
 })
+
+-- Prevent workspace.lua from serializing ListView subclass instances.
+-- workspace.lua matches views by checking getmetatable(view) == package.loaded[name].
+-- Replacing each subclass entry with `true` breaks that identity check, so views
+-- are neither saved on exit nor restored on startup (once the workspace file refreshes).
+-- rawget(mod, "super") avoids __index; it equals ListView only for direct subclasses
+-- (RgView, BufferExView, KillRingView) and not for ListView itself (super = View).
+core.add_thread(function()
+  for name, mod in pairs(package.loaded) do
+    if type(mod) == "table" and rawget(mod, "super") == ListView then
+      package.loaded[name] = true
+    end
+  end
+end)
 
 return ListView
