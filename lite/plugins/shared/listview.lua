@@ -13,6 +13,7 @@
 
 local core    = require "core"
 local common  = require "core.common"
+local command = require "core.command"
 local style   = require "core.style"
 local Doc     = require "core.doc"
 local DocView = require "core.docview"
@@ -263,5 +264,19 @@ function ListView:draw()
 end
 
 -- ---------------------------------------------------------------------------
+-- Shared command: delete-forward in the filter editor.
+-- Scoped to ListView so any subclass (RgView, BufferExView, KillRingView, …)
+-- gets ctrl+d delete-forward automatically — the key binding lives in
+-- configs/keymap/init.lua.
+-- ---------------------------------------------------------------------------
+
+command.add(ListView, {
+  ["listview:delete-forward"] = function(v)
+    local prev = core.active_view
+    core.active_view = v.filter_view
+    command.perform("doc:delete")
+    core.active_view = prev
+  end,
+})
 
 return ListView

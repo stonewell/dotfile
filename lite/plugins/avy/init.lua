@@ -354,14 +354,4 @@ command.add(function() return state.active end, {
   ["avy:cancel"] = avy_cancel,
 })
 
--- ---------------------------------------------------------------------------
--- Keybindings
--- ---------------------------------------------------------------------------
-
-keymap.add {
-  ["ctrl+;"]     = "avy:goto-char",
-  ["ctrl+'"]     = "avy:goto-char-2",
-  ["ctrl+c j w"] = "avy:goto-word",
-  ["ctrl+c j l"] = "avy:goto-line",
-  ["ctrl+g"]     = "avy:cancel",
-}
+-- Keybindings are centralized in configs/keymap/init.lua.
