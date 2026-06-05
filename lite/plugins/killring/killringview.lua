@@ -6,8 +6,6 @@ local ListView = require "plugins.shared.listview"
 
 local KillRingView = ListView:extend()
 
-KillRingView.context = "application"
-
 function KillRingView:__tostring() return "KillRingView" end
 
 function KillRingView:get_name()

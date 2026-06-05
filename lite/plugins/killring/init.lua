@@ -14,7 +14,6 @@
 
 local core          = require "core"
 local command       = require "core.command"
-local keymap        = require "core.keymap"
 local DocView       = require "core.docview"
 local KillRingView  = require "plugins.killring.killringview"
 
@@ -160,61 +159,4 @@ end, {
   end,
 })
 
--- ---------------------------------------------------------------------------
--- Keybindings
--- ---------------------------------------------------------------------------
-
-keymap.add {
-  -- Open panel
-  ["alt+y"] = "killring:open",
-
-  -- Navigation (scoped to KillRingView by predicate)
-  ["up"]     = "killring:select-previous",
-  ["down"]   = "killring:select-next",
-  ["return"] = "killring:paste-selected",
-
-  -- Clear entire ring
-  ["ctrl+shift+k"] = "killring:clear",
-
-  -- Deletion
-  ["backspace"]       = "killring:backspace",
-  ["shift+backspace"] = "killring:backspace",
-  ["ctrl+backspace"]  = "killring:delete-word-backward",
-  ["delete"]          = "killring:delete-forward",
-  ["ctrl+delete"]     = "killring:delete-word-forward",
-
-  -- Arrow-key movement
-  ["left"]  = "killring:move-left",
-  ["right"] = "killring:move-right",
-  ["home"]  = "killring:move-home",
-  ["end"]   = "killring:move-end",
-
-  -- Word movement
-  ["ctrl+left"]  = "killring:move-word-left",
-  ["ctrl+right"] = "killring:move-word-right",
-
-  -- Selection
-  ["shift+left"]       = "killring:select-to-left",
-  ["shift+right"]      = "killring:select-to-right",
-  ["shift+home"]       = "killring:select-to-home",
-  ["shift+end"]        = "killring:select-to-end",
-  ["ctrl+shift+left"]  = "killring:select-to-word-left",
-  ["ctrl+shift+right"] = "killring:select-to-word-right",
-
-  -- Emacs-style movement
-  ["ctrl+b"] = "killring:move-left",
-  ["ctrl+f"] = "killring:move-right",
-  ["ctrl+a"] = "killring:move-home",
-  ["ctrl+e"] = "killring:move-end",
-
-  -- Clipboard / undo
-  ["ctrl+w"]       = "killring:cut",
-  ["ctrl+y"]       = "killring:paste",
-  ["ctrl+/"]       = "killring:undo",
-  ["ctrl+z"]       = "killring:undo",
-  ["ctrl+shift+z"] = "killring:redo",
-
-  -- Clear filter
-  ["escape"] = "killring:clear-filter",
-  ["ctrl+g"] = "killring:clear-filter",
-}
+-- Keybindings are centralized in configs/keymap/init.lua.

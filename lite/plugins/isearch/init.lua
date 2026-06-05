@@ -297,14 +297,4 @@ command.add(function() return state.active end, {
   end,
 })
 
--- ---------------------------------------------------------------------------
--- Keybindings (keymap.add prepends, so existing bindings remain as fallback)
--- ---------------------------------------------------------------------------
-
-keymap.add {
-  ["ctrl+s"] = "isearch:forward",
-  ["ctrl+r"] = "isearch:backward",
-  ["ctrl+g"] = "isearch:cancel",
-  ["ctrl+w"] = "isearch:extend-word",
-  ["alt+c"]  = "isearch:toggle-case",
-}
+-- Keybindings are centralized in configs/keymap/init.lua.

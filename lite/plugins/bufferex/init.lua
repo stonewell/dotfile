@@ -10,7 +10,6 @@
 
 local core         = require "core"
 local command      = require "core.command"
-local keymap       = require "core.keymap"
 local DocView      = require "core.docview"
 local BufferExView = require "plugins.bufferex.bufferview"
 
@@ -133,58 +132,4 @@ end, {
   end,
 })
 
--- ---------------------------------------------------------------------------
--- Keybindings (prepend via keymap.add — existing bindings remain as fallback)
--- ---------------------------------------------------------------------------
-
-keymap.add {
-  -- Open panel
-  ["ctrl+x b"] = "bufferex:open",
-
-  -- Navigation (scoped by predicate to BufferExView)
-  ["up"]     = "bufferex:select-previous",
-  ["down"]   = "bufferex:select-next",
-  ["return"] = "bufferex:open-selected",
-
-  -- Deletion
-  ["backspace"]       = "bufferex:backspace",
-  ["shift+backspace"] = "bufferex:backspace",
-  ["ctrl+backspace"]  = "bufferex:delete-word-backward",
-  ["delete"]          = "bufferex:delete-forward",
-  ["ctrl+delete"]     = "bufferex:delete-word-forward",
-
-  -- Arrow-key movement
-  ["left"]  = "bufferex:move-left",
-  ["right"] = "bufferex:move-right",
-  ["home"]  = "bufferex:move-home",
-  ["end"]   = "bufferex:move-end",
-
-  -- Word movement
-  ["ctrl+left"]  = "bufferex:move-word-left",
-  ["ctrl+right"] = "bufferex:move-word-right",
-
-  -- Selection
-  ["shift+left"]       = "bufferex:select-to-left",
-  ["shift+right"]      = "bufferex:select-to-right",
-  ["shift+home"]       = "bufferex:select-to-home",
-  ["shift+end"]        = "bufferex:select-to-end",
-  ["ctrl+shift+left"]  = "bufferex:select-to-word-left",
-  ["ctrl+shift+right"] = "bufferex:select-to-word-right",
-
-  -- Emacs-style movement (mirror rgsearch equivalents)
-  ["ctrl+b"] = "bufferex:move-left",
-  ["ctrl+f"] = "bufferex:move-right",
-  ["ctrl+a"] = "bufferex:move-home",
-  ["ctrl+e"] = "bufferex:move-end",
-
-  -- Clipboard / undo
-  ["ctrl+w"]       = "bufferex:cut",
-  ["ctrl+y"]       = "bufferex:paste",
-  ["ctrl+/"]       = "bufferex:undo",
-  ["ctrl+z"]       = "bufferex:undo",
-  ["ctrl+shift+z"] = "bufferex:redo",
-
-  -- Clear filter
-  ["escape"] = "bufferex:clear-filter",
-  ["ctrl+g"] = "bufferex:clear-filter",
-}
+-- Keybindings are centralized in configs/keymap/init.lua.

@@ -2,7 +2,6 @@
 local core      = require "core"
 local common    = require "core.common"
 local command   = require "core.command"
-local keymap    = require "core.keymap"
 local translate = require "core.doc.translate"
 local RgView    = require "plugins.rgsearch.rgview"
 
@@ -216,51 +215,4 @@ end, {
   end,
 })
 
--- ---------------------------------------------------------------------------
--- Keymap bindings (prepend with keymap.add so existing doc:* bindings
--- remain active for all other views).
--- ---------------------------------------------------------------------------
-
-keymap.add {
-  -- Deletion
-  ["backspace"]       = "rg-search:backspace",
-  ["shift+backspace"] = "rg-search:backspace",
-  ["ctrl+backspace"]  = "rg-search:delete-word-backward",
-  ["delete"]          = "rg-search:delete-forward",
-  ["ctrl+delete"]     = "rg-search:delete-word-forward",
-
-  -- Arrow-key movement
-  ["left"]  = "rg-search:move-left",
-  ["right"] = "rg-search:move-right",
-  ["home"]  = "rg-search:move-home",
-  ["end"]   = "rg-search:move-end",
-
-  -- Word movement (standard)
-  ["ctrl+left"]  = "rg-search:move-word-left",
-  ["ctrl+right"] = "rg-search:move-word-right",
-
-  -- Selection
-  ["shift+left"]        = "rg-search:select-to-left",
-  ["shift+right"]       = "rg-search:select-to-right",
-  ["shift+home"]        = "rg-search:select-to-home",
-  ["shift+end"]         = "rg-search:select-to-end",
-  ["ctrl+shift+left"]   = "rg-search:select-to-word-left",
-  ["ctrl+shift+right"]  = "rg-search:select-to-word-right",
-
-  -- Emacs-style movement (ctrl+a/b/e/f already mapped to doc commands in user config)
-  ["ctrl+b"] = "rg-search:move-left",
-  ["ctrl+f"] = "rg-search:move-right",
-  ["ctrl+a"] = "rg-search:move-home",
-  ["ctrl+e"] = "rg-search:move-end",
-
-  -- Clipboard / undo (Emacs-style and standard)
-  ["ctrl+w"] = "rg-search:cut",
-  ["ctrl+y"] = "rg-search:paste",
-  ["ctrl+/"] = "rg-search:undo",
-  ["ctrl+z"] = "rg-search:undo",
-  ["ctrl+shift+z"] = "rg-search:redo",
-
-  -- Clear filter (Escape and user's ctrl+g escape chord)
-  ["escape"] = "rg-search:clear-filter",
-  ["ctrl+g"] = "rg-search:clear-filter",
-}
+-- Keybindings are centralized in configs/keymap/init.lua.

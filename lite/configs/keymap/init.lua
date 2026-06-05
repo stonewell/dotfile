@@ -1,138 +1,96 @@
-local core = require "core"
 local keymap = require "core.keymap"
-local config = require "core.config"
-local search = require "core.doc.search"
-local command = require "core.command"
+local config  = require "core.config"
 
-local function dv()
-  return core.active_view
-end
+local C = require "configs.keymap.chains"
+require "configs.keymap.emacs"   -- side-effect: loads all Section B (Emacs) bindings
 
-local function doc()
-  return dv().doc
-end
+-- =============================================================================
+-- Section A — Complete chains (add_direct)
+-- Keys whose full fallback chain must be explicitly controlled.
+-- =============================================================================
 
-local function sort_positions(line1, col1, line2, col2)
-  if line1 > line2 or line1 == line2 and col1 > col2 then
-    return line2, col2, line1, col1, true
-  end
-  return line1, col1, line2, col2, false
-end
+keymap.add_direct {
+  -- Arrow keys (Emacs ctrl+p/n/b/f/a/e are in emacs.lua)
+  ["up"]    = C.NAV_PREV,   ["down"]  = C.NAV_NEXT,
+  ["left"]  = C.MOVE_LEFT,  ["right"] = C.MOVE_RIGHT,
+  ["home"]  = C.MOVE_HOME,  ["end"]   = C.MOVE_END,
 
-local function doc_multiline_selections(sort)
-  if dv() == nil or doc() == nil or doc().get_selections == nil then return function() return nil end end
-  local iter, state, idx, line1, col1, line2, col2 = doc():get_selections(sort)
-  return function()
-    idx, line1, col1, line2, col2 = iter(state, idx)
-    if idx and line2 > line1 and col2 == 1 then
-      line2 = line2 - 1
-      col2 = #doc().lines[line2]
-    end
-    return idx, line1, col1, line2, col2
-  end
-end
+  -- Undo (ctrl+/ and ctrl+z share the same chain)
+  ["ctrl+/"] = C.UNDO,  ["ctrl+z"] = C.UNDO,
 
-local function unselect()
-  if modal.get_mode() ~= mode.SEL then
-    for idx, _, _, line2, col2 in doc_multiline_selections(true) do
-      doc():set_selections(idx, line2, col2, line2, col2)
-    end
-  end
-end
+  ["return"] = {
+    "killring:paste-selected", "bufferex:open-selected", "rg-search:open-selected",
+    "command:submit", "context-menu:submit", "doc:newline", "dialog:select",
+  },
 
-local function go_to_line()
-  if dv() ~= nil and dv().modal ~= nil and dv().modal.current_command and dv().modal.current_command.n_repeat ~= '' and doc() ~= nil then
-    local N = dv().modal.current_command.num
-    doc():set_selection(N, 1)
-  end
-end
-
-local function delete()
-  for idx, line1, col1, line2, col2 in doc_multiline_selections(true) do
-    if line1 == line2 and col1 == col2 then
-      local text = doc():get_text(line1, 1, line1, math.huge)
-      col2 = col2 + 1
-      if #text + 1 < col2 then
-        col2 = 1
-        line2 = line2 + 1
-      end
-    end
-    doc():raw_remove(line1, col1, line2, col2, doc().undo_stack, system.get_time())
-    doc():set_selections(idx, line1, col1)
-  end
-end
-
-local function concat(t1, t2)
-  for k, v in pairs(t1) do
-    if t2[k] == nil then
-      t2[k] = v
-    end
-  end
-  return t2
-end
-
-
-local function copy()
-  if doc() and doc().get_selection then
-    local l1, c1, l2, c2 = doc():get_selection()
-    if l1 == l2 and c2 == c1 then
-      c2 = c1 + 1
-    end
-    local text = doc():get_text(l1, c1, l2, c2)
-    system.set_clipboard(text)
-  end
-end
-
---------------------------- Key bindings -------------------------------------
--- key binding:
-keymap.add_direct { ["ctrl+p"] = { "killring:select-previous", "bufferex:select-previous", "rg-search:select-previous", "command:select-previous", "dialog:previous-entry", "doc:move-to-previous-line" } }
-keymap.add_direct { ["ctrl+n"] = { "killring:select-next",     "bufferex:select-next",     "rg-search:select-next",     "command:select-next",     "dialog:next-entry",     "doc:move-to-next-line"     } }
-keymap.add_direct { ["ctrl+g"] = { "command:escape", "doc:select-none", "context-menu:hide", "dialog:select-no" } }
-
--- findfile.lua loads after this config (plugins run at priority 100, user init at -2)
--- and prepends "core:find-file" onto ctrl+p.  Strip it back off via the onload hook.
-config.plugins.findfile = {
-  onload = function() keymap.unbind("ctrl+p", "core:find-file") end
+  -- escape is identical to ctrl+g (ctrl+g is in emacs.lua)
+  ["escape"] = C.CANCEL,
 }
 
+-- =============================================================================
+-- Section C — Filter editor bindings (keymap.add, prepended after B so they
+-- take priority when inside a ListView filter editor).
+-- All commands are scoped to their respective view.
+-- =============================================================================
+
 keymap.add {
-  ["ctrl+a"] = "doc:move-to-start-of-indentation",
-  ["ctrl+b"] = "doc:move-to-previous-char",
-  ["ctrl+d"] = {copy, delete},
-  ["ctrl+e"] = "doc:move-to-end-of-line",
-  ["ctrl+f"] = "doc:move-to-next-char",
-  ["ctrl+r"] = "find-replace:previous-find",
-  ["ctrl+s"] = "find-replace:repeat-find",
-  ["ctrl+v"] = "doc:move-to-next-page",
-  ["ctrl+w"] = "doc:cut",
-  ["ctrl+y"] = "doc:paste",
-  ["ctrl+/"] = "doc:undo",
+  -- Deletion
+  ["backspace"]        = C.FILTER_BACKSPACE,
+  ["shift+backspace"]  = C.FILTER_BACKSPACE,
+  ["ctrl+backspace"]   = { "killring:delete-word-backward", "bufferex:delete-word-backward", "rg-search:delete-word-backward" },
+  ["delete"]           = { "killring:delete-forward",       "bufferex:delete-forward",       "rg-search:delete-forward" },
+  ["ctrl+delete"]      = { "killring:delete-word-forward",  "bufferex:delete-word-forward",  "rg-search:delete-word-forward" },
 
-  ["alt+v"] = "doc:move-to-previous-page",
-  ["alt+w"] = copy,
-  ["alt+x"] = "core:find-command",
-  ["alt+g alt+g"] = "doc:go-to-line",
+  -- Word movement (no Emacs alias; kept with keymap.add so core defaults remain)
+  ["ctrl+left"]        = { "killring:move-word-left",  "bufferex:move-word-left",  "rg-search:move-word-left" },
+  ["ctrl+right"]       = { "killring:move-word-right", "bufferex:move-word-right", "rg-search:move-word-right" },
 
-  ["ctrl+c s f"] = "core:find-file",
-  ["ctrl+c s s"] = "find-replace:find",
+  -- Selection
+  ["shift+left"]       = { "killring:select-to-left",       "bufferex:select-to-left",       "rg-search:select-to-left" },
+  ["shift+right"]      = { "killring:select-to-right",      "bufferex:select-to-right",      "rg-search:select-to-right" },
+  ["shift+home"]       = { "killring:select-to-home",       "bufferex:select-to-home",       "rg-search:select-to-home" },
+  ["shift+end"]        = { "killring:select-to-end",        "bufferex:select-to-end",        "rg-search:select-to-end" },
+  ["ctrl+shift+left"]  = { "killring:select-to-word-left",  "bufferex:select-to-word-left",  "rg-search:select-to-word-left" },
+  ["ctrl+shift+right"] = { "killring:select-to-word-right", "bufferex:select-to-word-right", "rg-search:select-to-word-right" },
+
+  -- Clipboard (ctrl+w / ctrl+y are in emacs.lua with combined doc fallback)
+  ["ctrl+shift+z"]     = { "killring:redo",  "bufferex:redo",  "rg-search:redo" },
+}
+
+-- =============================================================================
+-- Section D — Multi-stroke sequences
+-- =============================================================================
+
+keymap.add {
+  -- Search / file find
+  ["ctrl+c s f"]       = "core:find-file",
+  ["ctrl+c s s"]       = "find-replace:find",
   ["ctrl+c s r"]       = "rg-search:find",
   ["ctrl+c s shift+r"] = "rg-search:find-at-caret",
-  ["ctrl+c x b"] = "bufferex:open",
-  ["ctrl+c x f"] = "core:open-file",
-  ["ctrl+c x h"] = "doc:select-all",
-  ["ctrl+c x s"] = "doc:save",
-  ["ctrl+c x 0"] = "buffer:close",
-  ["ctrl+c x 1"] = "root:close-all-others",
-  ["ctrl+c x 2"] = "root:split-down",
-  ["ctrl+c x 3"] = "root:split-right",
 
-  ["ctrl+x ctrl+c"] = "core:quit",
-  ["ctrl+x ctrl+w"] = "doc:save-as",
-  ["ctrl+x 5 0"] = "root:close-node",
+  -- Avy
+  ["ctrl+c j w"]       = "avy:goto-word",
+  ["ctrl+c j l"]       = "avy:goto-line",
 
-  -- rg-search (scoped to RgView)
-  ["up"]     = "rg-search:select-previous",
-  ["down"]   = "rg-search:select-next",
-  ["return"] = "rg-search:open-selected",
-  ["f5"]     = "rg-search:refresh",
+  -- Buffer / window (C-c x …)
+  ["ctrl+c x b"]       = "bufferex:open",
+  ["ctrl+c x f"]       = "core:open-file",
+  ["ctrl+c x h"]       = "doc:select-all",
+  ["ctrl+c x s"]       = "doc:save",
+  ["ctrl+c x 0"]       = "buffer:close",
+  ["ctrl+c x 1"]       = "root:close-all-others",
+  ["ctrl+c x 2"]       = "root:split-down",
+  ["ctrl+c x 3"]       = "root:split-right",
+
+  -- Comment (Emacs C-c C-c)
+  ["ctrl+c ctrl+c"]    = "doc:toggle-line-comments",
+
+  -- Window management (C-x …)
+  ["ctrl+x ctrl+c"]    = "core:quit",
+  ["ctrl+x ctrl+w"]    = "doc:save-as",
+  ["ctrl+x 0"]         = "root:unsplit",
+  ["ctrl+x 1"]         = "root:unsplit-others",
+  ["ctrl+x 5 0"]       = "root:close-node",
+  ["ctrl+x o"]         = "root:cycle-pane",
+  ["ctrl+x shift+o"]   = "root:cycle-pane-prev",
 }

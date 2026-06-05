@@ -6,8 +6,6 @@ local ListView = require "plugins.shared.listview"
 
 local RgView = ListView:extend()
 
-RgView.context = "application"
-
 function RgView:__tostring() return "RgView" end
 
 function RgView:new(query, root)

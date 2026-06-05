@@ -224,11 +224,4 @@ core.on_event = function(type, ...)
   return original_on_event(type, ...)
 end
 
--- ---------------------------------------------------------------------------
--- Default bindings
--- ---------------------------------------------------------------------------
-
-keymap.add {
-  ["ctrl+space"] = "push-mark:set",
-  ["ctrl+g"]     = "push-mark:cancel",
-}
+-- Keybindings are centralized in configs/keymap/init.lua.

@@ -222,7 +222,4 @@ core.on_event = function(type, ...)
   return original_on_event(type, ...)
 end
 
-keymap.add {
-  ["ctrl+u"] = "universal-argument:begin",
-  ["ctrl+g"] = "universal-argument:cancel",
-}
+-- Keybindings are centralized in configs/keymap/init.lua.
