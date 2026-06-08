@@ -15,6 +15,7 @@
 local core          = require "core"
 local command       = require "core.command"
 local DocView       = require "core.docview"
+local ListView      = require "plugins.shared.listview"
 local KillRingView  = require "plugins.killring.killringview"
 
 -- ---------------------------------------------------------------------------
@@ -59,16 +60,14 @@ local function open_killring()
   local av = core.active_view
   local target = (av and av:is(DocView)) and av or nil
 
-  local node = core.root_view:get_active_node_default()
-  for _, view in ipairs(node.views) do
-    if view:is(KillRingView) then
-      node:set_active_view(view)
-      view.target_view = target
-      view:populate()
-      return
-    end
+  local existing = ListView.find_overlay_view(KillRingView)
+  if existing then
+    existing.target_view = target
+    existing:populate()
+    existing:open_as_overlay()
+    return
   end
-  node:add_view(KillRingView(target, ring))
+  KillRingView(target, ring):open_as_overlay()
 end
 
 -- ---------------------------------------------------------------------------
@@ -109,7 +108,7 @@ command.add(KillRingView, {
   end,
 
   ["killring:paste-selected"] = function(v)
-    v:open_selected()
+    if v:open_selected() then v:close() end
   end,
 
   ["killring:clear"] = function(v)

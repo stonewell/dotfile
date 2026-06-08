@@ -3,6 +3,7 @@ local core      = require "core"
 local common    = require "core.common"
 local command   = require "core.command"
 local translate = require "core.doc.translate"
+local ListView  = require "plugins.shared.listview"
 local RgView    = require "plugins.rgsearch.rgview"
 
 -- ---------------------------------------------------------------------------
@@ -96,16 +97,14 @@ end
 -- ---------------------------------------------------------------------------
 
 local function open_rg_view(query, root)
-  local node = core.root_view:get_active_node_default()
-  for _, view in ipairs(node.views) do
-    if view:is(RgView) then
-      node:set_active_view(view)
-      view.root = root
-      view:begin_search(query)
-      return
-    end
+  local existing = ListView.find_overlay_view(RgView)
+  if existing then
+    existing.root = root
+    existing:begin_search(query)
+    existing:open_as_overlay()
+    return
   end
-  node:add_view(RgView(query, root))
+  RgView(query, root):open_as_overlay()
 end
 
 -- ---------------------------------------------------------------------------
@@ -165,7 +164,7 @@ command.add(RgView, {
   end,
 
   ["rg-search:open-selected"] = function(v)
-    v:open_selected_result()
+    if v:open_selected_result() then v:close() end
   end,
 
   ["rg-search:refresh"] = function(v)

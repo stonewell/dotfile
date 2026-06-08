@@ -39,6 +39,7 @@ return {
     "universal-argument:cancel", "push-mark:cancel",
     "isearch:cancel", "avy:cancel",
     "killring:clear-filter", "bufferex:clear-filter", "rg-search:clear-filter",
+    "listview:close",
     "command:escape", "doc:select-none", "context-menu:hide", "dialog:select-no",
   },
 }

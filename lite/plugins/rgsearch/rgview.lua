@@ -119,7 +119,8 @@ function RgView:begin_search(query)
 end
 
 function RgView:refresh()
-  self:begin_search(self.query)
+  local ft = self.filter_doc:get_text(1, 1, 1, math.huge)
+  self:begin_search(ft ~= "" and ft or self.query)
 end
 
 -- ---------------------------------------------------------------------------

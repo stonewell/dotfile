@@ -177,5 +177,6 @@ keymap.add {
   ["alt+g alt+g"] = "doc:go-to-line",
 
   -- rg-search misc
+  ["alt+p"]       = "rg-search:find-at-caret",
   ["f5"]          = "rg-search:refresh",
 }
