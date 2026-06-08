@@ -4,6 +4,8 @@
 --   - a sticky header (status text row + inline filter editor row)
 --   - fuzzy filter via common.fuzzy_match
 --   - keyboard / mouse navigation
+--   - overlay rendering: opens as a floating panel above the status bar
+--     (does not touch the node tree)
 --
 -- Subclasses must implement:
 --   ListView:get_item_text(item)        → string for fuzzy matching
@@ -11,13 +13,14 @@
 --   ListView:draw_item(i, item, x, y, w, h)
 --   ListView:open_selected()            → called on Enter / click
 
-local core    = require "core"
-local common  = require "core.common"
-local command = require "core.command"
-local style   = require "core.style"
-local Doc     = require "core.doc"
-local DocView = require "core.docview"
-local View    = require "core.view"
+local core     = require "core"
+local common   = require "core.common"
+local command  = require "core.command"
+local style    = require "core.style"
+local Doc      = require "core.doc"
+local DocView  = require "core.docview"
+local View     = require "core.view"
+local RootView = require "core.rootview"
 
 -- ---------------------------------------------------------------------------
 -- SingleLineDoc — a Doc that strips newlines so the filter stays on one line.
@@ -35,6 +38,11 @@ end
 local ListView = View:extend()
 
 ListView.context = "session"
+
+-- Overlay state (class-level, shared across all subclasses).
+ListView._overlay_view      = nil  -- the currently open overlay view
+ListView._overlay_prev_view = nil  -- the view to restore focus to on close
+ListView.MINIBUF_ROWS       = 10   -- number of result rows visible in the panel
 
 function ListView:new()
   ListView.super.new(self)
@@ -108,6 +116,67 @@ end
 function ListView:draw_item(i, item, x, y, w, h) end
 
 function ListView:open_selected() end
+
+-- ---------------------------------------------------------------------------
+-- Overlay geometry
+-- ---------------------------------------------------------------------------
+
+function ListView:get_overlay_height()
+  local lh       = style.font:get_height() + style.padding.y
+  local header_h = lh * 2 + style.padding.y * 2
+  return header_h + ListView.MINIBUF_ROWS * lh
+end
+
+-- Recompute position/size so the panel sits just above the status bar,
+-- spanning the full width of the root view.
+function ListView:_sync_overlay_geometry()
+  local rv   = core.root_view
+  local sv_h = core.status_view and core.status_view.size.y or 0
+  local h    = self:get_overlay_height()
+  self.position.x = rv.position.x
+  self.position.y = rv.position.y + rv.size.y - h - sv_h
+  self.size.x     = rv.size.x
+  self.size.y     = h
+end
+
+-- ---------------------------------------------------------------------------
+-- Overlay lifecycle
+-- ---------------------------------------------------------------------------
+
+-- Returns the currently open overlay if it is an instance of `cls`.
+function ListView.find_overlay_view(cls)
+  local ov = ListView._overlay_view
+  if ov and ov:is(cls) then return ov end
+  return nil
+end
+
+function ListView:open_as_overlay()
+  -- Save the previous active view so close() can restore it.
+  -- Skip saving if the previous "active" view was another ListView overlay
+  -- (reopening a different list type should still return to the editor).
+  local prev = core.active_view
+  if not (prev and prev:is(ListView)) then
+    ListView._overlay_prev_view = prev
+  end
+
+  ListView._overlay_view = self
+  self:_sync_overlay_geometry()
+  core.set_active_view(self)
+  core.redraw = true
+end
+
+function ListView:close()
+  if ListView._overlay_view ~= self then return end
+  ListView._overlay_view = nil
+  -- Only restore previous focus if we still own it.
+  -- If open_selected() already moved focus to the editor, leave it there.
+  if core.active_view == self then
+    local prev = ListView._overlay_prev_view
+    if prev then core.set_active_view(prev) end
+  end
+  ListView._overlay_prev_view = nil
+  core.redraw = true
+end
 
 -- ---------------------------------------------------------------------------
 -- Input forwarding
@@ -187,7 +256,9 @@ end
 function ListView:on_mouse_pressed(...)
   local caught = ListView.super.on_mouse_pressed(self, ...)
   if not caught then
-    return self:open_selected()
+    local selected = self:open_selected()
+    if selected then self:close() end
+    return selected
   end
 end
 
@@ -196,6 +267,11 @@ end
 -- ---------------------------------------------------------------------------
 
 function ListView:update()
+  -- Keep overlay geometry in sync with window size every frame.
+  if ListView._overlay_view == self then
+    self:_sync_overlay_geometry()
+  end
+
   ListView.super.update(self)
 
   -- Position the embedded filter DocView in the header area.
@@ -239,6 +315,9 @@ function ListView:draw()
     renderer.draw_rect(ox, oy + yoffset, self.size.x, style.divider_size, style.divider)
   end
 
+  -- Top border to separate from editor content below.
+  renderer.draw_rect(ox, oy, self.size.x, style.divider_size, style.divider)
+
   -- Status text (row 1).
   renderer.draw_text(style.font, self:get_status_text(),
     ox + style.padding.x, oy + style.padding.y, style.text)
@@ -264,6 +343,73 @@ function ListView:draw()
 end
 
 -- ---------------------------------------------------------------------------
+-- RootView hooks — overlay update, drawing, and mouse forwarding
+-- ---------------------------------------------------------------------------
+
+local old_rv_update = RootView.update
+function RootView:update()
+  old_rv_update(self)
+  -- Drive the overlay's update manually since it is not in the node tree.
+  local ov = ListView._overlay_view
+  if ov then ov:update() end
+end
+
+local old_rv_draw = RootView.draw
+function RootView:draw()
+  old_rv_draw(self)
+  local ov = ListView._overlay_view
+  if ov then
+    local p, s = ov.position, ov.size
+    core.push_clip_rect(p.x, p.y, s.x, s.y)
+    ov:draw()
+    core.pop_clip_rect()
+  end
+end
+
+local old_rv_mouse_pressed = RootView.on_mouse_pressed
+function RootView:on_mouse_pressed(button, x, y, clicks)
+  local ov = ListView._overlay_view
+  if ov then
+    local p, s = ov.position, ov.size
+    if x >= p.x and y >= p.y and x < p.x + s.x and y < p.y + s.y then
+      core.set_active_view(ov)
+      return ov:on_mouse_pressed(button, x, y, clicks)
+    else
+      -- Click outside overlay: close it, then let the click reach the editor.
+      ov:close()
+    end
+  end
+  return old_rv_mouse_pressed(self, button, x, y, clicks)
+end
+
+local old_rv_mouse_moved = RootView.on_mouse_moved
+function RootView:on_mouse_moved(x, y, dx, dy)
+  local ov = ListView._overlay_view
+  if ov then
+    local p, s = ov.position, ov.size
+    if x >= p.x and y >= p.y and x < p.x + s.x and y < p.y + s.y then
+      self.mouse.x, self.mouse.y = x, y
+      ov:on_mouse_moved(x, y, dx, dy)
+      return
+    end
+  end
+  return old_rv_mouse_moved(self, x, y, dx, dy)
+end
+
+local old_rv_wheel = RootView.on_mouse_wheel
+function RootView:on_mouse_wheel(...)
+  local ov = ListView._overlay_view
+  if ov then
+    local p, s = ov.position, ov.size
+    local mx, my = self.mouse.x, self.mouse.y
+    if mx >= p.x and my >= p.y and mx < p.x + s.x and my < p.y + s.y then
+      return ov:on_mouse_wheel(...)
+    end
+  end
+  return old_rv_wheel(self, ...)
+end
+
+-- ---------------------------------------------------------------------------
 -- Shared command: delete-forward in the filter editor.
 -- Scoped to ListView so any subclass (RgView, BufferExView, KillRingView, …)
 -- gets ctrl+d delete-forward automatically — the key binding lives in
@@ -276,6 +422,10 @@ command.add(ListView, {
     core.active_view = v.filter_view
     command.perform("doc:delete")
     core.active_view = prev
+  end,
+
+  ["listview:close"] = function(v)
+    v:close()
   end,
 })
 

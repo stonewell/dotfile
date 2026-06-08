@@ -19,7 +19,7 @@ keymap.add_direct {
   ["ctrl+/"] = C.UNDO,  ["ctrl+z"] = C.UNDO,
 
   ["return"] = {
-    "killring:paste-selected", "bufferex:open-selected", "rg-search:open-selected",
+    "killring:paste-selected", "bufferex:open-selected", "rg-search:open-selected", "fd-files:open-selected",
     "command:submit", "context-menu:submit", "doc:newline", "dialog:select",
   },
 
@@ -37,24 +37,24 @@ keymap.add {
   -- Deletion
   ["backspace"]        = C.FILTER_BACKSPACE,
   ["shift+backspace"]  = C.FILTER_BACKSPACE,
-  ["ctrl+backspace"]   = { "killring:delete-word-backward", "bufferex:delete-word-backward", "rg-search:delete-word-backward" },
-  ["delete"]           = { "killring:delete-forward",       "bufferex:delete-forward",       "rg-search:delete-forward" },
-  ["ctrl+delete"]      = { "killring:delete-word-forward",  "bufferex:delete-word-forward",  "rg-search:delete-word-forward" },
+  ["ctrl+backspace"]   = { "killring:delete-word-backward", "bufferex:delete-word-backward", "rg-search:delete-word-backward", "fd-files:delete-word-backward" },
+  ["delete"]           = { "killring:delete-forward",       "bufferex:delete-forward",       "rg-search:delete-forward",       "fd-files:delete-forward" },
+  ["ctrl+delete"]      = { "killring:delete-word-forward",  "bufferex:delete-word-forward",  "rg-search:delete-word-forward",  "fd-files:delete-word-forward" },
 
   -- Word movement (no Emacs alias; kept with keymap.add so core defaults remain)
-  ["ctrl+left"]        = { "killring:move-word-left",  "bufferex:move-word-left",  "rg-search:move-word-left" },
-  ["ctrl+right"]       = { "killring:move-word-right", "bufferex:move-word-right", "rg-search:move-word-right" },
+  ["ctrl+left"]        = { "killring:move-word-left",  "bufferex:move-word-left",  "rg-search:move-word-left",  "fd-files:move-word-left" },
+  ["ctrl+right"]       = { "killring:move-word-right", "bufferex:move-word-right", "rg-search:move-word-right", "fd-files:move-word-right" },
 
   -- Selection
-  ["shift+left"]       = { "killring:select-to-left",       "bufferex:select-to-left",       "rg-search:select-to-left" },
-  ["shift+right"]      = { "killring:select-to-right",      "bufferex:select-to-right",      "rg-search:select-to-right" },
-  ["shift+home"]       = { "killring:select-to-home",       "bufferex:select-to-home",       "rg-search:select-to-home" },
-  ["shift+end"]        = { "killring:select-to-end",        "bufferex:select-to-end",        "rg-search:select-to-end" },
-  ["ctrl+shift+left"]  = { "killring:select-to-word-left",  "bufferex:select-to-word-left",  "rg-search:select-to-word-left" },
-  ["ctrl+shift+right"] = { "killring:select-to-word-right", "bufferex:select-to-word-right", "rg-search:select-to-word-right" },
+  ["shift+left"]       = { "killring:select-to-left",       "bufferex:select-to-left",       "rg-search:select-to-left",       "fd-files:select-to-left" },
+  ["shift+right"]      = { "killring:select-to-right",      "bufferex:select-to-right",      "rg-search:select-to-right",      "fd-files:select-to-right" },
+  ["shift+home"]       = { "killring:select-to-home",       "bufferex:select-to-home",       "rg-search:select-to-home",       "fd-files:select-to-home" },
+  ["shift+end"]        = { "killring:select-to-end",        "bufferex:select-to-end",        "rg-search:select-to-end",        "fd-files:select-to-end" },
+  ["ctrl+shift+left"]  = { "killring:select-to-word-left",  "bufferex:select-to-word-left",  "rg-search:select-to-word-left",  "fd-files:select-to-word-left" },
+  ["ctrl+shift+right"] = { "killring:select-to-word-right", "bufferex:select-to-word-right", "rg-search:select-to-word-right", "fd-files:select-to-word-right" },
 
   -- Clipboard (ctrl+w / ctrl+y are in emacs.lua with combined doc fallback)
-  ["ctrl+shift+z"]     = { "killring:redo",  "bufferex:redo",  "rg-search:redo" },
+  ["ctrl+shift+z"]     = { "killring:redo",  "bufferex:redo",  "rg-search:redo",  "fd-files:redo" },
 }
 
 -- =============================================================================
@@ -63,7 +63,7 @@ keymap.add {
 
 keymap.add {
   -- Search / file find
-  ["ctrl+c s f"]       = "core:find-file",
+  ["ctrl+c s f"]       = { "fd-files:find", "core:find-file" },
   ["ctrl+c s s"]       = "find-replace:find",
   ["ctrl+c s r"]       = "rg-search:find",
   ["ctrl+c s shift+r"] = "rg-search:find-at-caret",

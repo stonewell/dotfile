@@ -11,6 +11,7 @@
 local core         = require "core"
 local command      = require "core.command"
 local DocView      = require "core.docview"
+local ListView     = require "plugins.shared.listview"
 local BufferExView = require "plugins.bufferex.bufferview"
 
 -- ---------------------------------------------------------------------------
@@ -21,15 +22,13 @@ local function open_bufferex()
   local av          = core.active_view
   local current_doc = (av and av:is(DocView)) and av.doc or nil
 
-  local node = core.root_view:get_active_node_default()
-  for _, view in ipairs(node.views) do
-    if view:is(BufferExView) then
-      node:set_active_view(view)
-      view:populate(current_doc)
-      return
-    end
+  local existing = ListView.find_overlay_view(BufferExView)
+  if existing then
+    existing:populate(current_doc)
+    existing:open_as_overlay()
+    return
   end
-  node:add_view(BufferExView(current_doc))
+  BufferExView(current_doc):open_as_overlay()
 end
 
 -- ---------------------------------------------------------------------------
@@ -87,7 +86,7 @@ command.add(BufferExView, {
   end,
 
   ["bufferex:open-selected"] = function(v)
-    v:open_selected()
+    if v:open_selected() then v:close() end
   end,
 
   -- Deletion

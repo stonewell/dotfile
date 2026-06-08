@@ -1,8 +1,8 @@
 -- mod-version:4
 local core      = require "core"
-local common    = require "core.common"
 local command   = require "core.command"
-local translate = require "core.doc.translate"
+local ListView  = require "plugins.shared.listview"
+local H         = require "plugins.shared.search_helpers"
 local RgView    = require "plugins.rgsearch.rgview"
 
 -- ---------------------------------------------------------------------------
@@ -30,82 +30,18 @@ local function history_suggestions(text)
 end
 
 -- ---------------------------------------------------------------------------
--- Helpers
--- ---------------------------------------------------------------------------
-
-local function get_active_doc()
-  local view = core.active_view
-  return view and view.doc or nil
-end
-
-local VCS_MARKERS = { ".git", ".hg", ".svn" }
-
-local function find_vcs_root(dir)
-  local current = dir
-  while true do
-    for _, marker in ipairs(VCS_MARKERS) do
-      if system.get_file_info(current .. PATHSEP .. marker) then
-        return current
-      end
-    end
-    local parent = common.dirname(current)
-    if not parent or parent == current then break end
-    current = parent
-  end
-  return nil
-end
-
-local function get_search_root()
-  local doc = get_active_doc()
-  local file = doc and doc.filename
-  local file_dir = file and common.dirname(file)
-
-  if file_dir then
-    local vcs_root = find_vcs_root(file_dir)
-    if vcs_root then
-      core.log("rg-search: vcs root = %s", vcs_root)
-      return vcs_root
-    end
-  end
-
-  local project = core.root_project()
-  local proj_path = project and project.path
-  core.log("rg-search: project.path = %s", tostring(proj_path))
-  if file and proj_path and common.path_belongs_to(file, proj_path) then
-    return proj_path
-  end
-
-  if file_dir then return file_dir end
-  return proj_path or "."
-end
-
-local function get_selection_or_word()
-  local doc = get_active_doc()
-  if not doc then return "" end
-  local l1, c1, l2, c2 = doc:get_selection()
-  if l1 == l2 and c1 == c2 then
-    local wl1, wc1 = doc:position_offset(l1, c1, translate.start_of_word)
-    local wl2, wc2 = doc:position_offset(l1, c1, translate.end_of_word)
-    return doc:get_text(wl1, wc1, wl2, wc2)
-  end
-  return doc:get_text(l1, c1, l2, c2)
-end
-
--- ---------------------------------------------------------------------------
 -- Open or reuse existing RgView in the active node
 -- ---------------------------------------------------------------------------
 
 local function open_rg_view(query, root)
-  local node = core.root_view:get_active_node_default()
-  for _, view in ipairs(node.views) do
-    if view:is(RgView) then
-      node:set_active_view(view)
-      view.root = root
-      view:begin_search(query)
-      return
-    end
+  local existing = ListView.find_overlay_view(RgView)
+  if existing then
+    existing.root = root
+    existing:begin_search(query)
+    existing:open_as_overlay()
+    return
   end
-  node:add_view(RgView(query, root))
+  RgView(query, root):open_as_overlay()
 end
 
 -- ---------------------------------------------------------------------------
@@ -128,8 +64,8 @@ end
 
 command.add(nil, {
   ["rg-search:find"] = function()
-    local preselect = get_selection_or_word()
-    local root = get_search_root()
+    local preselect = H.get_selection_or_word()
+    local root = H.get_search_root()
     core.command_view:enter("Rg Search", {
       text         = preselect,
       select_text  = preselect ~= "",
@@ -143,13 +79,13 @@ command.add(nil, {
   end,
 
   ["rg-search:find-at-caret"] = function()
-    local word = get_selection_or_word()
+    local word = H.get_selection_or_word()
     if word == "" then
       core.warn("rg-search: no word under caret")
       return
     end
     push_history(word)
-    open_rg_view(word, get_search_root())
+    open_rg_view(word, H.get_search_root())
   end,
 })
 
@@ -165,7 +101,7 @@ command.add(RgView, {
   end,
 
   ["rg-search:open-selected"] = function(v)
-    v:open_selected_result()
+    if v:open_selected_result() then v:close() end
   end,
 
   ["rg-search:refresh"] = function(v)

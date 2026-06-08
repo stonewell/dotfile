@@ -148,8 +148,8 @@ keymap.add {
   ["ctrl+s"]      = "isearch:forward",
   ["ctrl+u"]      = "universal-argument:begin",
   ["ctrl+v"]      = "doc:move-to-next-page",
-  ["ctrl+w"]      = { "killring:cut",   "bufferex:cut",   "rg-search:cut",   "doc:cut" },
-  ["ctrl+y"]      = { "killring:paste", "bufferex:paste", "rg-search:paste", "doc:paste" },
+  ["ctrl+w"]      = { "killring:cut",   "bufferex:cut",   "rg-search:cut",   "fd-files:cut",   "doc:cut" },
+  ["ctrl+y"]      = { "killring:paste", "bufferex:paste", "rg-search:paste", "fd-files:paste", "doc:paste" },
   ["ctrl+space"]  = "push-mark:set",
 
   -- Kill-ring management
@@ -177,5 +177,7 @@ keymap.add {
   ["alt+g alt+g"] = "doc:go-to-line",
 
   -- rg-search misc
+  ["alt+p"]       = "rg-search:find-at-caret",
   ["f5"]          = "rg-search:refresh",
+  ["f6"]          = "fd-files:refresh",
 }
