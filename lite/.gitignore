@@ -12,5 +12,6 @@ plugins/*
 !plugins/shared/
 !plugins/avy/
 !plugins/whichkey/
+!plugins/fd-files/
 session.lua
 storage/
