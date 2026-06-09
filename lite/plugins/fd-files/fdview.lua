@@ -1,10 +1,16 @@
 local core     = require "core"
 local common   = require "core.common"
+local config   = require "core.config"
 local style    = require "core.style"
 local process  = require "core.process"
 local ListView = require "plugins.shared.listview"
+local H        = require "plugins.shared.search_helpers"
 
-local MAX_RESULTS = 500
+config.plugins.fd_files = common.merge({
+  executable  = "fd",
+  extra_flags = { "--type", "f", "--follow" },
+  max_results = 500,
+}, config.plugins.fd_files)
 
 local FdView = ListView:extend()
 
@@ -77,7 +83,8 @@ function FdView:begin_search()
   self.scroll.to.y      = 0
 
   local root = self.root
-  local cmd  = { "fd", "--type", "f", "--follow", "--max-results", tostring(MAX_RESULTS), ".", root }
+  local cfg  = config.plugins.fd_files
+  local cmd  = H.build_cmd(cfg.executable, cfg.extra_flags, "--max-results", tostring(cfg.max_results), ".", root)
 
   core.log("fd-files: %s", table.concat(cmd, " "))
 
@@ -90,7 +97,7 @@ function FdView:begin_search()
     end
 
     local count = 0
-    while count < MAX_RESULTS do
+    while count < cfg.max_results do
       local line = proc.stdout:read("line")
       if not line then break end
       line = line:gsub("[\r\n]+$", "")
@@ -110,7 +117,6 @@ end
 function FdView:refresh()
   local root = self.root
   -- Re-detect root in case the active doc changed.
-  local H = require "plugins.shared.search_helpers"
   self.root = H.get_search_root()
   if self.root ~= root then
     core.log("fd-files: refresh root changed to %s", self.root)

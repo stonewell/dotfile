@@ -13,17 +13,22 @@
 --   ctrl+shift+k   clear the entire ring (in KillRingView)
 
 local core          = require "core"
+local common        = require "core.common"
+local config        = require "core.config"
 local command       = require "core.command"
 local DocView       = require "core.docview"
 local ListView      = require "plugins.shared.listview"
 local KillRingView  = require "plugins.killring.killringview"
 
+config.plugins.killring = common.merge({
+  max_entries = 100,  -- maximum number of entries kept in the ring
+}, config.plugins.killring)
+
 -- ---------------------------------------------------------------------------
 -- Ring state
 -- ---------------------------------------------------------------------------
 
-local ring     = {}
-local MAX_RING = 100
+local ring = {}
 
 local function push_ring(text)
   if not text or text == "" then return end
@@ -31,7 +36,9 @@ local function push_ring(text)
     if v == text then table.remove(ring, i); break end
   end
   table.insert(ring, 1, text)
-  if #ring > MAX_RING then ring[MAX_RING + 1] = nil end
+  if #ring > config.plugins.killring.max_entries then
+    ring[config.plugins.killring.max_entries + 1] = nil
+  end
 end
 
 -- ---------------------------------------------------------------------------

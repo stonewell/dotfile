@@ -57,4 +57,18 @@ function M.get_selection_or_word()
   return doc:get_text(l1, c1, l2, c2)
 end
 
+-- Concatenate strings and arrays into a flat command table.
+-- Each argument may be a string or an array of strings.
+function M.build_cmd(...)
+  local t = {}
+  for _, part in ipairs({...}) do
+    if type(part) == "string" then
+      t[#t+1] = part
+    else
+      for _, v in ipairs(part) do t[#t+1] = v end
+    end
+  end
+  return t
+end
+
 return M
