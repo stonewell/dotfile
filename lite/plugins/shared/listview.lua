@@ -15,12 +15,17 @@
 
 local core     = require "core"
 local common   = require "core.common"
+local config   = require "core.config"
 local command  = require "core.command"
 local style    = require "core.style"
 local Doc      = require "core.doc"
 local DocView  = require "core.docview"
 local View     = require "core.view"
 local RootView = require "core.rootview"
+
+config.plugins.listview = common.merge({
+  rows = 10,  -- number of result rows visible in the overlay panel
+}, config.plugins.listview)
 
 -- ---------------------------------------------------------------------------
 -- SingleLineDoc — a Doc that strips newlines so the filter stays on one line.
@@ -42,7 +47,6 @@ ListView.context = "session"
 -- Overlay state (class-level, shared across all subclasses).
 ListView._overlay_view      = nil  -- the currently open overlay view
 ListView._overlay_prev_view = nil  -- the view to restore focus to on close
-ListView.MINIBUF_ROWS       = 10   -- number of result rows visible in the panel
 
 function ListView:new()
   ListView.super.new(self)
@@ -124,7 +128,7 @@ function ListView:open_selected() end
 function ListView:get_overlay_height()
   local lh       = style.font:get_height() + style.padding.y
   local header_h = lh * 2 + style.padding.y * 2
-  return header_h + ListView.MINIBUF_ROWS * lh
+  return header_h + config.plugins.listview.rows * lh
 end
 
 -- Recompute position/size so the panel sits just above the status bar,

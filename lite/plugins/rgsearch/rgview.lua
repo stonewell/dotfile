@@ -1,8 +1,15 @@
 local core     = require "core"
 local common   = require "core.common"
+local config   = require "core.config"
 local style    = require "core.style"
 local process  = require "core.process"
 local ListView = require "plugins.shared.listview"
+local H        = require "plugins.shared.search_helpers"
+
+config.plugins.rgsearch = common.merge({
+  executable  = "rg",
+  extra_flags = { "--vimgrep", "--smart-case", "--follow" },
+}, config.plugins.rgsearch)
 
 local RgView = ListView:extend()
 
@@ -84,7 +91,8 @@ function RgView:begin_search(query)
   self.scroll.to.y      = 0
 
   local root = self.root
-  local cmd  = { "rg", "--vimgrep", "--smart-case", "--follow", "--", query, root }
+  local cfg  = config.plugins.rgsearch
+  local cmd  = H.build_cmd(cfg.executable, cfg.extra_flags, "--", query, root)
 
   core.log("rg-search: %s", table.concat(cmd, " "))
 
