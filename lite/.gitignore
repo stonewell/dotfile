@@ -1,7 +1,7 @@
-.miq-store
+.use-package-store
 error.txt
 libraries/
-miq-repos/
+up-repos/
 !plugins/
 plugins/*
 !plugins/emacs/
@@ -13,5 +13,6 @@ plugins/*
 !plugins/avy/
 !plugins/whichkey/
 !plugins/fd-files/
+!plugins/use_package/
 session.lua
 storage/

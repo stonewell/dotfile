@@ -1,30 +1,16 @@
-local core = require "core"
-local config = require "core.config"
+local up = require 'plugins.use_package'   -- must be first
 
-config.plugins.miq.debug = false
-config.plugins.miq.repos = {
-    'https://github.com/lite-xl/lite-xl-plugins.git:master',
-    'https://github.com/Evergreen-lxl/evergreen-languages.git:main',
+up.repos {
+  'https://github.com/lite-xl/lite-xl-plugins.git:master',          -- editorconfig, cleanstart, indentguide
 }
 
-config.plugins.miq.plugins = {
-  -- this allows Miq to manage itself
-  'TorchedSammy/Miq',
+-- git install (Author/Repo slug → cloned from GitHub)
+up.use 'Evergreen-lxl/Evergreen.lxl'
 
-  'editorconfig',
-  'cleanstart',
-  'indentguide',
-
-  'Evergreen-lxl/Evergreen.lxl',
-  'evergreen_c',
-  'evergreen_cpp',
-  'evergreen_lua',
-  'evergreen_python',
-  'evergreen_json',
-  'evergreen_bash',
-  'evergreen_cmake',
-  'evergreen_rust',
-}
+-- repo installs (plain name → searched in registered manifests above)
+up.use 'editorconfig'
+up.use 'cleanstart'
+up.use 'indentguide'
 
 -- rg-search: ripgrep executable and flags.
 -- extra_flags are inserted between the executable and the fixed "--vimgrep -- <query> <root>".
