@@ -1,29 +1,66 @@
-local core = require "core"
-local config = require "core.config"
+local up     = require 'plugins.use_package'   -- must be first
+local config = require 'core.config'
 
-config.plugins.miq.debug = false
-config.plugins.miq.repos = {
-    'https://github.com/lite-xl/lite-xl-plugins.git:master',
-    'https://github.com/Evergreen-lxl/evergreen-languages.git:main',
+up.repos {
+  'https://github.com/lite-xl/lite-xl-plugins.git:master',          -- editorconfig, cleanstart, indentguide
 }
 
-config.plugins.miq.plugins = {
-  -- this allows Miq to manage itself
-  'TorchedSammy/Miq',
+-- repo installs (plain name → searched in registered manifests above)
+up.use 'editorconfig'
+up.use 'cleanstart'
+up.use 'indentguide'
 
-  'editorconfig',
-  'cleanstart',
-  'indentguide',
+-- treesit: local plugin from dotfile — config runs after all plugins have loaded
+up.use {
+  plugin = USERDIR .. '/plugins/treesit',
+  name   = 'treesit',
+  config = function()
+    -- Neovim paths for this machine (scoop install + lazy.nvim data dir)
+    config.plugins.treesit.nvimTsRoot           = 'C:/depot/stone/nvim-data/lazy/nvim-treesitter'
+    config.plugins.treesit.nvimRuntimeDir       = 'C:/depot/scoop/apps/neovim/current/share/nvim/runtime'
+    config.plugins.treesit.nvimBuiltinParserDir = 'C:/depot/scoop/apps/neovim/current/lib/nvim/parser'
 
-  'Evergreen-lxl/Evergreen.lxl',
-  'evergreen_c',
-  'evergreen_cpp',
-  'evergreen_lua',
-  'evergreen_python',
-  'evergreen_json',
-  'evergreen_bash',
-  'evergreen_cmake',
-  'evergreen_rust',
+    local languages = require 'plugins.treesit.languages'
+    local ts = config.plugins.treesit
+
+    -- Helper: nvim-treesitter query + a custom parser dir
+    local function nvimWith(parserDir, name, files)
+      languages.addNvimLang {
+        root       = ts.nvimTsRoot,
+        runtimeDir = ts.nvimRuntimeDir,
+        parserDir  = parserDir,
+        name       = name,
+        files      = files,
+      }
+    end
+
+    -- Bundled Neovim parsers — available immediately, no :TSInstall needed
+    -- (c, lua, markdown, markdown_inline, vim, vimdoc shipped with Neovim 0.12)
+    local builtin = ts.nvimBuiltinParserDir
+    nvimWith(builtin, 'c',                { '%.c$', '%.h$' })
+    nvimWith(builtin, 'lua',              { '%.lua$' })
+    nvimWith(builtin, 'markdown',         { '%.md$', '%.markdown$' })
+    nvimWith(builtin, 'markdown_inline',  {})  -- injected by markdown, no direct files
+    nvimWith(builtin, 'vim',              { '%.vim$' })
+    nvimWith(builtin, 'vimdoc',           { '%.txt$' })
+
+    -- TSInstall-ed parsers — run :TSInstall <lang> in Neovim first,
+    -- then uncomment the corresponding line below.
+    local function nvim(name, files)
+      languages.addNvimLang {
+        root = ts.nvimTsRoot,
+        runtimeDir = ts.nvimRuntimeDir,
+        name = name,
+        files = files,
+      }
+    end
+    -- nvim('python',     { '%.py$' })
+    -- nvim('javascript', { '%.js$', '%.jsx$' })
+    -- nvim('typescript', { '%.ts$', '%.tsx$' })
+    -- nvim('cpp',        { '%.cpp$', '%.cxx$', '%.cc$', '%.hpp$', '%.hh$' })
+    -- nvim('rust',       { '%.rs$' })
+    -- nvim('go',         { '%.go$' })
+  end,
 }
 
 -- rg-search: ripgrep executable and flags.
