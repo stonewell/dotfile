@@ -14,5 +14,6 @@ plugins/*
 !plugins/whichkey/
 !plugins/fd-files/
 !plugins/use_package/
+!plugins/treesit/
 session.lua
 storage/

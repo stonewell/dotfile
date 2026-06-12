@@ -69,9 +69,10 @@ function M.use(plugin, opts)
     schedule()
     table.insert(_pending, function() keymap.add(opts.bind) end)
   end
-  if opts.config then
+  local configFn = (type(plugin) == 'table' and plugin.config) or opts.config
+  if configFn then
     schedule()
-    table.insert(_pending, opts.config)
+    table.insert(_pending, configFn)
   end
 end
 
