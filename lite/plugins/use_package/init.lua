@@ -65,11 +65,15 @@ function M.use(plugin, opts)
 
   table.insert(_plugins, spec)
 
-  if opts.bind then
-    schedule()
-    table.insert(_pending, function() keymap.add(opts.bind) end)
-  end
+  -- normalise onto spec so installSingle can access them after a hot-install
+  if opts.bind then spec.bind = opts.bind end
   local configFn = (type(plugin) == 'table' and plugin.config) or opts.config
+  spec.config = configFn  -- nil if none; table-form already carries it
+
+  if spec.bind then
+    schedule()
+    table.insert(_pending, function() keymap.add(spec.bind) end)
+  end
   if configFn then
     schedule()
     table.insert(_pending, configFn)
@@ -120,7 +124,23 @@ function M.installSingle(spec)
       spec.repo_hex = hex
     end
     store.addPlugin(spec)
-    pcall(require, 'plugins.' .. name)
+    -- force a fresh load even if a previous attempt left a stale cache entry
+    package.loaded['plugins.' .. name] = nil
+    local ok, err = pcall(require, 'plugins.' .. name)
+    if not ok then
+      core.log('[use-package] %s loaded with warning: %s', name, err)
+    end
+    -- run config callback
+    if spec.config then
+      local ok2, err2 = pcall(spec.config)
+      if not ok2 then
+        core.error('[use-package] config error for %s: %s', name, err2)
+      end
+    end
+    -- register keybindings
+    if spec.bind then
+      keymap.add(spec.bind)
+    end
   end
 
   local function onFail(err)

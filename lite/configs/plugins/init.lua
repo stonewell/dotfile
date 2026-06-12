@@ -1,5 +1,6 @@
 local up     = require 'plugins.use_package'   -- must be first
 local config = require 'core.config'
+local core = require "core"
 
 up.repos {
   'https://github.com/lite-xl/lite-xl-plugins.git:master',          -- editorconfig, cleanstart, indentguide
@@ -54,12 +55,24 @@ up.use {
         files = files,
       }
     end
-    -- nvim('python',     { '%.py$' })
+    nvim('python',     { '%.py$' })
     -- nvim('javascript', { '%.js$', '%.jsx$' })
     -- nvim('typescript', { '%.ts$', '%.tsx$' })
     -- nvim('cpp',        { '%.cpp$', '%.cxx$', '%.cc$', '%.hpp$', '%.hh$' })
     -- nvim('rust',       { '%.rs$' })
     -- nvim('go',         { '%.go$' })
+
+    -- Re-apply treesit to any documents that were already open at startup
+    -- (Doc:new runs before this config callback, so those docs missed the lang defs)
+    local highlights = require 'plugins.treesit.highlights'
+    for _, doc in ipairs(core.docs) do
+      if not doc.treesit and doc.filename then
+        highlights.init(doc)
+        if doc.treesit then
+          doc.highlighter:reset()
+        end
+      end
+    end
   end,
 }
 

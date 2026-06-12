@@ -164,6 +164,15 @@ end
 
 local oldTokenize = Highlight.tokenize_line
 function Highlight:tokenize_line(idx, state)
+	-- Lazy retry: if Doc:new ran before use-package config registered languages,
+	-- attempt init once on the first render.
+	if not self.doc.treesit and not self.doc._treesitTried then
+		self.doc._treesitTried = true
+		highlights.init(self.doc)
+		if self.doc.treesit then
+			self.doc.highlighter:reset()
+		end
+	end
 	if not self.doc.treesit then return oldTokenize(self, idx, state) end
 
 	local txt      = self.doc.lines[idx]
