@@ -88,7 +88,7 @@ function Doc:raw_insert(line, col, text, undo, time)
 		self.ts.parser:reset()
 		-- try parsing once immediately, so if the document is not too large,
 		-- the highlighting can updated before the next frame
-		reparseStep(self) 
+		reparseStep(self)
 	end
 end
 
@@ -165,7 +165,7 @@ end
 local oldTokenize = Highlight.tokenize_line
 function Highlight:tokenize_line(idx, state)
 	if not self.doc.treesit then return oldTokenize(self, idx, state) end
-	
+
 	local txt      = self.doc.lines[idx]
 	local row      = idx - 1
 	local toks     = {}
@@ -220,7 +220,7 @@ function Highlight:tokenize_line(idx, state)
 		toks[#toks + 1] = txt:sub(startBuf, e)
 		startBuf = e + 1
 	end
-	
+
 	return {
 		init_state = state,
 		state      = state,
