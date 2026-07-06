@@ -15,6 +15,20 @@ local M = {
 
 local soExt = PLATFORM == 'Windows' and '.dll' or '.so'
 
+-- On Windows, Neovim bundled parsers use .dll but nvim-treesitter-installed
+-- parsers use .so (their cross-platform convention).  Try both so the same
+-- code handles either source without user configuration.
+local function findParser(dir, name)
+	if PLATFORM == 'Windows' then
+		for _, ext in ipairs({ '.dll', '.so' }) do
+			local path = dir .. '/' .. name .. ext
+			if system.get_file_info(path) then return path end
+		end
+		return dir .. '/' .. name .. '.dll'  -- fallback; getLang will error clearly
+	end
+	return dir .. '/' .. name .. '.so'
+end
+
 -- Pattern matching Neovim's EXTENDS_FORMAT in runtime/lua/vim/treesitter/query.lua
 local EXTENDS_PATTERN = '^%s*;+%s*extends%s*$'
 
@@ -95,7 +109,7 @@ function M.addNvimLang(opts)
 	local def = {
 		name      = name,
 		files     = opts.files,
-		soFile    = parserDir .. '/' .. name .. soExt,
+		soFile    = findParser(parserDir, name),
 		queryFiles = {},
 	}
 

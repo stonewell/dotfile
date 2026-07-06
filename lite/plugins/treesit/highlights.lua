@@ -1,3 +1,4 @@
+local core = require 'core'
 local config = require 'plugins.treesit.config'
 local languages = require 'plugins.treesit.languages'
 local util = require 'plugins.treesit.util'
@@ -218,13 +219,22 @@ function M.init(doc)
 	if not doc.filename then return end
 
 	local langDef = languages.findDef(doc.abs_filename)
-	if not langDef then return end
+	if not langDef then
+		core.log_quiet('treesit: no lang def for %s', doc.filename)
+		return
+	end
 
 	local lang = languages.getLang(langDef)
-	if not lang then return end
+	if not lang then
+		core.log_quiet('treesit: failed to load parser for %s (%s)', doc.filename, langDef.name)
+		return
+	end
 
 	local queryStr = languages.getQuery(langDef, 'highlights')
-	if not queryStr then return end
+	if not queryStr then
+		core.log_quiet('treesit: failed to load query for %s (%s)', doc.filename, langDef.name)
+		return
+	end
 
 	local query = ts.Query.new(lang, queryStr)
 	for _, name in ipairs(disabledCaptures) do
@@ -243,6 +253,7 @@ function M.init(doc)
 	}
 
 	parser:set_timeout_micros(config.maxParseTime)
+	core.log('treesit: highlight enabled for %s (%s)', doc.filename, langDef.name)
 end
 
 
