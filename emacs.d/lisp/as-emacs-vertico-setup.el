@@ -52,8 +52,13 @@
   )
 
 ;; start-of consult
+;; :demand t so the :config below (remaps, prefix map) runs at startup rather
+;; than waiting for one of the specific :bind keys to be pressed first --
+;; otherwise e.g. testing list-buffers/occur before ever pressing C-x b or
+;; M-o would find the remap not yet installed.
 (use-package consult
   :ensure t
+  :demand t
   :bind
   (("M-y" . consult-yank-pop)
     ("C-x b" . consult-buffer)
@@ -95,8 +100,12 @@
     corfu-quit-no-match 'separator)
   )
 
+;; :demand t -- this use-package has no :bind/:hook of its own to trigger a
+;; lazy load, so without :demand its :config (completion-at-point-functions,
+;; dabbrev-expand remap) would never run at all.
 (use-package cape
   :ensure t
+  :demand t
   :config
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-file)
@@ -112,6 +121,7 @@
 ;; its own C-c e prefix instead (discoverable via which-key-mode).
 (use-package embark
   :ensure t
+  :demand t
   :bind
   (("C-c e a" . embark-act)
     ("C-c e d" . embark-dwim)
