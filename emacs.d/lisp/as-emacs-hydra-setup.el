@@ -130,7 +130,8 @@ _J_ ^ ^ _j_ ^ ^     _U_nmark all     _d_elete
     ("d" helm-persistent-delete-marked)
     ("f" helm-follow-mode))
 
-  (define-key helm-map (kbd "<f12>") 'helm-like-unite/body)
+  (with-eval-after-load 'helm
+    (define-key helm-map (kbd "<f12>") 'helm-like-unite/body))
 
   )
 

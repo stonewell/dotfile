@@ -11,6 +11,15 @@
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (setq local-custom-file (locate-user-emacs-file "local-customize-setup.el"))
 
+;; Which completion stack to load: 'helm (default) or 'vertico.
+;; Switch by setting the AS_EMACS_COMPLETION_STACK environment variable
+;; (e.g. AS_EMACS_COMPLETION_STACK=vertico) before starting Emacs, or by
+;; changing the default value below for a permanent switch.
+(defvar as-emacs-completion-stack 'helm
+  "Which completion stack to load: `helm' or `vertico'.")
+(when-let ((env (getenv "AS_EMACS_COMPLETION_STACK")))
+  (setq as-emacs-completion-stack (intern env)))
+
 (setq gc-cons-threshold 200000000)
 ;; max-specpdl-size was removed in Emacs 29; omitted.
 

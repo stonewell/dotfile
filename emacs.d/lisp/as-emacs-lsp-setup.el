@@ -59,6 +59,7 @@
 ;; if you are helm user
 (use-package helm-lsp
   :ensure t
+  :if (eq as-emacs-completion-stack 'helm)
   :defer t
   :commands helm-lsp-workspace-symbol)
 

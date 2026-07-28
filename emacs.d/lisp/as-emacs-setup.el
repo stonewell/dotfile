@@ -7,7 +7,9 @@
 ;;package
 (require 'as-emacs-packages)
 
-(require 'as-emacs-helm-setup)
+(cond
+  ((eq as-emacs-completion-stack 'vertico) (require 'as-emacs-vertico-setup))
+  (t (require 'as-emacs-helm-setup)))
 
 ;;load font and color theme settings
 (require 'as-emacs-setup-font-color-theme)
