@@ -68,8 +68,12 @@
     )
   :config
   (when (executable-find "rg")
+    (defun as-emacs-consult-ripgrep-symbol-at-point ()
+      "Run `consult-ripgrep', pre-filled with the symbol at point."
+      (interactive)
+      (consult-ripgrep nil (thing-at-point 'symbol)))
     (bind-keys
-      ("M-p" . consult-ripgrep)
+      ("M-p" . as-emacs-consult-ripgrep-symbol-at-point)
       )
     )
 

@@ -79,7 +79,7 @@
     ("b" (if (eq as-emacs-completion-stack 'vertico) (consult-buffer) (helm-mini)))
     ("B" (if (eq as-emacs-completion-stack 'vertico) (consult-buffer) (helm-buffers-list)))
     ("c" save-buffers-kill-terminal)
-    ("f" (if (eq as-emacs-completion-stack 'vertico) (call-interactively 'find-file) (helm-find-files)))
+    ("f" (if (eq as-emacs-completion-stack 'vertico) (call-interactively 'find-file) (call-interactively 'helm-find-files)))
     ("h" mark-whole-buffer)
     ("k" kill-buffer)
     ("o" other-window)

@@ -15,19 +15,6 @@
 (defvar as-emacs-completion-stack 'helm
   "Which completion stack to load: `helm' or `vertico'.")
 
-;; File-based override: put "helm" or "vertico" as the sole content of
-;; ~/.emacs.d/completion-stack. This is untracked (per-machine, not part of
-;; the dotfile repo) and works no matter how Emacs is launched -- unlike an
-;; environment variable, which a GUI launcher (e.g. runemacs.exe spawned from
-;; launch-emacs.py) will not reliably inherit from an unrelated shell session.
-(let ((stack-file (locate-user-emacs-file "completion-stack")))
-  (when (file-readable-p stack-file)
-    (with-temp-buffer
-      (insert-file-contents stack-file)
-      (let ((val (string-trim (buffer-string))))
-        (when (> (length val) 0)
-          (setq as-emacs-completion-stack (intern val)))))))
-
 ;; Environment-variable override, for shells that do propagate env vars to
 ;; the Emacs process; takes precedence over the file above if both are set.
 (when-let ((env (getenv "AS_EMACS_COMPLETION_STACK")))
