@@ -60,7 +60,7 @@
     ("s" isearch-forward)
     ("r" replace-string)
     ("R" replace-regexp)
-    ("o" helm-occur)
+    ("o" (if (eq as-emacs-completion-stack 'vertico) (consult-line) (helm-occur)))
     )
 
   (defhydra x-5
@@ -76,14 +76,14 @@
       global-map "C-c x"
       :exit t
       )
-    ("b" helm-mini)
-    ("B" helm-buffers-list)
+    ("b" (if (eq as-emacs-completion-stack 'vertico) (consult-buffer) (helm-mini)))
+    ("B" (if (eq as-emacs-completion-stack 'vertico) (consult-buffer) (helm-buffers-list)))
     ("c" save-buffers-kill-terminal)
-    ("f" helm-find-files)
+    ("f" (if (eq as-emacs-completion-stack 'vertico) (call-interactively 'find-file) (call-interactively 'helm-find-files)))
     ("h" mark-whole-buffer)
     ("k" kill-buffer)
     ("o" other-window)
-    ("r" helm-recentf)
+    ("r" (if (eq as-emacs-completion-stack 'vertico) (recentf-open) (helm-recentf)))
     ("s" save-buffer)
     ("0" delete-windows)
     ("1" delete-other-windows)
@@ -130,7 +130,8 @@ _J_ ^ ^ _j_ ^ ^     _U_nmark all     _d_elete
     ("d" helm-persistent-delete-marked)
     ("f" helm-follow-mode))
 
-  (define-key helm-map (kbd "<f12>") 'helm-like-unite/body)
+  (with-eval-after-load 'helm
+    (define-key helm-map (kbd "<f12>") 'helm-like-unite/body))
 
   )
 

@@ -71,6 +71,8 @@ keymap.add {
   -- Avy
   ["ctrl+c j w"]       = "avy:goto-word",
   ["ctrl+c j l"]       = "avy:goto-line",
+  ["ctrl+c a F"]      = "avy:goto-char",
+  ["ctrl+c a f"]      = "avy:goto-char-2",
 
   -- Buffer / window (C-c x …)
   ["ctrl+c x b"]       = "bufferex:open",

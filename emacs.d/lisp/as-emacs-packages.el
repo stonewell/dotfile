@@ -105,7 +105,8 @@
   :ensure t
   :config
   (spaceline-emacs-theme 1)
-  (spaceline-helm-mode 1)
+  (when (eq as-emacs-completion-stack 'helm)
+    (spaceline-helm-mode 1))
   )
 
 (use-package editorconfig
