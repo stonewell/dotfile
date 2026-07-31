@@ -87,15 +87,59 @@
 
 ;; `helm-grep-ag-command' (part of helm core, actively maintained at
 ;; emacs-helm/helm) already prefers ripgrep over ag automatically, falling
-;; back to ag if rg isn't installed -- so `helm-do-grep-ag' gives the same
+;; back to ag if rg isn't installed -- so `helm-do-grep-ag-project' (also
+;; helm core, project-root-aware via `project'/projectile) gives the same
 ;; incremental, helm-native candidate navigation `helm-ag'/`helm-rg' did,
 ;; with the actual search tool underneath chosen by helm itself.
-(defun helm-do-grep-ag-project (arg)
-  "Like `helm-do-grep-ag', but search from the project root."
-  (interactive "P")
-  (let* ((proj (project-current))
-          (default-directory (if proj (project-root proj) default-directory)))
-    (helm-do-grep-ag arg)))
+
+;; `helm-grep--filter-candidate-1' only applies its own
+;; `helm-grep-file'/`helm-grep-lineno'/`helm-grep-match' faces when the
+;; backend output carries no ANSI codes -- with `--color=always' it defers
+;; to ripgrep's own raw ANSI instead and `helm-grep-match' never gets
+;; applied at all. Use `--color=never' so helm's faces are what's actually
+;; used (see as-emacs-setup-font-color-theme.el for their colors).
+(setq helm-grep-ag-command
+  "rg --color=never --smart-case --search-zip --no-heading --line-number %s -- %s %s")
+
+(defvar as-emacs-helm-grep-match-selection-overlay nil
+  "Overlay keeping `helm-grep-match' visible over `helm-selection-overlay'.")
+
+(defun as-emacs-helm--face-has-p (pos face)
+  "Non-nil if the `face' text property at POS is or contains FACE.
+`add-face-text-property' (used by `helm-grep-highlight-match') stores
+faces as a list consed onto the existing value, not a bare symbol, so a
+plain `eq'/`text-property-any' check against FACE never matches."
+  (let ((val (get-text-property pos 'face)))
+    (or (eq val face) (and (listp val) (memq face val)))))
+
+(defun as-emacs-helm-highlight-selected-match ()
+  "Re-apply `helm-grep-match' over the match text on the selected line."
+  (when (overlayp helm-selection-overlay)
+    (unless as-emacs-helm-grep-match-selection-overlay
+      (setq as-emacs-helm-grep-match-selection-overlay
+        (make-overlay (point-min) (point-min)))
+      (overlay-put as-emacs-helm-grep-match-selection-overlay 'priority 2)
+      (overlay-put as-emacs-helm-grep-match-selection-overlay 'face 'helm-grep-match))
+    (let* ((beg (overlay-start helm-selection-overlay))
+            (end (overlay-end helm-selection-overlay))
+            (pos beg)
+            match-beg)
+      (while (and pos (< pos end) (not match-beg))
+        (if (as-emacs-helm--face-has-p pos 'helm-grep-match)
+          (setq match-beg pos)
+          (setq pos (next-single-property-change pos 'face nil end))))
+      ;; Explicit BUFFER arg: without it, `move-overlay' re-homes a
+      ;; previously-deleted overlay into whatever buffer it was *originally*
+      ;; created in, which silently breaks this if helm ever recreates the
+      ;; "*helm RG*" buffer object between sessions instead of reusing it.
+      (if match-beg
+        (move-overlay as-emacs-helm-grep-match-selection-overlay
+          match-beg (or (next-single-property-change match-beg 'face nil end) end)
+          (current-buffer))
+        (move-overlay as-emacs-helm-grep-match-selection-overlay 1 1 (current-buffer))))))
+
+(add-hook 'helm-move-selection-after-hook #'as-emacs-helm-highlight-selected-match)
+(add-hook 'helm-after-update-hook #'as-emacs-helm-highlight-selected-match)
 
 (when (or (executable-find "rg") (executable-find "ag"))
   (bind-keys ("M-p" . helm-do-grep-ag-project)))
