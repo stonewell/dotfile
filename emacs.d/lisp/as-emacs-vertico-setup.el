@@ -67,6 +67,13 @@
     ("C-c M-o" . consult-line-multi)
     )
   :config
+  ;; Default `consult-preview-key' is `any', which opens/jumps to a
+  ;; candidate's buffer on every single up/down move -- slow when quickly
+  ;; scrolling through consult-line/consult-ripgrep/consult-buffer results,
+  ;; especially for large or remote files. Debounce so a preview only fires
+  ;; once the selection has settled for a moment.
+  (setq consult-preview-key '(:debounce 0.3 any))
+
   (when (executable-find "rg")
     (defun as-emacs-consult-ripgrep-symbol-at-point ()
       "Run `consult-ripgrep', pre-filled with the symbol at point."
