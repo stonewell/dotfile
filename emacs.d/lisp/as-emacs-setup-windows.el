@@ -24,7 +24,6 @@
 (add-to-list 'default-frame-alist '(alpha . (100 . 100)))
 
 (setq find-program (concat (getenv "SCOOP") "\\apps\\msys2\\current\\usr\\bin\\find.exe"))
-(setq helm-rg-ripgrep-executable (concat (getenv "SCOOP") "\\shims\\rg.exe"))
 (setq elpy-rpc-python-command (concat (getenv "PYTHON") "\\python.exe"))
 (setq flycheck-python-pycompile-executable (concat (getenv "PYTHON") "\\python.exe"))
 
