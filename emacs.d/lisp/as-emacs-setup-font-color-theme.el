@@ -19,6 +19,9 @@
 (when (facep 'helm-grep-file)
   (set-face-attribute 'helm-grep-file nil :foreground "DarkTurquoise" :underline t))
 
+(when (facep 'helm-selection)
+  (set-face-attribute 'helm-selection nil :weight 'bold))
+
 (global-font-lock-mode t)
 (setq font-lock-maximum-decoration t)
 
