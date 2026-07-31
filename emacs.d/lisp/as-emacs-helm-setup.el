@@ -65,6 +65,15 @@
     ("n" . helm-grep-mode-jump-other-window-forward)
     ("p" . helm-grep-mode-jump-other-window-backward))
 
+  ;; `--color=always' is already the default for rg here, so matches are
+  ;; colorful out of the box; this just makes the match highlight reuse the
+  ;; same yellow-on-black as the `region' face set in
+  ;; as-emacs-setup-font-color-theme.el, instead of ripgrep's default red.
+  (setq helm-grep-ag-command
+    "rg --color=always --colors match:bg:yellow --smart-case --search-zip --no-heading --line-number %s -- %s %s")
+  (setq helm-grep-ag-pipe-cmd-switches
+    '("--colors" "'match:bg:yellow'"))
+
   (bind-keys :prefix-map helm-prefix-map
     :prefix "C-c s"
     ("f" . helm-browse-project)
