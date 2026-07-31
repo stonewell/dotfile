@@ -2,4 +2,3 @@
 (add-to-list 'load-path (concat (getenv "HOME") "/.emacs.d/lisp"))
 
 (require 'as-emacs-setup)
-(require 'as-emacs-keys)
