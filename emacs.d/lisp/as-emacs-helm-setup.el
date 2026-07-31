@@ -32,6 +32,8 @@
     ("M-y" . helm-show-kill-ring)
     ("C-x b" . helm-mini)
     ("C-x C-r" . helm-recentf)
+    ("M-o" . helm-occur)
+    ("C-c M-o" . helm-multi-occur)
     )
   (bind-keys :map helm-map
     ("C-o" . nil)
@@ -40,26 +42,13 @@
     ("C-z" . helm-select-action)
     ("C-h" . delete-backward-char))
 
-  (when (executable-find "ag")
-    (bind-keys
-      ("M-p" . helm-do-ag-project-root)
-      )
-    )
-
   (when (executable-find "pyeverything")
     (progn
       (require 'as-emacs-helm-pyeverything)
 
       (bind-keys ("C-t" . helm-ff-run-pyeverything)
         ("C-M-t" . helm-ag-run-pyeverything)
-        ("M-p" . helm-do-ag-project-root)
         )
-      )
-    )
-
-  (when (executable-find "rg")
-    (bind-keys
-      ("M-p" . helm-do-ag-project-root)
       )
     )
 
@@ -96,48 +85,26 @@
     (define-key emacs-lisp-mode-map       [remap completion-at-point] 'helm-lisp-completion-at-point))
   )
 
-(use-package helm-ag
-  :quelpa ((helm-ag :fetcher github :repo "emacsattic/helm-ag") :upgrade t)
-  :defer t
-  :commands (helm-ag)
-  :config
-  (when (executable-find "pyeverything")
-    (setq helm-ag-base-command "pyeverything helm-ag")
-    )
-  (when (executable-find "rg")
-    (setq helm-ag-base-command "rg --no-heading --line-number --color never --vimgrep --smart-case")
-    )
-  (setq helm-ag-insert-at-point 'symbol
-    helm-ag-success-exit-status '(0 2)
-    helm-ag-show-status-function nil
-    )
-  )
+;; `helm-grep-ag-command' (part of helm core, actively maintained at
+;; emacs-helm/helm) already prefers ripgrep over ag automatically, falling
+;; back to ag if rg isn't installed -- so `helm-do-grep-ag' gives the same
+;; incremental, helm-native candidate navigation `helm-ag'/`helm-rg' did,
+;; with the actual search tool underneath chosen by helm itself.
+(defun helm-do-grep-ag-project (arg)
+  "Like `helm-do-grep-ag', but search from the project root."
+  (interactive "P")
+  (let* ((proj (project-current))
+          (default-directory (if proj (project-root proj) default-directory)))
+    (helm-do-grep-ag arg)))
 
-(use-package helm-swoop
-  :quelpa ((helm-swoop :fetcher github :repo "emacsattic/helm-swoop") :upgrade t)
-  :defer t
-  :bind
-  (("M-o" . helm-swoop)
-    ("M-O" . helm-swoop-back-to-last-point)
-    ("C-c M-o" . helm-multi-swoop)
-    ;; ("C-c M-O" . helm-multi-swoop-all)
-    )
-  :config
-  ;; Save buffer when helm-multi-swoop-edit complete
-  (setq helm-multi-swoop-edit-save t)
-  ;; If this value is t, split window inside the current window
-  (setq helm-swoop-split-with-multiple-windows nil)
-  ;; Split direcion. 'split-window-vertically or 'split-window-horizontally
-  (setq helm-swoop-split-direction 'split-window-horizontally)
-  ;; If nil, you can slightly boost invoke speed in exchange for text color
-  (setq helm-swoop-speed-or-color t)
-  (bind-keys :map isearch-mode-map
-    ("M-o" . helm-swoop-from-isearch))
-  (bind-keys :map helm-swoop-map
-    ("M-o" . helm-multi-swoop-all-from-helm-swoop)
-    ;; ("M-i" . helm-swoop-from-evil-search)
-    )
-  )
+(when (or (executable-find "rg") (executable-find "ag"))
+  (bind-keys ("M-p" . helm-do-grep-ag-project)))
+
+;; Lets helm-grep-mode results (from helm-do-grep-ag et al.) be exported to
+;; an editable buffer.
+(use-package wgrep
+  :ensure t
+  :demand t)
 
 (use-package helm-xref
   :ensure t
