@@ -33,7 +33,6 @@
     ("C-x b" . helm-mini)
     ("C-x C-r" . helm-recentf)
     ("M-o" . helm-occur)
-    ("C-c M-o" . helm-multi-occur)
     )
   (bind-keys :map helm-map
     ("C-o" . nil)
@@ -64,11 +63,6 @@
     ("RET" . helm-grep-mode-jump-other-window)
     ("n" . helm-grep-mode-jump-other-window-forward)
     ("p" . helm-grep-mode-jump-other-window-backward))
-
-  (bind-keys :prefix-map helm-prefix-map
-    :prefix "C-c s"
-    ("f" . helm-browse-project)
-    )
 
   (with-eval-after-load 'tramp-cache (setq tramp-cache-read-persistent-data t))
   (with-eval-after-load 'auth-source (setq auth-source-save-behavior nil))
@@ -101,8 +95,26 @@
 (setq helm-grep-ag-command
   "rg --color=never --smart-case --search-zip --no-heading --line-number %s -- %s %s")
 
-(defvar as-emacs-helm-grep-match-selection-overlay nil
-  "Overlay keeping `helm-grep-match' visible over `helm-selection-overlay'.")
+;; `helm-grep-ag-init's own sentinel calls `with-helm-window' when the rg
+;; process finishes, which signals "Wrong type argument: window-live-p,
+;; nil" if the helm session was already exited/cancelled before the async
+;; process wrapped up -- a known upstream race (see the process-connection-
+;; type comment in `helm-grep-ag-init', only ever patched for macOS).
+;; Silence just that race rather than patching helm's sentinel outright.
+(advice-add 'helm-grep-ag-init :around
+  (lambda (orig-fn &rest args)
+    (let ((proc (apply orig-fn args)))
+      (when (processp proc)
+        (let ((sentinel (process-sentinel proc)))
+          (when sentinel
+            (set-process-sentinel proc
+              (lambda (p e) (ignore-errors (funcall sentinel p e)))))))
+      proc)))
+
+(defvar as-emacs-helm-grep-match-selection-overlays nil
+  "Overlays keeping `helm-grep-match' visible over `helm-selection-overlay'.
+One per match span on the selected line -- a line can contain more than
+one occurrence of the search pattern.")
 
 (defun as-emacs-helm--face-has-p (pos face)
   "Non-nil if the `face' text property at POS is or contains FACE.
@@ -113,36 +125,33 @@ plain `eq'/`text-property-any' check against FACE never matches."
     (or (eq val face) (and (listp val) (memq face val)))))
 
 (defun as-emacs-helm-highlight-selected-match ()
-  "Re-apply `helm-grep-match' over the match text on the selected line."
+  "Re-apply `helm-grep-match' over every match span on the selected line."
+  (mapc #'delete-overlay as-emacs-helm-grep-match-selection-overlays)
+  (setq as-emacs-helm-grep-match-selection-overlays nil)
   (when (overlayp helm-selection-overlay)
-    (unless as-emacs-helm-grep-match-selection-overlay
-      (setq as-emacs-helm-grep-match-selection-overlay
-        (make-overlay (point-min) (point-min)))
-      (overlay-put as-emacs-helm-grep-match-selection-overlay 'priority 2)
-      (overlay-put as-emacs-helm-grep-match-selection-overlay 'face 'helm-grep-match))
-    (let* ((beg (overlay-start helm-selection-overlay))
-            (end (overlay-end helm-selection-overlay))
-            (pos beg)
-            match-beg)
-      (while (and pos (< pos end) (not match-beg))
+    (let ((pos (overlay-start helm-selection-overlay))
+           (end (overlay-end helm-selection-overlay)))
+      (while (and pos (< pos end))
         (if (as-emacs-helm--face-has-p pos 'helm-grep-match)
-          (setq match-beg pos)
-          (setq pos (next-single-property-change pos 'face nil end))))
-      ;; Explicit BUFFER arg: without it, `move-overlay' re-homes a
-      ;; previously-deleted overlay into whatever buffer it was *originally*
-      ;; created in, which silently breaks this if helm ever recreates the
-      ;; "*helm RG*" buffer object between sessions instead of reusing it.
-      (if match-beg
-        (move-overlay as-emacs-helm-grep-match-selection-overlay
-          match-beg (or (next-single-property-change match-beg 'face nil end) end)
-          (current-buffer))
-        (move-overlay as-emacs-helm-grep-match-selection-overlay 1 1 (current-buffer))))))
+          (let* ((match-end (or (next-single-property-change pos 'face nil end) end))
+                  (ov (make-overlay pos match-end (current-buffer))))
+            (overlay-put ov 'priority 2)
+            (overlay-put ov 'face 'helm-grep-match)
+            (push ov as-emacs-helm-grep-match-selection-overlays)
+            (setq pos match-end))
+          (setq pos (next-single-property-change pos 'face nil end)))))))
 
 (add-hook 'helm-move-selection-after-hook #'as-emacs-helm-highlight-selected-match)
 (add-hook 'helm-after-update-hook #'as-emacs-helm-highlight-selected-match)
 
 (when (or (executable-find "rg") (executable-find "ag"))
   (bind-keys ("M-p" . helm-do-grep-ag-project)))
+
+(when (facep 'helm-selection)
+  (set-face-attribute 'helm-selection nil :weight 'bold))
+(when (facep 'helm-grep-file)
+  (set-face-attribute 'helm-grep-file nil :foreground "DarkTurquoise" :underline t))
+
 
 ;; Lets helm-grep-mode results (from helm-do-grep-ag et al.) be exported to
 ;; an editable buffer.
@@ -175,6 +184,11 @@ plain `eq'/`text-property-any' check against FACE never matches."
                           (project-root proj)
                         (with-current-buffer "*scratch*" default-directory))))
       (helm-fd-1 directory))))
+
+;; `helm-command-map' (bound above via helm-fd's :map) isn't reachable from
+;; any key on its own -- traditionally `(require 'helm-config)' binds it to
+;; `C-c h', but this config never requires that file. Bind it directly.
+(global-set-key (kbd "C-c h") helm-command-map)
 
 ;; start helm-mode
 (use-package helm-mode

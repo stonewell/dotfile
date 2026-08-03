@@ -61,6 +61,20 @@
     ("r" replace-string)
     ("R" replace-regexp)
     ("o" (if (eq as-emacs-completion-stack 'vertico) (consult-line) (helm-occur)))
+    ;; `helm-multi-occur' doesn't exist -- the real, bare-interactive
+    ;; function is `helm-occur-visible-buffers' (`helm-multi-occur-1' takes
+    ;; a BUFFERS list arg, not meant to be called with none).
+    ("O" (if (eq as-emacs-completion-stack 'vertico) (consult-line-multi) (helm-occur-visible-buffers)))
+    ;; `project-find-file' just uses a plain `completing-read', which
+    ;; `helm-mode'/vertico already redirect through whichever stack is
+    ;; active -- no need to dispatch to `helm-browse-project' here, which
+    ;; is much heavier (VCS detection, dual buffer/file sources) and can
+    ;; feel like a hang on a large repo.
+    ("f" (call-interactively 'project-find-file))
+    ;; Mirrors `helm-fd-project' (still separately bound at `C-c h /' under
+    ;; the helm stack); `consult-fd' has no other binding, this is its only
+    ;; path under vertico.
+    ("/" (if (eq as-emacs-completion-stack 'vertico) (consult-fd) (helm-fd-project)))
     )
 
   (defhydra x-5
@@ -85,11 +99,17 @@
     ("o" other-window)
     ("r" (if (eq as-emacs-completion-stack 'vertico) (recentf-open) (helm-recentf)))
     ("s" save-buffer)
-    ("0" delete-windows)
+    (";" comment-or-uncomment-region)
+    ("0" delete-window)
     ("1" delete-other-windows)
     ("2" split-window-below)
     ("3" split-window-right)
     ("5" x-5/body "frame")
+    ;; Helm has its own action-selection built into `helm-map' already, so
+    ;; there's no helm equivalent here -- message instead of erroring.
+    ("a" (if (eq as-emacs-completion-stack 'vertico) (embark-act) (message "Embark is only available under the vertico stack")))
+    ("d" (if (eq as-emacs-completion-stack 'vertico) (embark-dwim) (message "Embark is only available under the vertico stack")))
+    ("e" (if (eq as-emacs-completion-stack 'vertico) (embark-export) (message "Embark is only available under the vertico stack")))
     )
 
   (defhydra helm-like-unite (:hint nil

@@ -20,6 +20,10 @@
 (when-let ((env (getenv "AS_EMACS_COMPLETION_STACK")))
   (setq as-emacs-completion-stack (intern env)))
 
+;; Which completion stack to load: 'helm (default) or 'vertico.
+(defvar as-emacs-menu-stack 'hydra
+  "Which menu stack to load: `hydra' or `transient'.")
+
 (setq gc-cons-threshold 200000000)
 ;; max-specpdl-size was removed in Emacs 29; omitted.
 

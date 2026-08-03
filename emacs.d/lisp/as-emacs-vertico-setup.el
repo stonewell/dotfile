@@ -64,7 +64,6 @@
     ("C-x b" . consult-buffer)
     ("C-x C-r" . recentf-open) ;; vanilla, Vertico-enhanced; mirrors helm-recentf
     ("M-o" . consult-line)
-    ("C-c M-o" . consult-line-multi)
     )
   :config
   ;; Default `consult-preview-key' is `any', which opens/jumps to a
@@ -82,11 +81,6 @@
     (bind-keys
       ("M-p" . as-emacs-consult-ripgrep-symbol-at-point)
       )
-    )
-
-  (bind-keys :prefix-map as-emacs-vertico-prefix-map
-    :prefix "C-c s"
-    ("f" . project-find-file) ;; mirrors helm-browse-project
     )
 
   ;; list-buffers and occur both open a dedicated results buffer rather than
@@ -128,16 +122,12 @@
 
 ;; contextual actions on the candidate at point/in the minibuffer.
 ;; NOTE: as-emacs-keys.el already globally binds the conventional Embark keys
-;; (C-. -> push-mark-command, C-; -> backward-char), so Embark is bound under
-;; its own C-c e prefix instead (discoverable via which-key-mode).
+;; (C-. -> push-mark-command, C-; -> backward-char), so Embark's own commands
+;; aren't bound to a dedicated prefix here -- they're reachable from the
+;; "Embark" group in as-emacs-transient-x/the `x' hydra instead.
 (use-package embark
   :ensure t
   :demand t
-  :bind
-  (("C-c e a" . embark-act)
-    ("C-c e d" . embark-dwim)
-    ("C-c e e" . embark-export)
-    )
   :config
   (setq prefix-help-command #'embark-prefix-help-command)
   )

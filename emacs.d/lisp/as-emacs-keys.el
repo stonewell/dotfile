@@ -8,8 +8,6 @@
 (global-set-key (kbd "C-;") 'backward-char)
 ;;for tty emacs
 (global-set-key (kbd "C-x ,") 'push-mark-command)
-;; comment uncomment
-(global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
 
 ;;; Unbind the stupid minimize that I always hit.
 (global-unset-key "\C-z")
