@@ -7,12 +7,13 @@
 ;;package
 (require 'as-emacs-packages)
 
+;;load font and color theme settings
+;;load theme first, we can override later
+(require 'as-emacs-setup-font-color-theme)
+
 (cond
   ((eq as-emacs-completion-stack 'vertico) (require 'as-emacs-vertico-setup))
   (t (require 'as-emacs-helm-setup)))
-
-;;load font and color theme settings
-(require 'as-emacs-setup-font-color-theme)
 
 ;;load hydra
 (require 'as-emacs-hydra-setup)
