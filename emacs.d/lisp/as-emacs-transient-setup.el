@@ -56,9 +56,21 @@
    ("R" "replace regexp" replace-regexp)
    ("o" "occur"
      (lambda () (interactive)
-       (if (eq as-emacs-completion-stack 'vertico) (consult-line) (helm-occur))))]
+       (if (eq as-emacs-completion-stack 'vertico) (consult-line) (helm-occur))))
+   ;; `helm-multi-occur' doesn't exist -- the real, bare-interactive
+   ;; function is `helm-occur-visible-buffers' (`helm-multi-occur-1' takes
+   ;; a BUFFERS list arg, not meant to be called with none).
+   ("O" "occur, multi-buffer"
+     (lambda () (interactive)
+       (if (eq as-emacs-completion-stack 'vertico) (consult-line-multi) (helm-occur-visible-buffers))))]
   ["Project"
-   ("f" "find file in project" project-find-file)])
+   ("f" "find file in project" project-find-file)
+   ;; Mirrors `helm-fd-project' (still separately bound at `C-c h /' under
+   ;; the helm stack); `consult-fd' has no other binding, this is its only
+   ;; path under vertico.
+   ("/" "find files (fd)"
+     (lambda () (interactive)
+       (if (eq as-emacs-completion-stack 'vertico) (consult-fd) (helm-fd-project))))])
 (global-set-key (kbd "C-c s") #'as-emacs-transient-search)
 
 (transient-define-prefix as-emacs-transient-x-frame ()
@@ -87,7 +99,8 @@
    ("h" "mark whole buffer" mark-whole-buffer)
    ("k" "kill buffer" kill-buffer)
    ("s" "save buffer" save-buffer)
-   ("c" "save buffers & kill emacs" save-buffers-kill-terminal)]
+   ("c" "save buffers & kill emacs" save-buffers-kill-terminal)
+   (";" "comment/uncomment" comment-or-uncomment-region)]
   ["Window"
    ("o" "other window" other-window)
    ("0" "delete window" delete-window)
@@ -95,7 +108,15 @@
    ("2" "split below" split-window-below)
    ("3" "split right" split-window-right)]
   ["Frame"
-   ("5" "frame..." as-emacs-transient-x-frame)])
+   ("5" "frame..." as-emacs-transient-x-frame)]
+  ;; Helm has its own action-selection built into `helm-map' already, so
+  ;; there's no helm equivalent to dispatch to here -- just hide the group
+  ;; entirely under that stack instead.
+  ["Embark"
+   :if (lambda () (eq as-emacs-completion-stack 'vertico))
+   ("a" "act" embark-act)
+   ("d" "dwim" embark-dwim)
+   ("e" "export" embark-export)])
 (global-set-key (kbd "C-c x") #'as-emacs-transient-x)
 
 ;; Vi-like navigation overlay for an active helm session, replacing the old
