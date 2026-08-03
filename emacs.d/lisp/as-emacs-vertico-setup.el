@@ -84,11 +84,6 @@
       )
     )
 
-  (bind-keys :prefix-map as-emacs-vertico-prefix-map
-    :prefix "C-c s"
-    ("f" . project-find-file) ;; mirrors helm-browse-project
-    )
-
   ;; list-buffers and occur both open a dedicated results buffer rather than
   ;; acting through a plain completing-read, so Vertico doesn't enhance them
   ;; in place -- remap explicitly, mirroring helm-setup's

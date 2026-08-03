@@ -64,11 +64,6 @@
     ("n" . helm-grep-mode-jump-other-window-forward)
     ("p" . helm-grep-mode-jump-other-window-backward))
 
-  (bind-keys :prefix-map helm-prefix-map
-    :prefix "C-c s"
-    ("f" . helm-browse-project)
-    )
-
   (with-eval-after-load 'tramp-cache (setq tramp-cache-read-persistent-data t))
   (with-eval-after-load 'auth-source (setq auth-source-save-behavior nil))
 
@@ -99,6 +94,22 @@
 ;; used (see as-emacs-setup-font-color-theme.el for their colors).
 (setq helm-grep-ag-command
   "rg --color=never --smart-case --search-zip --no-heading --line-number %s -- %s %s")
+
+;; `helm-grep-ag-init's own sentinel calls `with-helm-window' when the rg
+;; process finishes, which signals "Wrong type argument: window-live-p,
+;; nil" if the helm session was already exited/cancelled before the async
+;; process wrapped up -- a known upstream race (see the process-connection-
+;; type comment in `helm-grep-ag-init', only ever patched for macOS).
+;; Silence just that race rather than patching helm's sentinel outright.
+(advice-add 'helm-grep-ag-init :around
+  (lambda (orig-fn &rest args)
+    (let ((proc (apply orig-fn args)))
+      (when (processp proc)
+        (let ((sentinel (process-sentinel proc)))
+          (when sentinel
+            (set-process-sentinel proc
+              (lambda (p e) (ignore-errors (funcall sentinel p e)))))))
+      proc)))
 
 (defvar as-emacs-helm-grep-match-selection-overlays nil
   "Overlays keeping `helm-grep-match' visible over `helm-selection-overlay'.
@@ -173,6 +184,11 @@ plain `eq'/`text-property-any' check against FACE never matches."
                           (project-root proj)
                         (with-current-buffer "*scratch*" default-directory))))
       (helm-fd-1 directory))))
+
+;; `helm-command-map' (bound above via helm-fd's :map) isn't reachable from
+;; any key on its own -- traditionally `(require 'helm-config)' binds it to
+;; `C-c h', but this config never requires that file. Bind it directly.
+(global-set-key (kbd "C-c h") helm-command-map)
 
 ;; start helm-mode
 (use-package helm-mode

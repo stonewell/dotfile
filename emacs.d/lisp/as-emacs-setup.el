@@ -11,15 +11,17 @@
 ;;load theme first, we can override later
 (require 'as-emacs-setup-font-color-theme)
 
+;;load personal functions
+(require 'as-emacs-funcs-setup)
+
+;;load menus
+(cond
+  ((eq as-emacs-menu-stack 'transient) (require 'as-emacs-transient-setup))
+  (t (require 'as-emacs-hydra-setup)))
+
 (cond
   ((eq as-emacs-completion-stack 'vertico) (require 'as-emacs-vertico-setup))
   (t (require 'as-emacs-helm-setup)))
-
-;;load hydra
-(require 'as-emacs-hydra-setup)
-
-;;load personal functions
-(require 'as-emacs-funcs-setup)
 
 ;;load key bindings
 (require 'as-emacs-keys)

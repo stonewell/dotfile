@@ -61,6 +61,12 @@
     ("r" replace-string)
     ("R" replace-regexp)
     ("o" (if (eq as-emacs-completion-stack 'vertico) (consult-line) (helm-occur)))
+    ;; `project-find-file' just uses a plain `completing-read', which
+    ;; `helm-mode'/vertico already redirect through whichever stack is
+    ;; active -- no need to dispatch to `helm-browse-project' here, which
+    ;; is much heavier (VCS detection, dual buffer/file sources) and can
+    ;; feel like a hang on a large repo.
+    ("f" (call-interactively 'project-find-file))
     )
 
   (defhydra x-5
@@ -85,7 +91,7 @@
     ("o" other-window)
     ("r" (if (eq as-emacs-completion-stack 'vertico) (recentf-open) (helm-recentf)))
     ("s" save-buffer)
-    ("0" delete-windows)
+    ("0" delete-window)
     ("1" delete-other-windows)
     ("2" split-window-below)
     ("3" split-window-right)
