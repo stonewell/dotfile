@@ -94,7 +94,7 @@
   ;; there's no helm equivalent to dispatch to here -- just hide the group
   ;; entirely under that stack instead.
   ["Embark"
-   :if #'as-emacs-vertico-p
+   :if as-emacs-vertico-p
    ("a" "act" embark-act)
    ("d" "dwim" embark-dwim)
    ("e" "export" embark-export)])
