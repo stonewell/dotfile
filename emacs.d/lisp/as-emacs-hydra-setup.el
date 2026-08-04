@@ -178,5 +178,11 @@ _J_ ^ ^ _j_ ^ ^     _U_nmark all     _d_elete
 
   )
 
+;; Helm's command palette (or its vertico-stack equivalent, see
+;; as-emacs-vertico-setup.el) -- not a hydra itself, but lives here so `C-c'
+;; is fully accounted for regardless of `as-emacs-completion-stack'.
+(global-set-key (kbd "C-c h")
+  (if (as-emacs-vertico-p) 'as-emacs-vertico-command-map 'helm-command-prefix))
+
 (provide 'as-emacs-hydra-setup)
 ;;; as-emacs-hydra-setup.el ends here

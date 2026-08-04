@@ -150,6 +150,14 @@
   (which-key-prefix-prefix "+")
   :config
   (which-key-mode)
+  ;; `C-c a/o/s/x' dispatch straight to a hydra body (or transient prefix)
+  ;; command, so which-key's top-level `C-c' popup would otherwise show the
+  ;; raw command name (e.g. `avy/body') instead of a description.
+  (which-key-add-key-based-replacements
+    "C-c a" "avy"
+    "C-c o" "org"
+    "C-c s" "search/replace"
+    "C-c x" "buffer/window/frame")
   )
 
 (use-package whole-line-or-region

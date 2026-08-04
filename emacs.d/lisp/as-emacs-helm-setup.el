@@ -185,10 +185,10 @@ plain `eq'/`text-property-any' check against FACE never matches."
                         (with-current-buffer "*scratch*" default-directory))))
       (helm-fd-1 directory))))
 
-;; `helm-command-map' (bound above via helm-fd's :map) isn't reachable from
-;; any key on its own -- traditionally `(require 'helm-config)' binds it to
-;; `C-c h', but this config never requires that file. Bind it directly.
-(global-set-key (kbd "C-c h") helm-command-map)
+;; `helm-command-map'/`helm-command-prefix' (bound above via helm-fd's :map)
+;; is bound to `C-c h' in as-emacs-hydra-setup.el/as-emacs-transient-setup.el
+;; instead of here, since that binding needs to pick between helm and the
+;; vertico-stack equivalent depending on `as-emacs-completion-stack'.
 
 ;; start helm-mode
 (use-package helm-mode

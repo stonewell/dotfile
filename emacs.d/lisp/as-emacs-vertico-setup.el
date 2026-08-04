@@ -92,6 +92,48 @@
   )
 ;; end-of consult
 
+;; Vertico-stack counterpart to helm's `helm-command-map'/`helm-command-prefix'
+;; (see helm-global-bindings.el), bound at `C-c h' by
+;; as-emacs-hydra-setup.el/as-emacs-transient-setup.el. There's no single
+;; pre-built equivalent package -- this hand-picks the closest consult or
+;; vanilla (Vertico-enhanced) command for each `helm-command-map' entry that
+;; has one; entries already bound elsewhere in this file, or with no real
+;; equivalent (helm-surfraw, helm-select-xfont, helm-google-suggest,
+;; helm-run-external-command, helm-resume, helm-gid, helm-info-gnus,
+;; helm-multi-files, helm-lisp-completion-at-point), are omitted.
+(defvar as-emacs-vertico-command-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "a") 'apropos)
+    (define-key map (kbd "e") 'xref-find-apropos)
+    (when (executable-find "locate")
+      (define-key map (kbd "l") 'consult-locate))
+    (define-key map (kbd "L") 'locate-library)
+    (define-key map (kbd "r") 're-builder)
+    (define-key map (kbd "m") 'man)
+    (define-key map (kbd "t") 'proced)
+    (define-key map (kbd "o") 'consult-outline)
+    (when (executable-find "find")
+      (define-key map (kbd "/") 'consult-find))
+    (define-key map (kbd "i") 'consult-imenu)
+    (define-key map (kbd "I") 'consult-imenu-multi)
+    (define-key map (kbd "p") 'list-processes)
+    (define-key map (kbd "C-x r b") 'consult-bookmark)
+    (define-key map (kbd "C-c <SPC>") 'consult-global-mark)
+    (define-key map (kbd "C-:") 'eval-expression)
+    (define-key map (kbd "C-,") 'quick-calc)
+    (define-key map (kbd "M-g a") 'consult-ripgrep)
+    (define-key map (kbd "c") 'list-colors-display)
+    (define-key map (kbd "8") 'insert-char)
+    (define-key map (kbd "h i") 'info-lookup-symbol)
+    (define-key map (kbd "h r") 'info-emacs-manual)
+    (define-key map (kbd "h h") 'info)
+    (define-key map (kbd "C-x r i") 'consult-register)
+    (define-key map (kbd "@") 'list-packages)
+    (define-key map (kbd "h p") 'finder-by-keyword)
+    map)
+  "Vertico-stack command palette, parallel to `helm-command-map'.")
+(fset 'as-emacs-vertico-command-map as-emacs-vertico-command-map)
+
 (use-package corfu
   :ensure t
   :init
