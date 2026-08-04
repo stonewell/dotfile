@@ -2,6 +2,37 @@
 ;;; Commentary:
 ;; Hydra
 ;;; Code:
+
+;; The completion-stack dispatch heads below (occur, find-file, etc.) use
+;; the shared `as-menu-*' commands from `as-emacs-funcs-setup' -- those are
+;; reused by `as-emacs-transient-setup' too, so they live somewhere loaded
+;; regardless of which menu stack is active.
+
+;; Helm has its own action-selection built into `helm-map' already, so
+;; there's no helm equivalent to Embark -- message instead of erroring.
+;; These stay hydra-specific since the transient stack instead hides the
+;; whole Embark group under the helm stack via a group-level `:if'.
+(defun as-hydra-embark-act ()
+  "Embark act; only available under the vertico stack."
+  (interactive)
+  (if (as-emacs-vertico-p)
+    (embark-act)
+    (message "Embark is only available under the vertico stack")))
+
+(defun as-hydra-embark-dwim ()
+  "Embark dwim; only available under the vertico stack."
+  (interactive)
+  (if (as-emacs-vertico-p)
+    (embark-dwim)
+    (message "Embark is only available under the vertico stack")))
+
+(defun as-hydra-embark-export ()
+  "Embark export; only available under the vertico stack."
+  (interactive)
+  (if (as-emacs-vertico-p)
+    (embark-export)
+    (message "Embark is only available under the vertico stack")))
+
 (use-package hydra
   :ensure t
   :config
@@ -38,17 +69,17 @@
       global-map "C-c o"
       :exit t
       :hint nil)
-    ("a" org-agenda)
-    ("l" org-store-link)
-    ("c" org-capture)
+    ("a" org-agenda "agenda")
+    ("l" org-store-link "store link")
+    ("c" org-capture "capture")
     )
 
   (defhydra hydra-isearch
     (
       :exit nil
       )
-    ("n" isearch-repeat-forward)
-    ("p" isearch-repeat-backward)
+    ("n" isearch-repeat-forward "repeat forward")
+    ("p" isearch-repeat-backward "repeat backward")
     )
   (define-key isearch-mode-map (kbd "<f12>") 'hydra-isearch/body)
 
@@ -57,32 +88,26 @@
       global-map "C-c s"
       :exit t
       :hint nil)
-    ("s" isearch-forward)
-    ("r" replace-string)
-    ("R" replace-regexp)
-    ("o" (if (eq as-emacs-completion-stack 'vertico) (consult-line) (helm-occur)))
-    ;; `helm-multi-occur' doesn't exist -- the real, bare-interactive
-    ;; function is `helm-occur-visible-buffers' (`helm-multi-occur-1' takes
-    ;; a BUFFERS list arg, not meant to be called with none).
-    ("O" (if (eq as-emacs-completion-stack 'vertico) (consult-line-multi) (helm-occur-visible-buffers)))
+    ("s" isearch-forward "isearch")
+    ("r" replace-string "replace string")
+    ("R" replace-regexp "replace regexp")
+    ("o" as-menu-occur "occur")
+    ("O" as-menu-occur-multi-buffer "occur, multi-buffer")
     ;; `project-find-file' just uses a plain `completing-read', which
     ;; `helm-mode'/vertico already redirect through whichever stack is
     ;; active -- no need to dispatch to `helm-browse-project' here, which
     ;; is much heavier (VCS detection, dual buffer/file sources) and can
     ;; feel like a hang on a large repo.
-    ("f" (call-interactively 'project-find-file))
-    ;; Mirrors `helm-fd-project' (still separately bound at `C-c h /' under
-    ;; the helm stack); `consult-fd' has no other binding, this is its only
-    ;; path under vertico.
-    ("/" (if (eq as-emacs-completion-stack 'vertico) (consult-fd) (helm-fd-project)))
+    ("f" project-find-file "find file in project")
+    ("/" as-menu-find-files-fd "find files (fd)")
     )
 
   (defhydra x-5
     (
       :exit t
       )
-    ("1" delete-other-frames)
-    ("0" delete-frame)
+    ("1" delete-other-frames "delete other frames")
+    ("0" delete-frame "delete frame")
     )
 
   (defhydra x
@@ -90,26 +115,24 @@
       global-map "C-c x"
       :exit t
       )
-    ("b" (if (eq as-emacs-completion-stack 'vertico) (consult-buffer) (helm-mini)))
-    ("B" (if (eq as-emacs-completion-stack 'vertico) (consult-buffer) (helm-buffers-list)))
-    ("c" save-buffers-kill-terminal)
-    ("f" (if (eq as-emacs-completion-stack 'vertico) (call-interactively 'find-file) (call-interactively 'helm-find-files)))
-    ("h" mark-whole-buffer)
-    ("k" kill-buffer)
-    ("o" other-window)
-    ("r" (if (eq as-emacs-completion-stack 'vertico) (recentf-open) (helm-recentf)))
-    ("s" save-buffer)
-    (";" comment-or-uncomment-region)
-    ("0" delete-window)
-    ("1" delete-other-windows)
-    ("2" split-window-below)
-    ("3" split-window-right)
+    ("b" as-menu-switch-buffer "switch")
+    ("B" as-menu-list-buffers "list")
+    ("c" save-buffers-kill-terminal "save buffers & kill emacs")
+    ("f" as-menu-find-file "find file")
+    ("h" mark-whole-buffer "mark whole buffer")
+    ("k" kill-buffer "kill buffer")
+    ("o" other-window "other window")
+    ("r" as-menu-recentf "recentf")
+    ("s" save-buffer "save buffer")
+    (";" comment-or-uncomment-region "comment/uncomment")
+    ("0" delete-window "delete window")
+    ("1" delete-other-windows "delete other windows")
+    ("2" split-window-below "split below")
+    ("3" split-window-right "split right")
     ("5" x-5/body "frame")
-    ;; Helm has its own action-selection built into `helm-map' already, so
-    ;; there's no helm equivalent here -- message instead of erroring.
-    ("a" (if (eq as-emacs-completion-stack 'vertico) (embark-act) (message "Embark is only available under the vertico stack")))
-    ("d" (if (eq as-emacs-completion-stack 'vertico) (embark-dwim) (message "Embark is only available under the vertico stack")))
-    ("e" (if (eq as-emacs-completion-stack 'vertico) (embark-export) (message "Embark is only available under the vertico stack")))
+    ("a" as-hydra-embark-act "act")
+    ("d" as-hydra-embark-dwim "dwim")
+    ("e" as-hydra-embark-export "export")
     )
 
   (defhydra helm-like-unite (:hint nil

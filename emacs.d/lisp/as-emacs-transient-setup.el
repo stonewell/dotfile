@@ -54,23 +54,14 @@
    ("s" "isearch" isearch-forward)
    ("r" "replace string" replace-string)
    ("R" "replace regexp" replace-regexp)
-   ("o" "occur"
-     (lambda () (interactive)
-       (if (eq as-emacs-completion-stack 'vertico) (consult-line) (helm-occur))))
-   ;; `helm-multi-occur' doesn't exist -- the real, bare-interactive
-   ;; function is `helm-occur-visible-buffers' (`helm-multi-occur-1' takes
-   ;; a BUFFERS list arg, not meant to be called with none).
-   ("O" "occur, multi-buffer"
-     (lambda () (interactive)
-       (if (eq as-emacs-completion-stack 'vertico) (consult-line-multi) (helm-occur-visible-buffers))))]
+   ("o" "occur" as-menu-occur)
+   ("O" "occur, multi-buffer" as-menu-occur-multi-buffer)]
   ["Project"
    ("f" "find file in project" project-find-file)
    ;; Mirrors `helm-fd-project' (still separately bound at `C-c h /' under
    ;; the helm stack); `consult-fd' has no other binding, this is its only
    ;; path under vertico.
-   ("/" "find files (fd)"
-     (lambda () (interactive)
-       (if (eq as-emacs-completion-stack 'vertico) (consult-fd) (helm-fd-project))))])
+   ("/" "find files (fd)" as-menu-find-files-fd)])
 (global-set-key (kbd "C-c s") #'as-emacs-transient-search)
 
 (transient-define-prefix as-emacs-transient-x-frame ()
@@ -82,20 +73,10 @@
 (transient-define-prefix as-emacs-transient-x ()
   "Buffer, window, and frame management."
   ["Buffer"
-   ("b" "switch"
-     (lambda () (interactive)
-       (if (eq as-emacs-completion-stack 'vertico) (consult-buffer) (helm-mini))))
-   ("B" "list"
-     (lambda () (interactive)
-       (if (eq as-emacs-completion-stack 'vertico) (consult-buffer) (helm-buffers-list))))
-   ("f" "find file"
-     (lambda () (interactive)
-       (if (eq as-emacs-completion-stack 'vertico)
-         (call-interactively 'find-file)
-         (call-interactively 'helm-find-files))))
-   ("r" "recentf"
-     (lambda () (interactive)
-       (if (eq as-emacs-completion-stack 'vertico) (recentf-open) (helm-recentf))))
+   ("b" "switch" as-menu-switch-buffer)
+   ("B" "list" as-menu-list-buffers)
+   ("f" "find file" as-menu-find-file)
+   ("r" "recentf" as-menu-recentf)
    ("h" "mark whole buffer" mark-whole-buffer)
    ("k" "kill buffer" kill-buffer)
    ("s" "save buffer" save-buffer)
@@ -113,7 +94,7 @@
   ;; there's no helm equivalent to dispatch to here -- just hide the group
   ;; entirely under that stack instead.
   ["Embark"
-   :if (lambda () (eq as-emacs-completion-stack 'vertico))
+   :if #'as-emacs-vertico-p
    ("a" "act" embark-act)
    ("d" "dwim" embark-dwim)
    ("e" "export" embark-export)])
