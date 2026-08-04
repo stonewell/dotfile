@@ -21,8 +21,9 @@ local style   = require "core.style"
 -- ---------------------------------------------------------------------------
 
 config.plugins.whichkey = common.merge({
-  delay     = 0.5,   -- seconds before popup appears; set to 0 for immediate
-  col_width = 280,   -- per-column pixel width, scaled by SCALE below
+  delay          = 0.5,  -- seconds before popup appears; set to 0 for immediate
+  col_width      = 280,  -- per-column pixel width, scaled by SCALE below
+  max_desc_lines = 2,    -- wrap a long description onto at most this many lines
 }, config.plugins.whichkey)
 
 -- Apply SCALE once at load time.  Users who change the setting later will
