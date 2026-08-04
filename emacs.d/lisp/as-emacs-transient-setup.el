@@ -132,5 +132,12 @@
      ("i" "cancel" transient-quit-one)])
   (define-key helm-map (kbd "<f12>") #'as-emacs-transient-helm-nav))
 
+;; Helm's command palette (or its vertico-stack equivalent, see
+;; as-emacs-vertico-setup.el) -- not a transient prefix itself, but lives
+;; here so `C-c' is fully accounted for regardless of
+;; `as-emacs-completion-stack'.
+(global-set-key (kbd "C-c h")
+  (if (as-emacs-vertico-p) 'as-emacs-vertico-command-map 'helm-command-prefix))
+
 (provide 'as-emacs-transient-setup)
 ;;; as-emacs-transient-setup.el ends here

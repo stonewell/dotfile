@@ -9,11 +9,11 @@ local style = require "core.style"
 if PLATFORM == "Windows" then
 
   style.font = renderer.font.load(DATADIR .. "/fonts/FiraSans-Regular.ttf",
-                                  22 * SCALE,
+                                  16 * SCALE,
                                   {antialiasing ="subpixel", hinting="full", smoothing=true}
   )
   style.code_font = renderer.font.load(DATADIR .. "/fonts/JetBrainsMono-Regular.ttf",
-                                       22 * SCALE,
+                                       16 * SCALE,
                                        {antialiasing ="subpixel", hinting="full", smoothing=true}
   )
 
