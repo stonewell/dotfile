@@ -20,7 +20,7 @@
   (t (require 'as-emacs-hydra-setup)))
 
 (cond
-  ((eq as-emacs-completion-stack 'vertico) (require 'as-emacs-vertico-setup))
+  ((as-emacs-vertico-p) (require 'as-emacs-vertico-setup))
   (t (require 'as-emacs-helm-setup)))
 
 ;;load key bindings

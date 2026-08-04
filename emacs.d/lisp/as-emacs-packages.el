@@ -93,7 +93,7 @@
   :ensure t
   :config
   (spaceline-emacs-theme 1)
-  (when (eq as-emacs-completion-stack 'helm)
+  (when (as-emacs-helm-p)
     (spaceline-helm-mode 1))
   )
 

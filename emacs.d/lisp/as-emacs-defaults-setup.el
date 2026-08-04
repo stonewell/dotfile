@@ -20,6 +20,14 @@
 (when-let ((env (getenv "AS_EMACS_COMPLETION_STACK")))
   (setq as-emacs-completion-stack (intern env)))
 
+(defun as-emacs-vertico-p ()
+  "Non-nil if the vertico completion stack is active."
+  (eq as-emacs-completion-stack 'vertico))
+
+(defun as-emacs-helm-p ()
+  "Non-nil if the helm completion stack is active."
+  (eq as-emacs-completion-stack 'helm))
+
 ;; Which completion stack to load: 'helm (default) or 'vertico.
 (defvar as-emacs-menu-stack 'hydra
   "Which menu stack to load: `hydra' or `transient'.")
