@@ -1,6 +1,5 @@
 local config  = require "core.config"
 local common  = require "core.common"
-local style   = require "core.style"
 local DocView = require "core.docview"
 
 config.plugins.avy = common.merge({
@@ -46,11 +45,17 @@ function DocView:draw_line_text(line, x, y)
       if prefix == "" or c.label:sub(1, #prefix) == prefix then
         local remaining = c.label:sub(#prefix + 1)
         if remaining == "" then goto continue end
-        local cx = x + self:get_col_x_offset(line, c.col)
-        local lw = style.font:get_width(remaining) + 2 * SCALE
+        local cx   = x + self:get_col_x_offset(line, c.col)
+        local font = self:get_font()
+        -- Padding derived from the font's own metrics rather than the raw
+        -- `SCALE' global -- `SCALE' only tracks live display-scale changes
+        -- when `config.plugins.scale.mode' is "ui"; the document's own font
+        -- (returned by `get_font()') always does, regardless of that mode.
+        local pad = math.max(1, math.ceil(font:get_width(" ") * 0.3))
+        local lw  = font:get_width(remaining) + pad
         renderer.draw_rect(cx, y, lw, lh, config.plugins.avy.label_bg)
-        renderer.draw_text(style.font, remaining,
-          cx + SCALE, y + tyo, config.plugins.avy.label_fg)
+        renderer.draw_text(font, remaining,
+          cx + pad / 2, y + tyo, config.plugins.avy.label_fg)
       end
     end
     ::continue::

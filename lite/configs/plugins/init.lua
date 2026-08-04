@@ -100,3 +100,15 @@ up.use {
 -- config.plugins.listview = {
 --   rows = 10,
 -- }
+
+-- scale: default mode ("code") only live-rescales style.code_font when the
+-- display scale changes (e.g. moving the window to a different-DPI
+-- monitor) -- style.font (used by which-key, and the rgsearch/fd-files/
+-- killring/bufferex listview popups) and SCALE itself are left untouched,
+-- so those end up too small relative to the now-correctly-scaled code
+-- text. "ui" mode rescales everything (fonts, padding, scrollbars, SCALE)
+-- together instead. Field assignment (not a full table replace) so this
+-- works regardless of whether this file or the scale plugin's own
+-- defaults-merge runs first.
+config.plugins.scale = config.plugins.scale or {}
+config.plugins.scale.mode = "ui"

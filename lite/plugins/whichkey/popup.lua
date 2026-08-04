@@ -74,7 +74,9 @@ local function draw(root_view, state)
   local sw        = root_view.size.x
   local sv_h      = core.status_view and core.status_view.size.y or 0
   local lh        = style.font:get_height() + style.padding.y
-  local cw        = config.plugins.whichkey.col_width
+  -- Scaled here (rather than once at plugin-load time) so it reflects
+  -- whatever SCALE currently is, not just its value at startup.
+  local cw        = config.plugins.whichkey.col_width * SCALE
   local ncol      = math.max(1, math.floor(sw / cw))
   local nrow      = math.max(1, math.ceil(#state.entries / ncol))
   local max_lines = config.plugins.whichkey.max_desc_lines
