@@ -19,14 +19,23 @@ local soExt = PLATFORM == 'Windows' and '.dll' or '.so'
 -- parsers use .so (their cross-platform convention).  Try both so the same
 -- code handles either source without user configuration.
 local function findParser(dir, name)
-	if PLATFORM == 'Windows' then
-		for _, ext in ipairs({ '.dll', '.so' }) do
-			local path = dir .. '/' .. name .. ext
+	local dirs = { dir }
+	local appData = os.getenv('LOCALAPPDATA')
+	if appData then
+		dirs[#dirs + 1] = appData:gsub('\\', '/') .. '/nvim-data/lazy/nvim-treesitter/parser'
+	end
+	for _, d in ipairs(dirs) do
+		if PLATFORM == 'Windows' then
+			for _, ext in ipairs({ '.dll', '.so' }) do
+				local path = d .. '/' .. name .. ext
+				if system.get_file_info(path) then return path end
+			end
+		else
+			local path = d .. '/' .. name .. '.so'
 			if system.get_file_info(path) then return path end
 		end
-		return dir .. '/' .. name .. '.dll'  -- fallback; getLang will error clearly
 	end
-	return dir .. '/' .. name .. '.so'
+	return dir .. '/' .. name .. (PLATFORM == 'Windows' and '.dll' or '.so')
 end
 
 -- Pattern matching Neovim's EXTENDS_FORMAT in runtime/lua/vim/treesitter/query.lua
@@ -90,10 +99,19 @@ function M.addNvimLang(opts)
 	local runtimeDir = opts.runtimeDir and common.home_expand(opts.runtimeDir)
 	local parserDir  = opts.parserDir and common.home_expand(opts.parserDir) or (root .. '/parser')
 	local name       = opts.name
+	local queryName  = opts.queryName or (name == 'objcpp' and 'objc' or name)
+	local parserName = opts.parserName or (name == 'objcpp' and 'objc' or name)
 
 	assert(not M.defs[name], 'Duplicate language name: ' .. name)
 
-	local nvimQueryPath = root .. '/queries/' .. name .. '/highlights.scm'
+	local nvimQueryPath = root .. '/queries/' .. queryName .. '/highlights.scm'
+	if not system.get_file_info(nvimQueryPath) and queryName == 'objcpp' then
+		local fallbackQuery = root .. '/queries/objc/highlights.scm'
+		if system.get_file_info(fallbackQuery) then
+			queryName = 'objc'
+			nvimQueryPath = fallbackQuery
+		end
+	end
 
 	-- Peek at the nvim-treesitter query to see if it uses ; extends
 	local usesExtends = false
@@ -107,15 +125,17 @@ function M.addNvimLang(opts)
 	end
 
 	local def = {
-		name      = name,
-		files     = opts.files,
-		soFile    = findParser(parserDir, name),
-		queryFiles = {},
+		name           = name,
+		langName       = parserName,
+		parserDir      = parserDir,
+		files          = opts.files,
+		soFile         = findParser(parserDir, parserName),
+		queryFiles     = {},
 	}
 
 	if usesExtends and runtimeDir then
 		def.queryFiles.highlights = {
-			runtimeDir .. '/queries/' .. name .. '/highlights.scm',
+			runtimeDir .. '/queries/' .. queryName .. '/highlights.scm',
 			nvimQueryPath,
 		}
 	else
@@ -159,7 +179,15 @@ function M.getLang(def)
 		return lang
 	end
 
-	local ok, result = pcall(ts.Language.load, def.soFile, def.name)
+	local soFile = def.soFile
+	local langName = def.langName or def.name
+
+	if not soFile or not system.get_file_info(soFile) then
+		core.log_quiet('treesit: parser not found for %s (%s)', def.name, tostring(soFile))
+		return nil
+	end
+
+	local ok, result = pcall(ts.Language.load, soFile, langName)
 	if not ok then
 		core.error('Error loading language ' .. def.name  .. ':\n' .. result)
 		return nil

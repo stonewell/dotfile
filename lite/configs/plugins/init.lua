@@ -47,13 +47,17 @@ up.use {
 
     -- TSInstall-ed parsers — run :TSInstall <lang> in Neovim first,
     -- then uncomment the corresponding line below.
-    local function nvim(name, files)
-      languages.addNvimLang {
+    local function nvim(name, files, extra)
+      local spec = {
         root = ts.nvimTsRoot,
         runtimeDir = ts.nvimRuntimeDir,
         name = name,
         files = files,
       }
+      if extra then
+        for k, v in pairs(extra) do spec[k] = v end
+      end
+      languages.addNvimLang(spec)
     end
     nvim('python',     { '%.py$' })
     -- nvim('javascript', { '%.js$', '%.jsx$' })
@@ -61,6 +65,8 @@ up.use {
     -- nvim('cpp',        { '%.cpp$', '%.cxx$', '%.cc$', '%.hpp$', '%.hh$' })
     -- nvim('rust',       { '%.rs$' })
     -- nvim('go',         { '%.go$' })
+    nvim('objc',       { '%.m$' })
+    nvim('objcpp',     { '%.mm$', '%.M$' }, { parserName = 'objc', queryName = 'objc' })
 
     -- Re-apply treesit to any documents that were already open at startup
     -- (Doc:new runs before this config callback, so those docs missed the lang defs)
