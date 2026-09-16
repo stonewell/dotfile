@@ -23,6 +23,18 @@ function Doc:new(filename, abs_filename, new_file)
 	self.lenAcculIdx = 1
 end
 
+local oldDocSetFilename = Doc.set_filename
+function Doc:set_filename(filename, abs_filename)
+	oldDocSetFilename(self, filename, abs_filename)
+	if not self.treesit and filename then
+		self._treesitTried = true
+		highlights.init(self)
+		if self.treesit then
+			self.highlighter:reset()
+		end
+	end
+end
+
 function Doc:invalidateLen(idx)
 	if not idx or idx == 1 then
 		self.lenAccul[1] = #self.lines[1]
@@ -54,12 +66,28 @@ local function reparseStep(doc)
 
 	if not newTree then return true end
 
-	if newTree then
-		doc.ts.tree = newTree
-		doc.ts.reparse = false
-		doc.ts.running = false
+	doc.ts.tree = newTree
+	doc.ts.reparse = false
+	doc.ts.running = false
 
-		doc.highlighter:reset()
+	doc.highlighter:reset()
+	return false
+end
+
+local function getEndPoint(startLine, startCol, text)
+	local nlCount = 0
+	local lastNl = 0
+	while true do
+		local pos = text:find('\n', lastNl + 1, true)
+		if not pos then break end
+		nlCount = nlCount + 1
+		lastNl = pos
+	end
+	if nlCount == 0 then
+		return ts.Point.new(startLine, startCol + #text)
+	else
+		local lastLineLen = #text - lastNl
+		return ts.Point.new(startLine + nlCount, lastLineLen)
 	end
 end
 
@@ -74,6 +102,7 @@ function Doc:raw_insert(line, col, text, undo, time)
 
 		local tsByte = self:lenLines(1, line - 1) + col - 1
 		local tsLine, tsCol = line - 1, col - 1
+		local endPoint = getEndPoint(tsLine, tsCol, text)
 
 		self.ts.tree:edit(
 			--[[start_byte   ]] tsByte,
@@ -81,7 +110,7 @@ function Doc:raw_insert(line, col, text, undo, time)
 			--[[new_end_byte ]] tsByte + #text,
 			--[[start_point  ]] ts.Point.new(tsLine, tsCol),
 			--[[old_end_point]] ts.Point.new(tsLine, tsCol),
-			--[[new_end_point]] ts.Point.new(tsLine, tsCol + #text)
+			--[[new_end_point]] endPoint
 		)
 
 		self.ts.reparse = true
@@ -138,7 +167,11 @@ function Doc:reload()
 
 	if self.treesit then
 		self:invalidateLen()
-		self.ts.tree = self.ts.parser:parse_with(util.input(self.lines))
+		self.ts.parser:reset()
+		self.ts.tree = self.ts.parser:parse(nil, util.input(self.lines))
+		self.ts.reparse = false
+		self.ts.running = false
+		self.highlighter:reset()
 	end
 end
 
@@ -149,17 +182,27 @@ function Highlight:start(...)
 	if not doc.treesit then return oldStart(self, ...) end
 	if not doc.ts.reparse then return end
 
-	if not doc.ts.running then
+	if not doc.ts.running and not core.threads[doc] then
 		doc.ts.running = true
 
 		core.add_thread(function()
-			while reparseStep(doc) do
+			while doc.treesit and doc.ts.reparse and reparseStep(doc) do
 				coroutine.yield(0)
 			end
+			doc.ts.running = false
 		end, doc)
 	end
+end
 
-	doc.ts.parser:reset()
+local function pushToken(toks, type, text)
+	if not text or #text == 0 then return end
+	local n = #toks
+	if n > 0 and toks[n - 1] == type then
+		toks[n] = toks[n] .. text
+	else
+		toks[n + 1] = type
+		toks[n + 2] = text
+	end
 end
 
 local oldTokenize = Highlight.tokenize_line
@@ -178,9 +221,21 @@ function Highlight:tokenize_line(idx, state)
 	local txt      = self.doc.lines[idx]
 	local row      = idx - 1
 	local toks     = {}
-	local buf      = { 'normal', #txt }
-	local startBuf = 0
 	state = state or string.char(0)
+
+	if not txt or #txt == 0 then
+		return {
+			init_state = state,
+			state      = state,
+			text       = txt or '',
+			tokens     = toks
+		}
+	end
+
+	-- Stack of active scopes: array of { [1] = type_1, [2] = end_col_1, ... }
+	-- Bottom scope is 'normal' covering the entire line
+	local buf      = { 'normal', #txt }
+	local startBuf = 1
 
 	local cursor = ts.Query.Cursor.new(self.doc.ts.query, self.doc.ts.tree:root_node())
 	cursor:set_point_range(ts.Point.new(row, 0), ts.Point.new(row, #txt - 1))
@@ -198,23 +253,29 @@ function Highlight:tokenize_line(idx, state)
 		if row > endPt:row() then goto continue end
 		if row < startPt:row() then break end
 
-		local startPos = startPt:row() < row and 1 or startPt:column() + 1
+		local startPos = startPt:row() < row and 1 or (startPt:column() + 1)
 		local endPos   = endPt:row() > row and #txt or endPt:column()
 
-		local i = #buf - 1
-		while i >= 1 and buf[i + 1] < startPos do
-			local e = buf[i + 1]
-			toks[#toks + 1] = buf[i]
-			toks[#toks + 1] = txt:sub(startBuf, e)
-			startBuf = e + 1
+		if startPos > #txt then goto continue end
+		if endPos < startPos then goto continue end
 
-			buf[i], buf[i + 1] = nil, nil
-			i = i - 2
+		-- Pop expired scopes from the stack
+		while #buf > 2 and buf[#buf] < startPos do
+			local topEnd = buf[#buf]
+			local topType = buf[#buf - 1]
+			buf[#buf] = nil
+			buf[#buf] = nil
+			if topEnd >= startBuf then
+				pushToken(toks, topType, txt:sub(startBuf, topEnd))
+				startBuf = topEnd + 1
+			end
 		end
 
-		toks[#toks + 1] = buf[i]
-		toks[#toks + 1] = txt:sub(startBuf, startPos - 1)
-		startBuf = startPos
+		-- Emit text under current top scope up to startPos - 1
+		if startPos > startBuf then
+			pushToken(toks, buf[#buf - 1], txt:sub(startBuf, startPos - 1))
+			startBuf = startPos
+		end
 
 		buf[#buf + 1] = name
 		buf[#buf + 1] = endPos
@@ -222,12 +283,21 @@ function Highlight:tokenize_line(idx, state)
 		::continue::
 	end
 
-	-- fix: removed dead `local i = #buf - 1` shadowing the loop variable and the no-op `i = i - 2`
-	for i = #buf - 1, 1, -2 do
-		local e = buf[i + 1]
-		toks[#toks + 1] = buf[i]
-		toks[#toks + 1] = txt:sub(startBuf, e)
-		startBuf = e + 1
+	-- Pop and flush remaining scopes
+	while #buf >= 2 do
+		local topEnd = buf[#buf]
+		local topType = buf[#buf - 1]
+		buf[#buf] = nil
+		buf[#buf] = nil
+		local finish = math.min(topEnd, #txt)
+		if finish >= startBuf then
+			pushToken(toks, topType, txt:sub(startBuf, finish))
+			startBuf = finish + 1
+		end
+	end
+
+	if startBuf <= #txt then
+		pushToken(toks, 'normal', txt:sub(startBuf, #txt))
 	end
 
 	return {

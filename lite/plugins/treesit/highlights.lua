@@ -6,6 +6,19 @@ local ts = require 'libraries.tree_sitter'
 
 local M = {}
 
+local regexCache = {}
+local function getCompiledRegex(pattern)
+	local r = regexCache[pattern]
+	if not r then
+		local ok, compiled = pcall(regex.compile, pattern)
+		if ok and compiled then
+			r = compiled
+			regexCache[pattern] = r
+		end
+	end
+	return r
+end
+
 local function localPath()
 	local str = debug.getinfo(2, 'S').source:sub(2)
 	return str:match '(.*[/\\])'
@@ -50,7 +63,8 @@ local function predicatesFor(doc)
 		end,
 
 		['match?'] = function(ns, s)
-			local r = regex.compile(s)
+			local r = getCompiledRegex(s)
+			if not r then return false end
 
 			for _, n in ipairs(ns:nodes()) do
 				if not r:cmatch(getSource(n), 0, 0) then return false end
@@ -60,7 +74,8 @@ local function predicatesFor(doc)
 		end,
 
 		['any-match?'] = function(ns, s)
-			local r = regex.compile(s)
+			local r = getCompiledRegex(s)
+			if not r then return false end
 
 			for _, n in ipairs(ns:nodes()) do
 				if r:cmatch(getSource(n), 0, 0) then return true end
@@ -158,6 +173,30 @@ local function predicatesFor(doc)
 			return true
 		end,
 
+		['offset!'] = function()
+			return true
+		end,
+
+		['trim!'] = function()
+			return true
+		end,
+
+		['downcase!'] = function()
+			return true
+		end,
+
+		['gsub!'] = function()
+			return true
+		end,
+
+		['is-not?'] = function(ns, m)
+			local str = coerceToStr(m)
+			for _, n in ipairs(ns:nodes()) do
+				if getSource(n) == str then return false end
+			end
+			return true
+		end,
+
 		-- Neovim Vim-regex predicate; alias to lua-match? (close enough for common patterns)
 		['vim-match?'] = function(ns, p)
 			for _, n in ipairs(ns:nodes()) do
@@ -204,6 +243,15 @@ local function predicatesFor(doc)
 			end
 		end
 	end
+
+	setmetatable(ret, {
+		__index = function(_, k)
+			if type(k) == 'string' and k:sub(-1) == '!' then
+				return function() return true end
+			end
+			return nil
+		end,
+	})
 
 	return ret
 end

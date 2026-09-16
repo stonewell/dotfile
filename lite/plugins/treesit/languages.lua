@@ -196,6 +196,27 @@ local function loadQueryFile(path, builder, queryType)
 			for name in rest:gmatch '[%l_]+' do
 				local inheritDef = M.defs[name]
 				if not inheritDef then
+					local root = config.nvimTsRoot and common.home_expand(config.nvimTsRoot)
+					local runtimeDir = config.nvimRuntimeDir and common.home_expand(config.nvimRuntimeDir)
+					local queryPath = root and (root .. '/queries/' .. name .. '/' .. queryType .. '.scm')
+					local rtQueryPath = runtimeDir and (runtimeDir .. '/queries/' .. name .. '/' .. queryType .. '.scm')
+					local foundPath
+					if queryPath and system.get_file_info(queryPath) then
+						foundPath = queryPath
+					elseif rtQueryPath and system.get_file_info(rtQueryPath) then
+						foundPath = rtQueryPath
+					end
+					if foundPath then
+						inheritDef = {
+							name = name,
+							queryFiles = { [queryType] = foundPath },
+						}
+						M.defs[name] = inheritDef
+						M.defs[#M.defs + 1] = inheritDef
+					end
+				end
+
+				if not inheritDef then
 					core.warn(
 						'Could not find language %s to inherit queries from. \z
 						Syntax highlighting may be incomplete.',
@@ -205,7 +226,7 @@ local function loadQueryFile(path, builder, queryType)
 				end
 
 				builder[#builder + 1] = '; TREESIT: INHERIT ' .. name .. '\n'
-				builder[#builder + 1] = M.getQuery(M.defs[name], queryType)
+				builder[#builder + 1] = M.getQuery(inheritDef, queryType)
 
 				::continue::
 			end
