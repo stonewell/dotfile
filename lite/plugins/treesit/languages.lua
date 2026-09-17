@@ -28,31 +28,22 @@ local LANGUAGE_FALLBACKS = {
 	markdown_inline = { 'markdown' },
 }
 
--- On Windows, Neovim bundled parsers use .dll but nvim-treesitter-installed
--- parsers use .so (their cross-platform convention).  Try both so the same
--- code handles either source without user configuration.
+-- Search for compiled parser binaries across standard and configured directories.
+-- Handles .dll/.so on Windows, .so/.dylib on macOS, and .so on Linux/Unix.
 local function findParser(dir, name)
-	local dirs = {}
-	if dir then dirs[#dirs + 1] = dir end
-	if config.nvimTsRoot then
-		dirs[#dirs + 1] = common.home_expand(config.nvimTsRoot) .. '/parser'
-	end
-	local appData = os.getenv('LOCALAPPDATA')
-	if appData then
-		dirs[#dirs + 1] = appData:gsub('\\', '/') .. '/nvim-data/lazy/nvim-treesitter/parser'
-	end
-	if config.nvimBuiltinParserDir then
-		dirs[#dirs + 1] = common.home_expand(config.nvimBuiltinParserDir)
+	local dirs = util.getParserSearchDirs(dir, config)
+	local extensions
+	if PLATFORM == 'Windows' then
+		extensions = { '.dll', '.so' }
+	elseif PLATFORM == 'Mac OS X' then
+		extensions = { '.so', '.dylib' }
+	else
+		extensions = { '.so' }
 	end
 
 	for _, d in ipairs(dirs) do
-		if PLATFORM == 'Windows' then
-			for _, ext in ipairs({ '.dll', '.so' }) do
-				local path = d .. '/' .. name .. ext
-				if system.get_file_info(path) then return path end
-			end
-		else
-			local path = d .. '/' .. name .. '.so'
+		for _, ext in ipairs(extensions) do
+			local path = d .. '/' .. name .. ext
 			if system.get_file_info(path) then return path end
 		end
 	end
@@ -72,7 +63,7 @@ function M.addDef(defOptions)
 	def.name = defOptions.name
 	def.files = defOptions.files
 
-	local path = common.home_expand(defOptions.path)
+	local path = util.expandPath(defOptions.path)
 
 	if defOptions.files and #defOptions.files > 0 then
 		def.soFile = util.joinPath {
@@ -113,12 +104,13 @@ end
 -- file; when it starts with "; extends", the runtime base is prepended so
 -- the base captures are not lost.
 function M.addNvimLang(opts)
-	assert(opts.root, 'root is required for addNvimLang')
+	local rootStr = opts.root or config.nvimTsRoot
+	assert(rootStr, 'root is required for addNvimLang')
 	assert(opts.name, 'name is required for addNvimLang')
 
-	local root       = common.home_expand(opts.root)
-	local runtimeDir = opts.runtimeDir and common.home_expand(opts.runtimeDir)
-	local parserDir  = opts.parserDir and common.home_expand(opts.parserDir) or (root .. '/parser')
+	local root       = util.expandPath(rootStr)
+	local runtimeDir = (opts.runtimeDir or config.nvimRuntimeDir) and util.expandPath(opts.runtimeDir or config.nvimRuntimeDir)
+	local parserDir  = opts.parserDir and util.expandPath(opts.parserDir) or (root .. '/parser')
 	local name       = opts.name
 
 	assert(not M.defs[name], 'Duplicate language name: ' .. name)
@@ -299,8 +291,8 @@ local function loadQueryFile(path, builder, queryType)
 			for name in rest:gmatch '[%l_]+' do
 				local inheritDef = M.defs[name]
 				if not inheritDef then
-					local root = config.nvimTsRoot and common.home_expand(config.nvimTsRoot)
-					local runtimeDir = config.nvimRuntimeDir and common.home_expand(config.nvimRuntimeDir)
+					local root = config.nvimTsRoot and util.expandPath(config.nvimTsRoot)
+					local runtimeDir = config.nvimRuntimeDir and util.expandPath(config.nvimRuntimeDir)
 					local queryPath = root and (root .. '/queries/' .. name .. '/' .. queryType .. '.scm')
 					local rtQueryPath = runtimeDir and (runtimeDir .. '/queries/' .. name .. '/' .. queryType .. '.scm')
 					local foundPath

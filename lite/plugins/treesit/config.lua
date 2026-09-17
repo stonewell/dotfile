@@ -1,13 +1,18 @@
 local common = require 'core.common'
 local config = require 'core.config'
+local util   = require 'plugins.treesit.util'
+
+local defaultTsRoot           = util.findNvimTsRoot()
+local defaultRuntimeDir       = util.findNvimRuntimeDir()
+local defaultBuiltinParserDir = util.findNvimBuiltinParserDir(defaultRuntimeDir)
 
 local defaults = {
-	useFallbackColors  = true,
-	warnFallbackColors = true,
-	maxParseTime       = 2000,
-	nvimTsRoot         = nil,
-	nvimRuntimeDir     = nil,
-	nvimBuiltinParserDir = nil,
+	useFallbackColors    = true,
+	warnFallbackColors   = true,
+	maxParseTime         = 2000,
+	nvimTsRoot           = defaultTsRoot,
+	nvimRuntimeDir       = defaultRuntimeDir,
+	nvimBuiltinParserDir = defaultBuiltinParserDir,
 }
 
 local spec = {

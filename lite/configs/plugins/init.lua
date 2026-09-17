@@ -16,11 +16,10 @@ up.use {
   plugin = USERDIR .. '/plugins/treesit',
   name   = 'treesit',
   config = function()
-    -- Neovim paths for this machine (scoop install + lazy.nvim data dir)
-    config.plugins.treesit.nvimTsRoot           = 'C:/depot/stone/nvim-data/lazy/nvim-treesitter'
-    config.plugins.treesit.nvimRuntimeDir       = 'C:/depot/scoop/apps/neovim/current/share/nvim/runtime'
-    config.plugins.treesit.nvimBuiltinParserDir = 'C:/depot/scoop/apps/neovim/current/lib/nvim/parser'
-
+    -- Neovim paths (nvimTsRoot, nvimRuntimeDir, nvimBuiltinParserDir) are
+    -- auto-detected across Windows, Linux, and macOS (Scoop, Winget, Homebrew,
+    -- distro packages, etc.). Override config.plugins.treesit.* here only if
+    -- using a non-standard path.
     local languages = require 'plugins.treesit.languages'
     local ts = config.plugins.treesit
 
