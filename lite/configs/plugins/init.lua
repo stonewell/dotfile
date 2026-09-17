@@ -3,22 +3,26 @@ local config = require 'core.config'
 local core = require "core"
 
 up.repos {
-  'https://github.com/lite-xl/lite-xl-plugins.git:master',          -- editorconfig, cleanstart, indentguide
+  'https://github.com/lite-xl/lite-xl-plugins.git:master',          -- editorconfig, cleanstart
+  '~/Work/github/lite-xl-plugins',                                  -- local plugins repository
 }
 
 -- repo installs (plain name → searched in registered manifests above)
 up.use 'editorconfig'
 up.use 'cleanstart'
+up.use 'avy'
+up.use 'bufferex'
+up.use 'emacs'
+up.use 'fd-files'
+up.use 'indentguideex'
+up.use 'isearch'
+up.use 'killring'
+up.use 'rgsearch'
+up.use 'whichkey'
 
--- indentguideex: enhanced indentation guide plugin
+-- treesit: local plugin from lite-xl-plugins repo — config runs after all plugins have loaded
 up.use {
-  plugin = USERDIR .. '/plugins/indentguideex',
-  name   = 'indentguideex',
-}
-
--- treesit: local plugin from dotfile — config runs after all plugins have loaded
-up.use {
-  plugin = USERDIR .. '/plugins/treesit',
+  plugin = 'treesit',
   name   = 'treesit',
   config = function()
     -- Neovim paths (nvimTsRoot, nvimRuntimeDir, nvimBuiltinParserDir) are
