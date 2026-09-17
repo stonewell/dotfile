@@ -24,29 +24,12 @@ up.use {
     local languages = require 'plugins.treesit.languages'
     local ts = config.plugins.treesit
 
-    -- Helper: nvim-treesitter query + a custom parser dir
-    local function nvimWith(parserDir, name, files)
-      languages.addNvimLang {
-        root       = ts.nvimTsRoot,
-        runtimeDir = ts.nvimRuntimeDir,
-        parserDir  = parserDir,
-        name       = name,
-        files      = files,
-      }
-    end
-
-    -- Bundled Neovim parsers — available immediately, no :TSInstall needed
-    -- (c, lua, markdown, markdown_inline, vim, vimdoc shipped with Neovim 0.12)
-    local builtin = ts.nvimBuiltinParserDir
-    nvimWith(builtin, 'c',                { '%.c$', '%.h$' })
-    nvimWith(builtin, 'lua',              { '%.lua$' })
-    nvimWith(builtin, 'markdown',         { '%.md$', '%.markdown$' })
-    nvimWith(builtin, 'markdown_inline',  {})  -- injected by markdown, no direct files
-    nvimWith(builtin, 'vim',              { '%.vim$' })
-    nvimWith(builtin, 'vimdoc',           { '%.txt$' })
-
-    -- TSInstall-ed parsers — run :TSInstall <lang> in Neovim first,
-    -- then uncomment the corresponding line below.
+    -- Register language grammars.
+    -- Searches both Neovim bundled parsers (c, lua, markdown, vim, vimdoc)
+    -- and :TSInstall-ed parsers (python, cpp, rust, go, objc, etc.).
+    -- If a tree-sitter parser is not installed, it automatically falls back
+    -- to compatible parent parsers (e.g. objcpp -> objc -> c, cpp -> c) or
+    -- to Lite-XL's built-in syntax engine without errors, matching Neovim.
     local function nvim(name, files, extra)
       local spec = {
         root = ts.nvimTsRoot,
@@ -59,14 +42,24 @@ up.use {
       end
       languages.addNvimLang(spec)
     end
-    nvim('python',     { '%.py$' })
-    -- nvim('javascript', { '%.js$', '%.jsx$' })
-    -- nvim('typescript', { '%.ts$', '%.tsx$' })
-    -- nvim('cpp',        { '%.cpp$', '%.cxx$', '%.cc$', '%.hpp$', '%.hh$' })
-    -- nvim('rust',       { '%.rs$' })
-    -- nvim('go',         { '%.go$' })
-    nvim('objc',       { '%.m$' })
-    nvim('objcpp',     { '%.mm$', '%.M$' }, { parserName = 'objc', queryName = 'objc' })
+
+    -- Bundled Neovim parsers (available immediately)
+    nvim('c',                { '%.c$', '%.h$' })
+    nvim('lua',              { '%.lua$' })
+    nvim('markdown',         { '%.md$', '%.markdown$' })
+    nvim('markdown_inline',  {})  -- injected by markdown, no direct files
+    nvim('vim',              { '%.vim$', '%.vimrc$' })
+    nvim('vimdoc',           { '%.txt$' })
+
+    -- Additional languages (tree-sitter when installed, otherwise built-in syntax)
+    nvim('python',           { '%.py$' })
+    nvim('javascript',       { '%.js$', '%.jsx$' })
+    nvim('typescript',       { '%.ts$', '%.tsx$' })
+    nvim('cpp',              { '%.cpp$', '%.cxx$', '%.cc$', '%.hpp$', '%.hh$' })
+    nvim('rust',             { '%.rs$' })
+    nvim('go',               { '%.go$' })
+    nvim('objc',             { '%.m$' })
+    nvim('objcpp',           { '%.mm$', '%.M$' })
 
     -- Re-apply treesit to any documents that were already open at startup
     -- (Doc:new runs before this config callback, so those docs missed the lang defs)

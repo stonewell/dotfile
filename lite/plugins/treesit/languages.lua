@@ -15,15 +15,36 @@ local M = {
 
 local soExt = PLATFORM == 'Windows' and '.dll' or '.so'
 
+local LANGUAGE_FALLBACKS = {
+	objcpp          = { 'objc', 'cpp', 'c' },
+	objc            = { 'c' },
+	cpp             = { 'c' },
+	cuda            = { 'cpp', 'c' },
+	arduino         = { 'cpp', 'c' },
+	typescript      = { 'javascript' },
+	tsx             = { 'typescript', 'javascript' },
+	jsx             = { 'javascript' },
+	vimdoc          = { 'vim' },
+	markdown_inline = { 'markdown' },
+}
+
 -- On Windows, Neovim bundled parsers use .dll but nvim-treesitter-installed
 -- parsers use .so (their cross-platform convention).  Try both so the same
 -- code handles either source without user configuration.
 local function findParser(dir, name)
-	local dirs = { dir }
+	local dirs = {}
+	if dir then dirs[#dirs + 1] = dir end
+	if config.nvimTsRoot then
+		dirs[#dirs + 1] = common.home_expand(config.nvimTsRoot) .. '/parser'
+	end
 	local appData = os.getenv('LOCALAPPDATA')
 	if appData then
 		dirs[#dirs + 1] = appData:gsub('\\', '/') .. '/nvim-data/lazy/nvim-treesitter/parser'
 	end
+	if config.nvimBuiltinParserDir then
+		dirs[#dirs + 1] = common.home_expand(config.nvimBuiltinParserDir)
+	end
+
 	for _, d in ipairs(dirs) do
 		if PLATFORM == 'Windows' then
 			for _, ext in ipairs({ '.dll', '.so' }) do
@@ -35,7 +56,7 @@ local function findParser(dir, name)
 			if system.get_file_info(path) then return path end
 		end
 	end
-	return dir .. '/' .. name .. (PLATFORM == 'Windows' and '.dll' or '.so')
+	return nil
 end
 
 -- Pattern matching Neovim's EXTENDS_FORMAT in runtime/lua/vim/treesitter/query.lua
@@ -99,17 +120,48 @@ function M.addNvimLang(opts)
 	local runtimeDir = opts.runtimeDir and common.home_expand(opts.runtimeDir)
 	local parserDir  = opts.parserDir and common.home_expand(opts.parserDir) or (root .. '/parser')
 	local name       = opts.name
-	local queryName  = opts.queryName or (name == 'objcpp' and 'objc' or name)
-	local parserName = opts.parserName or (name == 'objcpp' and 'objc' or name)
 
 	assert(not M.defs[name], 'Duplicate language name: ' .. name)
 
+	-- Search for parser: try requested parserName, then name, then check fallbacks
+	local parserName = opts.parserName or name
+	local soFile     = findParser(parserDir, parserName)
+	local queryName  = opts.queryName or parserName
+	local fallbacks  = LANGUAGE_FALLBACKS[name]
+
+	if not soFile and not opts.parserName and fallbacks then
+		for _, fb in ipairs(fallbacks) do
+			local fbFile = findParser(parserDir, fb)
+			if fbFile then
+				soFile     = fbFile
+				parserName = fb
+				queryName  = opts.queryName or fb
+				break
+			end
+		end
+	end
+
+	-- Resolve query file
 	local nvimQueryPath = root .. '/queries/' .. queryName .. '/highlights.scm'
-	if not system.get_file_info(nvimQueryPath) and queryName == 'objcpp' then
-		local fallbackQuery = root .. '/queries/objc/highlights.scm'
-		if system.get_file_info(fallbackQuery) then
-			queryName = 'objc'
-			nvimQueryPath = fallbackQuery
+	local rtQueryPath   = runtimeDir and (runtimeDir .. '/queries/' .. queryName .. '/highlights.scm')
+	if not system.get_file_info(nvimQueryPath) and rtQueryPath and system.get_file_info(rtQueryPath) then
+		nvimQueryPath = rtQueryPath
+	end
+
+	-- If query still not found and fallback chain exists, try queries for fallbacks
+	if not system.get_file_info(nvimQueryPath) and fallbacks then
+		for _, fb in ipairs(fallbacks) do
+			local fbQ   = root .. '/queries/' .. fb .. '/highlights.scm'
+			local fbRtQ = runtimeDir and (runtimeDir .. '/queries/' .. fb .. '/highlights.scm')
+			if system.get_file_info(fbQ) then
+				nvimQueryPath = fbQ
+				queryName     = fb
+				break
+			elseif fbRtQ and system.get_file_info(fbRtQ) then
+				nvimQueryPath = fbRtQ
+				queryName     = fb
+				break
+			end
 		end
 	end
 
@@ -125,12 +177,13 @@ function M.addNvimLang(opts)
 	end
 
 	local def = {
-		name           = name,
-		langName       = parserName,
-		parserDir      = parserDir,
-		files          = opts.files,
-		soFile         = findParser(parserDir, parserName),
-		queryFiles     = {},
+		name          = name,
+		langName      = parserName,
+		parserDir     = parserDir,
+		files         = opts.files,
+		soFile        = soFile,
+		queryFiles    = {},
+		fallbackChain = fallbacks,
 	}
 
 	if usesExtends and runtimeDir then
@@ -183,18 +236,40 @@ function M.getLang(def)
 	local langName = def.langName or def.name
 
 	if not soFile or not system.get_file_info(soFile) then
-		core.log_quiet('treesit: parser not found for %s (%s)', def.name, tostring(soFile))
+		-- Dynamic check in case parser was installed after startup
+		local freshFile = findParser(def.parserDir, def.name)
+		if freshFile then
+			soFile = freshFile
+			langName = def.name
+			def.soFile = soFile
+			def.langName = langName
+		elseif def.fallbackChain then
+			for _, fb in ipairs(def.fallbackChain) do
+				local fbFile = findParser(def.parserDir, fb)
+				if fbFile then
+					soFile = fbFile
+					langName = fb
+					def.soFile = soFile
+					def.langName = langName
+					break
+				end
+			end
+		end
+	end
+
+	if not soFile or not system.get_file_info(soFile) then
+		core.log_quiet('treesit: parser not found for %s, falling back to built-in syntax', def.name)
 		return nil
 	end
 
 	local ok, result = pcall(ts.Language.load, soFile, langName)
 	if not ok then
-		core.error('Error loading language ' .. def.name  .. ':\n' .. result)
+		core.log_quiet('treesit: error loading language %s from %s: %s', def.name, tostring(soFile), tostring(result))
 		return nil
 	end
 
 	M.langCache[def.name] = result
-	core.log('Loaded language ' .. def.name)
+	core.log('Loaded language ' .. def.name .. ' (using parser ' .. langName .. ')')
 
 	return result
 end

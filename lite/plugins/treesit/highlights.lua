@@ -284,7 +284,11 @@ function M.init(doc)
 		return
 	end
 
-	local query = ts.Query.new(lang, queryStr)
+	local okQ, query = pcall(ts.Query.new, lang, queryStr)
+	if not okQ or not query then
+		core.log_quiet('treesit: failed to compile query for %s: %s', doc.filename, tostring(query))
+		return
+	end
 	for _, name in ipairs(disabledCaptures) do
 		query:disable_capture(name)
 	end
