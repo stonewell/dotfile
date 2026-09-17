@@ -15,5 +15,6 @@ plugins/*
 !plugins/fd-files/
 !plugins/use_package/
 !plugins/treesit/
+!plugins/indentguideex/
 session.lua
 storage/

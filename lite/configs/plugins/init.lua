@@ -9,7 +9,12 @@ up.repos {
 -- repo installs (plain name → searched in registered manifests above)
 up.use 'editorconfig'
 up.use 'cleanstart'
-up.use 'indentguide'
+
+-- indentguideex: enhanced indentation guide plugin
+up.use {
+  plugin = USERDIR .. '/plugins/indentguideex',
+  name   = 'indentguideex',
+}
 
 -- treesit: local plugin from dotfile — config runs after all plugins have loaded
 up.use {
