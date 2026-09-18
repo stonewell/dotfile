@@ -2,9 +2,12 @@ local up     = require 'plugins.use_package'   -- must be first
 local config = require 'core.config'
 local core = require "core"
 
+up.auto_install = true
+up.auto_update = true
+
 up.repos {
   'https://github.com/lite-xl/lite-xl-plugins.git:master',          -- editorconfig, cleanstart
-  '~/Work/github/lite-xl-plugins',                                  -- local plugins repository
+  'https://github.com/stonewell/lite-xl-plugins.git:main',
 }
 
 -- repo installs (plain name → searched in registered manifests above)
