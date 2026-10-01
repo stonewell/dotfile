@@ -38,6 +38,9 @@
 ;; typescript mode
 (require 'as-emacs-typescript-setup)
 
+;; objc/objcpp mode
+(require 'as-emacs-objc-setup)
+
 ;; lsp mode
 (require 'as-emacs-lsp-setup)
 

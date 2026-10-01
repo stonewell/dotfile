@@ -183,6 +183,7 @@
   (setq treesit-language-source-alist
       '(
          (cpp "https://github.com/stonewell/tree-sitter-cpp")
+         (objc "https://github.com/tree-sitter-grammars/tree-sitter-objc")
          )
     )
   )
