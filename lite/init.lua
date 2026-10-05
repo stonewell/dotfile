@@ -26,5 +26,13 @@ end
 
 local configs = require "configs"
 
+-- Local (machine specific) configuration: USERDIR/local.lua, loaded if it exists
+local utils = require "configs.utils"
 
+if utils.fileExists(USERDIR .. PATHSEP .. "local.lua") then
+  local ok, err = pcall(require, "local")
+  if not ok then
+    core.error("Failed to load local.lua: %s", err)
+  end
+end
 
