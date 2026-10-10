@@ -3,7 +3,7 @@ local config = require "core.config"
 local style = require "core.style"
 
 ------------------------------ Themes ----------------------------------------
-
+core.reload_module("colors.dracula")
 -- light theme:
 -- core.reload_module("colors.summer")
 if PLATFORM == "Windows" then
