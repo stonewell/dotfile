@@ -1,7 +1,9 @@
-# Global Model Routing & Subagent Execution Policy
+---
+trigger: always_on
+description: Global Model Routing & Subagent Execution Policy
+---
 
-> [!IMPORTANT]
-> This policy serves as an explicit standing user instruction for `invoke_subagent` `Model` selection, primary-agent role separation, and high-efficiency model routing (overriding the default `inherit` fallback). It directly aligns with the global configuration in `~/.gemini/config/rules/model_routing_policy.md`.
+# Global Model Routing & Subagent Execution Policy
 
 ## 1. Dual-Persona Operating Matrix (By Starting Model Tier)
 
