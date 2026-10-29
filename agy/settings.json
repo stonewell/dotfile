@@ -1,0 +1,23 @@
+{
+  "$schema": "https://antigravity.google/schemas/v1/settings.json",
+  "agentMode": "accept-edits",
+  "allowNonWorkspaceAccess": true,
+  "altScreenMode": "always",
+  "enableTerminalSandbox": true,
+  "model": "gemini-4-argon-low",
+  "notifications": true,
+  "permissions": {
+    "allow": [
+      "read_file(*)",
+      "write_file(*)"
+    ],
+    "deny": [
+      "command(sudo *)",
+      "write_file(.git)"
+    ]
+  },
+  "runningLightSpeed": "fast",
+  "toolPermission": "always-proceed",
+  "trustedWorkspaces": [
+  ]
+}

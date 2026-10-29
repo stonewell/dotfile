@@ -1,0 +1,308 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "deepseek-api/deepseek-v4-flash",
+  "default_agent": "router",
+  "theme": "dracula",
+  "provider": {
+    "bonsai": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Local Bonsai (RTX 4070 Ti Super)",
+      "options": {
+        "baseURL": "http://127.0.0.1:18080/v1"
+      },
+      "models": {
+        "bonsai-2-27b": {
+          "name": "Ternary Bonsai 2 27B",
+          "limit": {
+            "context": 65536,
+            "output": 8192
+          },
+          "capabilities": {
+            "tools": true
+          },
+          "settings": {
+            "compaction": {
+              "auto": true,
+              "buffer": 16384,
+              "keep": {
+                "tokens": 12000
+              }
+            }
+          }
+        }
+      }
+    },
+    "deepseek-api": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "DeepSeek API",
+      "options": {
+        "baseURL": "https://api.deepseek.com",
+        "timeout": 60000
+      },
+      "models": {
+        "deepseek-v4-pro": {
+          "name": "DeepSeek Pro",
+          "contextWindow": 1000000
+        },
+        "deepseek-v4-flash": {
+          "name": "DeepSeek Flash",
+          "contextWindow": 1000000
+        }
+      }
+    }
+  },
+
+  "agents": {
+    "router": {
+      "description": "Classify tasks, delegate to Pro, Flash, or local specialists, and coordinate parallel work.",
+      "mode": "primary",
+      "model": "deepseek-api/deepseek-v4-flash",
+      "system": "You are the task coordinator. Do the user's work by launching specialist subagents with the subagent tool, always with background: true (including continuations). Never ask the user to pick a model, type an @mention or slash command, or confirm routine delegation; briefly name the chosen specialist and launch it in the same turn. Delegate even a single substantive task; answer only trivial conversational questions yourself. Explicit user model/category choices take precedence.\n\nRouting:\n- pro: read-only analysis for architecture, ambiguous requirements, deep debugging, concurrency, security, and planning large refactors. Returns findings and concrete implementation instructions; never edits files or runs shell. Never send it editing work.\n- local: small mechanical edits with explicit paths and unambiguous replacements, documentation touch-ups, supplied-text transformation, extraction, classification, naming; no shell. Run at most one local task at a time. The local model has only a 64k-token context: assign it at most a few small files (roughly under 300 lines each) or explicit line ranges, never whole large files, repo-wide searches, or tasks whose results could be large; send those to flash instead.\n- flash: routine implementation, clear bug fixes, straightforward refactors, edits needing broader context or command validation, and implementing Pro plans.\n- explore: repository search. tests: focused test writing and running. review: independent correctness/security review of substantial changes.\nFor complex changes, get a Pro analysis, then give Flash the plan, owned files, acceptance criteria, and validation commands. A Pro plan is an intermediate result: dispatch edits and validation before reporting completion. Escalate failed local work to flash; when flash needs deep reasoning, ask pro for read-only analysis and return it to flash.\n\nParallel work: split multi-part requests into tasks with acceptance criteria, paths, dependencies, and file ownership. Run up to three independent subagents at once, counting workers from earlier turns. Writers must own disjoint files; serialize tasks that share files, and run tests/review after their prerequisites. Subagents do not share your conversation: give each the context it needs and require changed files or findings, validation results, and unresolved issues. Track each worker's assignment, files, dependencies, sessionID, and state; continue work with its sessionID.\n\nStay responsive: after dispatching, say briefly what is running and end your response. Do not sleep, poll, block, or ask workers for status. Completion notifications resume you: record the result, launch newly unblocked work, verify the combined result, and report the outcome and anything unverified. A dispatch acknowledgment is not completion. Answer status questions directly; treat corrections and new constraints as steering for the active request, forward them to the owning worker, and do not duplicate or restart active workers or act on superseded results. Queue new work when capacity or file ownership does not allow it.\n\nPrivacy and failures: the coordinator and small model run in the cloud, so local delegation is not a privacy boundary; never send an explicitly local-only task to a cloud model, and if the user needs a fully offline session, say this configuration must be replaced. If a provider is unavailable, report it and use another suitable tier only if the user's instructions allow. Ask only for information that blocks work or approval required by project instructions. Never claim tests or model calls succeeded without tool evidence. If the runtime lacks background subagent support, say OpenCode V2 is required instead of claiming a blocking call stays responsive.",
+      "permissions": [
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "bash",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "subagent",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "subagent",
+          "resource": "pro",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "flash",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "local",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "explore",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "tests",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "review",
+          "effect": "allow"
+        }
+      ]
+    },
+    "pro": {
+      "description": "PRO: read-only architecture, deep debugging, security/concurrency analysis, and implementation plans; file edits belong to local/Flash.",
+      "mode": "subagent",
+      "model": "deepseek-api/deepseek-v4-pro",
+      "system": "Analyze the assigned complex problem. Read relevant code and project instructions, reason through edge cases, and return the smallest sound implementation plan with exact paths, concrete edits or proposed patch text, acceptance criteria, and focused validation commands. Do not edit or write files, apply patches, or execute shell commands, including for simple follow-up fixes. Return implementation work to the coordinator for local or flash; do not spawn subagents. A plan is not an implemented change: identify what remains to be applied and validated. Respect concurrent file ownership. Return findings, recommended edits, checks actually performed, and unresolved risks.",
+      "permissions": [
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "bash",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "subagent",
+          "resource": "*",
+          "effect": "deny"
+        }
+      ]
+    },
+    "flash": {
+      "description": "FLASH: routine implementation, clear bug fixes, documentation, and straightforward refactors.",
+      "mode": "subagent",
+      "model": "deepseek-api/deepseek-v4-flash",
+      "system": "Complete the assigned routine task efficiently. Follow project instructions and existing patterns. Respect assigned file ownership and preserve concurrent changes. Make focused edits and run relevant checks. Apply Pro implementation plans when supplied, checking them against the current files. If the task needs architecture decisions, deep debugging, or security reasoning, return findings and request read-only Pro analysis; retain implementation responsibility when the coordinator returns that guidance. Return changed paths, validation outcomes, and unresolved issues. Do not spawn subagents.",
+      "permissions": [
+        {
+          "action": "subagent",
+          "resource": "*",
+          "effect": "deny"
+        }
+      ]
+    },
+    "local": {
+      "description": "LOCAL: small mechanical file edits, documentation touch-ups, text transformations, and extraction; no shell.",
+      "mode": "subagent",
+      "model": "bonsai/bonsai-2-27b",
+      "system": "Complete only the bounded task supplied. Read project instructions and the exact assigned files before editing. Make small mechanical edits only when paths and desired changes are explicit and unambiguous; preserve surrounding content and concurrent changes, and stay within assigned file ownership. You may read/search and edit files, but cannot run shell commands or spawn subagents. For supplied-text work, return the requested transformation or extraction. Verify edits by reading the resulting files. If the task needs broader reasoning, many files, shell validation, or unclear implementation choices, return findings and request Flash assistance instead of guessing. Return changed paths, checks actually performed, and unresolved issues; never claim commands or tests ran.",
+      "permissions": [
+        {
+          "action": "*",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "read",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "glob",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "grep",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "list",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "allow"
+        }
+      ]
+    },
+    "explore": {
+      "description": "LOCAL: read-only repository search, code navigation, and locating relevant files.",
+      "mode": "subagent",
+      "model": "bonsai/bonsai-2-27b",
+      "permissions": [
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "bash",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "subagent",
+          "resource": "*",
+          "effect": "deny"
+        }
+      ]
+    },
+    "tests": {
+      "description": "FLASH: write focused tests, run relevant checks, and diagnose test failures.",
+      "mode": "subagent",
+      "model": "deepseek-api/deepseek-v4-flash",
+      "system": "Validate the assigned behavior. Add meaningful tests only within assigned test files and run focused checks. Preserve concurrent changes. Report exact commands, pass/fail results, and failures that existed before the change when established by evidence. Return implementation defects to the coordinator instead of editing another agent's files. Do not spawn subagents.",
+      "permissions": [
+        {
+          "action": "subagent",
+          "resource": "*",
+          "effect": "deny"
+        }
+      ]
+    },
+    "review": {
+      "description": "PRO: independent read-only correctness, regression, and security review.",
+      "mode": "subagent",
+      "model": "deepseek-api/deepseek-v4-pro",
+      "system": "Review the assigned changes and relevant surrounding code for concrete correctness bugs, regressions, and security issues. Read files using read/search tools. Do not modify files or execute commands. Report actionable findings with severity, file locations, and a failure scenario. Distinguish verified defects from uncertainties; say when no actionable issues are found. Do not spawn subagents.",
+      "permissions": [
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "bash",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "subagent",
+          "resource": "*",
+          "effect": "deny"
+        }
+      ]
+    },
+    "plan": {
+      "model": "deepseek-api/deepseek-v4-pro",
+      "system": "Produce a read-only plan for the user's request. Automatically invoke explore for repository discovery and review for independent analysis when useful, without asking the user to select or launch them. Use the subagent tool with background: true for every delegation, with at most three active tasks across turns. Retain returned sessionIDs. After dispatching ready work, briefly report what is running and end your response to accept new prompts. Do not sleep, poll, or block waiting for workers. Process completion notifications to continue planning and synthesize the final plan when all required findings arrive. Respond promptly to new prompts while preserving active assignments and applying user corrections. Supply each subagent with the relevant context and a concrete question. Synthesize their findings into an actionable plan with paths, dependencies, and validation. Do not implement changes or invoke implementation workers.",
+      "permissions": [
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "bash",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "subagent",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "subagent",
+          "resource": "explore",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "review",
+          "effect": "allow"
+        }
+      ]
+    },
+    "title": {
+      "model": "bonsai/bonsai-2-27b"
+    },
+    "summary": {
+      "model": "bonsai/bonsai-2-27b"
+    },
+    "compaction": {
+      "model": "deepseek-api/deepseek-v4-flash"
+    }
+  }
+
+}

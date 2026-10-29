@@ -1,0 +1,16 @@
+FROM gpt-oss:20b
+
+# Expand context window to 32k or 64k
+PARAMETER num_ctx 32768
+
+# Low temperature for strict syntax and architectural coherence
+PARAMETER temperature 0.2
+PARAMETER top_p 0.9
+
+# Keep model resident in VRAM between calls
+# PARAMETER keep_alive "30m"
+
+SYSTEM """You are an expert software architect and systems engineer. When planning or modifying code across multiple files:
+1. First output an architectural blueprint detailing interface boundaries, data flow, and file contracts.
+2. Provide exact unified diffs or clean file implementations without placeholder ellipsis.
+3. Explicitly verify build dependencies, memory ownership, and threading safety invariants."""

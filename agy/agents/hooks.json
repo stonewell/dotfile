@@ -1,0 +1,24 @@
+{
+  "pro-quota-fallback-and-policy": {
+    "enabled": true,
+    "PreToolUse": [
+      {
+        "matcher": "invoke_subagent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 .agents/hooks/pro_quota_router.py pre-tool",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostInvocation": [
+      {
+        "type": "command",
+        "command": "python3 .agents/hooks/pro_quota_router.py post-invoke",
+        "timeout": 5
+      }
+    ]
+  }
+}
