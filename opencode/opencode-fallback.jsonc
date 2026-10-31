@@ -1,0 +1,20 @@
+{
+  "enabled": true,
+  "timeout_seconds": 30,
+  "max_fallback_attempts": 10,
+
+  // 全局兜底链（未单独配置的 agent 使用）
+  //"fallback_models": ["deepseek-api/deepseek-v4-flash"],
+
+  // 补上 "Model unavailable: ..." 这类错误
+  "retryable_error_patterns": ["model unavailable", "model .* unavailable"],
+
+  "agents": {
+    "flash":      { "fallback_models": ["deepseek-api/deepseek-v4-flash"] },
+    "tests":      { "fallback_models": ["deepseek-api/deepseek-v4-flash"] },
+    "explore":    { "fallback_models": ["deepseek-api/deepseek-v4-flash"] },
+    "pro":        { "fallback_models": ["deepseek-api/deepseek-v4-pro"] },
+    "review":     { "fallback_models": ["deepseek-api/deepseek-v4-pro"] },
+    "plan":       { "fallback_models": ["deepseek-api/deepseek-v4-pro"] }
+  }
+}

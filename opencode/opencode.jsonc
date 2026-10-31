@@ -55,19 +55,28 @@
       "name": "Relay API",
       "options": {
         "baseURL": "http://127.0.0.1:8765/v1",
-        "timeout": 60000
+        "timeout": 300000
       },
       "models": {
         "agy/gemini-4-argon": {
           "name": "Gemini 4 Argon",
           "contextWindow": 1048576
         },
-        "agy/gemini-3.8-flash-medium": {
+        "agy/gemini-3.8-flash": {
           "name": "Gemini 3.8 Flash",
           "contextWindow": 1048576
         },
       }
     }
-  }
+  },
 
+  "plugins": [{
+    "package": "opencode-runtime-fallback",
+    "options": {
+      "notify_on_fallback": true,
+      "notify_toast": true,
+      "notify_desktop": false,
+      "notify_sound": false
+    }
+  }]
 }

@@ -2,7 +2,7 @@
 description: 'FLASH: routine implementation, clear bug fixes, documentation, and straightforward
   refactors.'
 mode: subagent
-model: deepseek-api/deepseek-v4-flash
+model: relay-gateway/agy/gemini-3.8-flash
 permissions:
 - action: subagent
   resource: '*'

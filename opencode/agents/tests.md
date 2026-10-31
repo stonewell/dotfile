@@ -1,7 +1,7 @@
 ---
 description: 'FLASH: write focused tests, run relevant checks, and diagnose test failures.'
 mode: subagent
-model: deepseek-api/deepseek-v4-flash
+model: relay-gateway/agy/gemini-3.8-flash
 permissions:
 - action: subagent
   resource: '*'

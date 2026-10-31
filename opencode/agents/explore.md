@@ -1,8 +1,8 @@
 ---
-description: 'LOCAL: read-only repository search, code navigation, and locating relevant
+description: 'Read-only repository search, code navigation, and locating relevant
   files.'
 mode: subagent
-model: relay-gateway/agy/gemini-3.8-flash-medium
+model: relay-gateway/agy/gemini-3.8-flash
 permissions:
 - action: edit
   resource: '*'
