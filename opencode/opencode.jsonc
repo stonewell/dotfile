@@ -55,7 +55,7 @@
       "name": "Relay API",
       "options": {
         "baseURL": "http://127.0.0.1:8765/v1",
-        "timeout": 300000
+        "timeout": 3000000
       },
       "models": {
         "agy/gemini-4-argon": {

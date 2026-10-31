@@ -1,6 +1,6 @@
 {
   "enabled": true,
-  "timeout_seconds": 30,
+  "timeout_seconds": 300,
   "max_fallback_attempts": 10,
 
   // 全局兜底链（未单独配置的 agent 使用）
