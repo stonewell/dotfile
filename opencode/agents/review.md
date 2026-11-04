@@ -1,7 +1,7 @@
 ---
 description: 'PRO: independent read-only correctness, regression, and security review.'
 mode: subagent
-model: relay-gateway/agy/gemini-4-argon
+model: deepseek-api/deepseek-v4-pro
 permissions:
 - action: edit
   resource: '*'

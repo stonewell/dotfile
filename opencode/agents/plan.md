@@ -1,5 +1,5 @@
 ---
-model: relay-gateway/agy/gemini-4-argon
+model: deepseek-api/deepseek-v4-pro
 permissions:
 - action: edit
   resource: '*'

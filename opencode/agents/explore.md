@@ -2,7 +2,7 @@
 description: 'Read-only repository search, code navigation, and locating relevant
   files.'
 mode: subagent
-model: relay-gateway/agy/gemini-3.8-flash
+model: deepseek-api/deepseek-v4-flash
 permissions:
 - action: edit
   resource: '*'

@@ -14,7 +14,7 @@
         "bonsai-2-27b": {
           "name": "Ternary Bonsai 2 27B",
           "limit": {
-            "context": 65536,
+            "context": 131072,
             "output": 8192
           },
           "capabilities": {
@@ -25,7 +25,7 @@
               "auto": true,
               "buffer": 16384,
               "keep": {
-                "tokens": 12000
+                "tokens": 15000
               }
             }
           }
@@ -66,6 +66,30 @@
           "name": "Gemini 3.8 Flash",
           "contextWindow": 1048576
         },
+        "claude/sonnet": {
+          "name": "Claude Sonnet",
+          "contextWindow": 1048576
+        },
+        "claude/opus": {
+          "name": "Claude Opus",
+          "contextWindow": 1048576
+        },
+        "claude/fable": {
+          "name": "Claude Fable",
+          "contextWindow": 1048576
+        },
+        "agy/claude-sonnet-5-5": {
+          "name": "Agy Claude Sonnet",
+          "contextWindow": 1048576
+        },
+        "agy/claude-opus-5-5": {
+          "name": "Agy Claude Opus",
+          "contextWindow": 1048576
+        },
+        "agy/gpt-oss-120b": {
+          "name": "Agy GPT OSS 120b",
+          "contextWindow": 1048576
+        }
       }
     }
   },

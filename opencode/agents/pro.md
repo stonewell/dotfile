@@ -2,7 +2,7 @@
 description: 'PRO: read-only architecture, deep debugging, security/concurrency analysis,
   and implementation plans; file edits belong to local/Flash.'
 mode: subagent
-model: relay-gateway/agy/gemini-4-argon
+model: deepseek-api/deepseek-v4-pro
 permissions:
 - action: edit
   resource: '*'
