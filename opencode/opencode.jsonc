@@ -59,39 +59,43 @@
       },
       "models": {
         "agy/gemini-4-argon": {
-          "name": "Gemini 4 Argon",
-          "contextWindow": 1048576
+          "name": "Agy Gemini 4 Argon",
+          "contextWindow": 131072
         },
         "agy/gemini-3.8-flash": {
-          "name": "Gemini 3.8 Flash",
-          "contextWindow": 1048576
+          "name": "Agy Gemini 3.8 Flash",
+          "contextWindow": 131072
         },
         "claude/sonnet": {
           "name": "Claude Sonnet",
-          "contextWindow": 1048576
+          "contextWindow": 131072
         },
         "claude/opus": {
           "name": "Claude Opus",
-          "contextWindow": 1048576
+          "contextWindow": 131072
         },
         "claude/fable": {
           "name": "Claude Fable",
-          "contextWindow": 1048576
+          "contextWindow": 131072
         },
         "agy/claude-sonnet-5-5": {
           "name": "Agy Claude Sonnet",
-          "contextWindow": 1048576
+          "contextWindow": 131072
         },
         "agy/claude-opus-5-5": {
           "name": "Agy Claude Opus",
-          "contextWindow": 1048576
+          "contextWindow": 131072
         },
         "agy/gpt-oss-120b": {
           "name": "Agy GPT OSS 120b",
-          "contextWindow": 1048576
+          "contextWindow": 131072
         }
       }
     }
+  },
+
+  "experimental": {
+    "subagent_depth": 2
   },
 
   "plugins": [{
