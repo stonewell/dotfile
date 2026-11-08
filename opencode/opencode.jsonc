@@ -13,9 +13,9 @@
 
   "providers": {
     "bonsai": {
-      "npm": "@ai-sdk/openai-compatible",
       "name": "Local Bonsai (RTX 4070 Ti Super)",
-      "options": {
+      "package": "@opencode/ai/providers/openai-compatible",
+      "settings": {
         "baseURL": "http://127.0.0.1:18080/v1"
       },
       "models": {
@@ -37,9 +37,9 @@
       }
     },
     "deepseek-api": {
-      "npm": "@ai-sdk/openai-compatible",
       "name": "DeepSeek API",
-      "options": {
+      "package": "@opencode/ai/providers/openai-compatible",
+      "settings": {
         "baseURL": "https://api.deepseek.com",
         "timeout": 60000
       },
@@ -61,108 +61,52 @@
       }
     },
     "relay-gateway": {
-      "npm": "@ai-sdk/openai-compatible",
       "name": "Relay API",
-      "options": {
+      "package": "@opencode/ai/providers/openai-compatible",
+      "settings": {
         "baseURL": "http://127.0.0.1:8765/v1",
         "timeout": 3000000
       },
       "models": {
         "agy/gemini-4-argon": {
           "name": "Agy Gemini 4 Argon",
-          "limit": {
-            "context": 131072,
-            "output": 8192
-          },
-          "settings": {
-            "compaction": {
-              "type": "summary"
-            }
-          }
+          "limit": { "context": 131072, "output": 8192 },
+          "settings": { "compaction": { "type": "summary" } }
         },
         "agy/gemini-3.8-flash": {
           "name": "Agy Gemini 3.8 Flash",
-          "limit": {
-            "context": 131072,
-            "output": 8192
-          },
-          "settings": {
-            "compaction": {
-              "type": "summary"
-            }
-          }
+          "limit": { "context": 131072, "output": 8192 },
+          "settings": { "compaction": { "type": "summary" } }
         },
         "claude/sonnet": {
           "name": "Claude Sonnet",
-          "limit": {
-            "context": 131072,
-            "output": 8192
-          },
-          "settings": {
-            "compaction": {
-              "type": "summary"
-            }
-          }
+          "limit": { "context": 131072, "output": 8192 },
+          "settings": { "compaction": { "type": "summary" } }
         },
         "claude/opus": {
           "name": "Claude Opus",
-          "limit": {
-            "context": 131072,
-            "output": 8192
-          },
-          "settings": {
-            "compaction": {
-              "type": "summary"
-            }
-          }
+          "limit": { "context": 131072, "output": 8192 },
+          "settings": { "compaction": { "type": "summary" } }
         },
         "claude/fable": {
           "name": "Claude Fable",
-          "limit": {
-            "context": 131072,
-            "output": 8192
-          },
-          "settings": {
-            "compaction": {
-              "type": "summary"
-            }
-          }
+          "limit": { "context": 131072, "output": 8192 },
+          "settings": { "compaction": { "type": "summary" } }
         },
         "agy/claude-sonnet-5-5": {
           "name": "Agy Claude Sonnet",
-          "limit": {
-            "context": 131072,
-            "output": 8192
-          },
-          "settings": {
-            "compaction": {
-              "type": "summary"
-            }
-          }
+          "limit": { "context": 131072, "output": 8192 },
+          "settings": { "compaction": { "type": "summary" } }
         },
         "agy/claude-opus-5-5": {
           "name": "Agy Claude Opus",
-          "limit": {
-            "context": 131072,
-            "output": 8192
-          },
-          "settings": {
-            "compaction": {
-              "type": "summary"
-            }
-          }
+          "limit": { "context": 131072, "output": 8192 },
+          "settings": { "compaction": { "type": "summary" } }
         },
         "agy/gpt-oss-120b": {
           "name": "Agy GPT OSS 120b",
-          "limit": {
-            "context": 131072,
-            "output": 8192
-          },
-          "settings": {
-            "compaction": {
-              "type": "summary"
-            }
-          }
+          "limit": { "context": 131072, "output": 8192 },
+          "settings": { "compaction": { "type": "summary" } }
         }
       }
     }
